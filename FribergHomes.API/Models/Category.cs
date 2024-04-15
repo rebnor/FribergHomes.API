@@ -1,4 +1,6 @@
-﻿namespace FribergHomes.API.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FribergHomes.API.Models
 {
     /* Class for Category.
      * IconUrl should be a https-link of an Icon, example FontAwesome.
@@ -7,6 +9,7 @@
     public class Category
     {
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
         public string IconUrl { get; set; }
 
