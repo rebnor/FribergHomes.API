@@ -3,7 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FribergHomes.API.Models
 {
-    //Creator: Tobias Ledin
+     /* Class for SalesObject which forms the base class for all real estate objects.
+      * Author: Tobias 2024-04-15
+      */
 
     public class SalesObject
     {
@@ -22,7 +24,7 @@ namespace FribergHomes.API.Models
 
         [Required]
         [RegularExpression(@"^[a-zA-ZåäöÅÄÖ\s-\d]+$", ErrorMessage = "Adress får enbart innehålla a-ö, 0-9, bindestreck och mellanslag")]
-        public string Adress { get; set; } = string.Empty;       // Bryt upp i gatunamn, nummer, våning ?
+        public string Adress { get; set; } = string.Empty;
 
         [Required]
         [DisplayName("Boarea")]
