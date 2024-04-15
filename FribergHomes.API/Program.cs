@@ -1,4 +1,7 @@
 
+using FribergHomes.API.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace FribergHomes.API
 {
     public class Program
@@ -9,10 +12,42 @@ namespace FribergHomes.API
 
             // Add services to the container.
 
+            /* DbContext
+             * First it will look for a Database called FribergHomesDB,
+             * if not found a exception will be thrown and a Database will get created.
+             * @ Author: Rebecka 2024-04-15
+             */
+            builder.Services.AddDbContext<ApplicationDBContext>(options =>
+            {
+                // Looking for Database FribergHomesDB
+                var connectionString = builder.Configuration.GetConnectionString("FribergHomesDB");
+                //if not found
+                if (connectionString == null)
+                {
+                    throw new InvalidOperationException("Connection string 'FribergHomesDB' not found.");
+                }
+                // If found, the connection starts
+                options.UseSqlServer(connectionString);
+
+                // If no database called FribergHomesDB is found, it will create a Database with that name.
+                var dbContextOptions = new DbContextOptionsBuilder<ApplicationDBContext>().UseSqlServer(connectionString).Options;
+                using (var context = new ApplicationDBContext(dbContextOptions))
+                {
+                    context.Database.EnsureCreated();
+                }
+            });
+            // Old code
+            //builder.Services.AddDbContext<ApplicationDBContext>(options =>
+            //    options.UseSqlServer(builder.Configuration.GetConnectionString("FribergHomesDB") ?? throw new InvalidOperationException("Connection string 'FribergHomesDB' not found.")));
+
+
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            
+
 
             var app = builder.Build();
 
