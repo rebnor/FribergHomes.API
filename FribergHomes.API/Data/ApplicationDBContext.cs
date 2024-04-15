@@ -13,10 +13,15 @@ namespace FribergHomes.API.Data
         {
         }
 
-        DbSet<Category> Categories { get; set; }
-        DbSet<County> Counties { get; set; }
-        DbSet<Realtor> Realtors { get; set; }
-        DbSet<Agency> Agencies { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<County> Counties { get; set; }
+        public DbSet<Realtor> Realtors { get; set; }
+        public DbSet<Agency> Agencies { get; set; }
+        public DbSet<SalesObject> SalesObjects { get; set; }
+        /*
+         DbSet<House> Houses { get; set; }
+        DbSet<Apartment> Apartments { get; set; }
+         */
 
         // Old code
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

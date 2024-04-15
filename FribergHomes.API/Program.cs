@@ -1,5 +1,7 @@
 
 using FribergHomes.API.Data;
+using FribergHomes.API.Data.Interfaces;
+using FribergHomes.API.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace FribergHomes.API
@@ -40,6 +42,9 @@ namespace FribergHomes.API
             //builder.Services.AddDbContext<ApplicationDBContext>(options =>
             //    options.UseSqlServer(builder.Configuration.GetConnectionString("FribergHomesDB") ?? throw new InvalidOperationException("Connection string 'FribergHomesDB' not found.")));
 
+
+            // Repositories
+            builder.Services.AddTransient<ICounty, CountyRepository>(); // Reb
 
 
             builder.Services.AddControllers();
