@@ -2,7 +2,9 @@
 
 namespace FribergHomes.API.Models
 {
-    //Creator: Tobias Ledin
+     /* Class for Apartment (inherits from SalesObject).
+      * Author: Tobias 2024-04-15
+      */
 
     public class Apartment : SalesObject
     {
@@ -11,6 +13,9 @@ namespace FribergHomes.API.Models
 
         [Required]
         public bool Lift { get; set; }
+
+        [Required]
+        public double MonthlyFee { get; set; }
 
         protected Apartment(int price) : base(price)
         {
