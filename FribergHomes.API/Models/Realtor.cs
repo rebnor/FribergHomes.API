@@ -5,19 +5,19 @@ namespace FribergHomes.API.Models
     //Author: Sanna 
     public class Realtor
     {
-        [Required]
+        [Key]
         public int Id { get; set; }
-        [Required]
+        [Required, Display(Name="Förnamn") ]
         public string FirstName { get; set; }
-        [Required]
+        [Required, Display(Name = "Efternamn")]
         public string LastName { get; set; }
-        [Required]
+        [Required, EmailAddress]
         public string Email { get; set; }
-        [Required]
+        [Required, , Display(Name = "Telefonnummer")]
         public string PhoneNumber { get; set; }
         [Required]
         public string Picture { get; set; }
-        [Required]
+        [Required, Display(Name = "Mäklarbyrå")]
         public Agency Agency { get; set; }       
         public List<House>? Houses { get; set; }
 
