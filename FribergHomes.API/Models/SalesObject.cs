@@ -14,11 +14,11 @@ namespace FribergHomes.API.Models
         public DateTime CreationDate { get; set; } = DateTime.Now;
 
         [Required]
-        public int CreatorId { get; set; }          // int ID eller Realtor?
+        public Realtor? CreatorId { get; set; }
 
         public DateTime ChangeDate { get; set; }
 
-        public int ChangeId { get; set; }           // int ID eller Realtor?
+        public Realtor? ChangeId { get; set; } 
 
         [Required]
         [RegularExpression(@"^[a-zA-ZåäöÅÄÖ\s-\d]+$", ErrorMessage = "Adress får enbart innehålla a-ö, 0-9, bindestreck och mellanslag")]
@@ -71,6 +71,8 @@ namespace FribergHomes.API.Models
         [Required]
         public County? County { get; set; }
 
+        [Required]
+        public Category? Category { get; set; }
 
         protected SalesObject(int price)
         {
