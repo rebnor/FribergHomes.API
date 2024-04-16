@@ -19,29 +19,40 @@ namespace FribergHomes.API.Controllers
 
         // GET: api/<SalesObjectController>
         [HttpGet]
-        public IActionResult GetAllSalesObjects()
+        public async Task<List<SalesObject>> GetAllSalesObjects()
         {
-            var salesObjects = _salesRepo.GetAllSalesObjectsAsync();
-            return Ok(salesObjects);
+            var salesObjects = await _salesRepo.GetAllSalesObjectsAsync();
+            return salesObjects;
         }
 
         // GET api/<SalesObjectController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> GetSalesObjectById(int id)
         {
-            return "value";
+            var salesObject = await _salesRepo.GetSalesObjectByIdAsync(id);
+            return Ok(salesObject);
         }
 
         // POST api/<SalesObjectController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] SalesObject salesObject)
         {
+            try
+            {
+                var addedSalesObject = await _salesRepo.AddSalesObjectAsync(salesObject);
+                return CreatedAtAction(nameof(GetSalesObjectById), new { id = addedSalesObject.Id }, addedSalesObject);
+            } 
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         // PUT api/<SalesObjectController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+
         }
 
         // DELETE api/<SalesObjectController>/5
