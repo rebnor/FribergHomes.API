@@ -16,11 +16,11 @@ namespace FribergHomes.API.Models
         public DateTime CreationDate { get; set; } = DateTime.Now;
 
         [Required]
-        public Realtor? CreatorId { get; set; }
+        public string CreatorName { get; set; } = string.Empty;
 
         public DateTime ChangeDate { get; set; }
 
-        public Realtor? ChangeId { get; set; } 
+        public string ChangeName { get; set; } = string.Empty;
 
         [Required]
         [RegularExpression(@"^[a-zA-ZåäöÅÄÖ\s-\d]+$", ErrorMessage = "Adress får enbart innehålla a-ö, 0-9, bindestreck och mellanslag")]
