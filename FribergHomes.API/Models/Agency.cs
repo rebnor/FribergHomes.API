@@ -7,7 +7,7 @@ namespace FribergHomes.API.Models
     {
         [Key]
         public int Id { get; set; }
-        [Required, , Display(Name = "Mäklarbyrå")]
+        [Required, Display(Name = "Mäklarbyrå")]
         public string Name { get; set; }
         [Required, Display(Name = "Beskrivning")]
         public string Presentation { get; set; }
