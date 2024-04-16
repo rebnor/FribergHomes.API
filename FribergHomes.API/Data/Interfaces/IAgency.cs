@@ -8,10 +8,15 @@ namespace FribergHomes.API.Data.Interfaces
 
     public interface IAgency
     {
-        Task<Agency> GetAgencyByIdAsync(int id);
+        // Possible null return
+        Task<Agency?> GetAgencyByIdAsync(int id);
+
         Task<List<Agency>> GetAllAgenciesAsync();
+
         Task AddAgencyAsync(Agency agency);
+
         Task<Agency> UpdateAgencyAsync(Agency agency);
+
         Task DeleteAgencyAsync(int id);
 
     }
