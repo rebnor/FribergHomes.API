@@ -2,7 +2,9 @@
 
 namespace FribergHomes.API.Models
 {
-    //Creator: Tobias Ledin
+     /* Class for SalesObject which forms the base class for all real estate objects.
+      * Author: Tobias 2024-04-15
+      */
 
     public class House : SalesObject
     {
