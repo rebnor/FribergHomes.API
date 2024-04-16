@@ -34,26 +34,29 @@ namespace FribergHomes.API.Models
         [DisplayName("Biarea")]
         public double AncillaryArea { get; set; }
 
+        // Only gets set once (when created).
         [Required]
-        public int OriginalPrice { get; init; }
+        public int ListingPrice { get; init; }
 
 
-        private int _actualPrice;
+        private int _currentPrice;
 
-        public int ActualPrice
+        public int CurrentPrice
         { 
-            get => _actualPrice;
+            get => _currentPrice;
             set
             {
-                if(value != _actualPrice)
+                if (value != _currentPrice)
                 {
-                    _actualPrice = value;
-                    PriceChangePercent = CalculatePercentChange();
+                    _currentPrice = value;
+
+                }
+                else if (CurrentPrice == 0)
+                {
+                    _currentPrice = ListingPrice;
                 }
             }
         }  
-
-        public double PriceChangePercent { get; set; }
 
         public string ObjectDescription { get; set; } = string.Empty;
 
@@ -76,20 +79,5 @@ namespace FribergHomes.API.Models
         [Required]
         public Category? Category { get; set; }
 
-        protected SalesObject(int price)
-        {
-            OriginalPrice = price;
-            _actualPrice = price;
-        }
-
-
-        private double CalculatePercentChange()
-        {
-            if (OriginalPrice == 0)
-            {
-                return 0; 
-            }
-            return (double)(ActualPrice - OriginalPrice) / OriginalPrice * 100;
-        }
     }
 }

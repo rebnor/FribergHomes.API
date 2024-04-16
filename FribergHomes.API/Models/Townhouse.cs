@@ -11,10 +11,5 @@ namespace FribergHomes.API.Models
         [Required]
         public double MonthlyFee { get; set; }
 
-
-        protected Townhouse(int price) : base(price)
-        {
-
-        }
     }
 }
