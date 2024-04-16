@@ -32,13 +32,15 @@ namespace FribergHomes.API.Data.Repositories
 
         public async Task<SalesObject> GetSalesObjectByIdAsync(int? id)
         {
-            var salesObject = await _appDBctx.SalesObjects.Include(s => s.Realtor).ThenInclude(ss => ss.Agency).FirstOrDefaultAsync(s => s.Id == id);
+            var salesObject = await _appDBctx.SalesObjects.FirstOrDefaultAsync(s => s.Id == id);
+            //var salesObject = await _appDBctx.SalesObjects.Include(s => s.Realtor).ThenInclude(ss => ss.Agency).FirstOrDefaultAsync(s => s.Id == id);
             return salesObject;
         }
 
         public async Task<List<SalesObject>> GetAllSalesObjectsAsync()
         {
-            var salesObjects = await _appDBctx.SalesObjects.Include(s => s.Realtor).ThenInclude(ss => ss.Agency).ToListAsync();
+            var salesObjects = await _appDBctx.SalesObjects.ToListAsync();
+            //var salesObjects = await _appDBctx.SalesObjects.Include(s => s.Realtor).ThenInclude(ss => ss.Agency).ToListAsync();
             return salesObjects;
         }
 
