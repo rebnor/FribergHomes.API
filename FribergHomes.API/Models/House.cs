@@ -13,11 +13,5 @@ namespace FribergHomes.API.Models
         [Required]
         public double YearlyCost { get; set; }
 
-
-        protected House(int price) : base(price)
-        {
-
-        }
-
     }
 }
