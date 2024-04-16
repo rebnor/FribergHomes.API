@@ -19,21 +19,20 @@ namespace FribergHomes.API.Data.Repositories
 
         public async Task<County> AddCountyAsync(County county)
         {
-            _appDBctx.Counties.Add(county);
+            await _appDBctx.AddAsync(county);
             await _appDBctx.SaveChangesAsync();
             return county;
         }
 
-        public async Task DeleteCountyAsync(int id)
+        public async Task DeleteCountyAsync(County county)
         {
-            var county = await _appDBctx.Counties.FirstOrDefaultAsync(c => c.Id == id);
-            _appDBctx.Counties.Remove(county);
+            _appDBctx.Remove(county);
             await _appDBctx.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<County>> GetAllCountiesAsync()
+        public async Task<List<County>> GetAllCountiesAsync()
         {
-            var counties = _appDBctx.Counties.OrderBy(c=>c.Name);
+            var counties = await _appDBctx.Counties.OrderBy(c => c.Name).ToListAsync();
             return counties;
         }
 
@@ -51,7 +50,7 @@ namespace FribergHomes.API.Data.Repositories
 
         public async Task<County> UpdateCountyAsync(County county)
         {
-            _appDBctx.Counties.Update(county);
+            _appDBctx.Update(county);
             await _appDBctx.SaveChangesAsync();
             return county;
         }

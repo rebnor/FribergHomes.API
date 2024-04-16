@@ -45,6 +45,7 @@ namespace FribergHomes.API
 
             // Repositories
             builder.Services.AddTransient<ICounty, CountyRepository>(); // Reb
+            builder.Services.AddTransient<ISalesObject, SalesObjectRepository>(); // Reb
 
 
             builder.Services.AddControllers();
