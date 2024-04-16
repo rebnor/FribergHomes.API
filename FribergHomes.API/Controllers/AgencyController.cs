@@ -7,32 +7,36 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FribergHomes.API.Data;
 using FribergHomes.API.Models;
+using FribergHomes.API.Data.Interfaces;
 
 namespace FribergHomes.API.Controllers
 {
+
+   //Author: Sanna 2024-04-16
+
     [Route("api/[controller]")]
     [ApiController]
     public class AgencyController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
+        private readonly IAgency _agencyRepository;
 
-        public AgencyController(ApplicationDBContext context)
+        public AgencyController(IAgency agencyRepository)
         {
-            _context = context;
+            _agencyRepository = agencyRepository;
         }
 
         // GET: api/Agency
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Agency>>> GetAgencies()
         {
-            return await _context.Agencies.ToListAsync();
+            return await _agencyRepository.GetAllAgenciesAsync();
         }
 
         // GET: api/Agency/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Agency>> GetAgency(int id)
         {
-            var agency = await _context.Agencies.FindAsync(id);
+            var agency = await _agencyRepository.GetAgencyByIdAsync(id);
 
             if (agency == null)
             {
@@ -44,6 +48,8 @@ namespace FribergHomes.API.Controllers
 
         // PUT: api/Agency/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // @ Created the varieable updatedAgency to make sure the updated object that returns from the repo has a value
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAgency(int id, Agency agency)
         {
@@ -52,24 +58,12 @@ namespace FribergHomes.API.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(agency).State = EntityState.Modified;
+            var updatedAgency = await _agencyRepository.UpdateAgencyAsync(agency);
 
-            try
+            if (updatedAgency == null)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AgencyExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
             return NoContent();
         }
 
@@ -78,31 +72,32 @@ namespace FribergHomes.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Agency>> PostAgency(Agency agency)
         {
-            _context.Agencies.Add(agency);
-            await _context.SaveChangesAsync();
+            await _agencyRepository.AddAgencyAsync(agency);            
 
             return CreatedAtAction("GetAgency", new { id = agency.Id }, agency);
         }
 
         // DELETE: api/Agency/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAgency(int id)
-        {
-            var agency = await _context.Agencies.FindAsync(id);
-            if (agency == null)
-            {
-                return NotFound();
-            }
 
-            _context.Agencies.Remove(agency);
-            await _context.SaveChangesAsync();
+        // Unfinished, will continue with these methods
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteAgency(int id)
+        //{
+        //    var agency = await _context.Agencies.FindAsync(id);
+        //    if (agency == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return NoContent();
-        }
+        //    _context.Agencies.Remove(agency);
+        //    await _context.SaveChangesAsync();
 
-        private bool AgencyExists(int id)
-        {
-            return _context.Agencies.Any(e => e.Id == id);
-        }
+        //    return NoContent();
+        //}
+
+        //private bool AgencyExists(int id)
+        //{
+        //    return _context.Agencies.Any(e => e.Id == id);
+        //}
     }
 }
