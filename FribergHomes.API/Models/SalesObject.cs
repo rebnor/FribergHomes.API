@@ -40,19 +40,19 @@ namespace FribergHomes.API.Models
         public double AncillaryArea { get; set; }
 
         [DisplayName("Tomtarea")]
-        public double PlotArea { get; set; }
+        public double? PlotArea { get; set; }
 
         [DisplayName("Driftkostnad")]
-        public double YearlyCost { get; set; }
+        public double? YearlyCost { get; set; }
 
         [DisplayName("Månadsavgift")]
-        public double MonthlyFee { get; set; }
+        public double? MonthlyFee { get; set; }
 
         [DisplayName("Våning")]
-        public int Level { get; set; }
+        public int? Level { get; set; }
 
         [DisplayName("Hiss")]
-        public bool Lift { get; set; }
+        public bool? Lift { get; set; }
 
         // Only gets set once when object is created.
         [Required]
