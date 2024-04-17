@@ -19,7 +19,7 @@ namespace FribergHomes.API.Models
         public string Picture { get; set; }
         [Required, Display(Name = "Mäklarbyrå")]
         public Agency Agency { get; set; }       
-        public List<House>? Houses { get; set; }
+        public List<SalesObject>? SalesObjects { get; set; }
 
 
     }
