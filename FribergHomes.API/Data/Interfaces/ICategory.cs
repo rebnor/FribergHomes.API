@@ -9,8 +9,8 @@ namespace FribergHomes.API.Data.Interfaces
     {
         Task<Category> GetCategoryByIdAsync(int? id);
         Task<List<Category>> GetAllCategoriesAsync();
-        Task<Category> AddGategoryAsync(Category category);
-        Task<Category> UpdateGategoryAsync(Category category);
-        Task DeleteGategoryAsync(Category category);
+        Task<Category> AddCategoryAsync(Category category);
+        Task<Category> UpdateCategoryAsync(Category category);
+        Task DeleteCategoryAsync(Category category);
     }
 }

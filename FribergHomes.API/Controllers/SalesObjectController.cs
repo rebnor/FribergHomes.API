@@ -1,11 +1,19 @@
-﻿using FribergHomes.API.Data.Interfaces;
-using FribergHomes.API.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Microsoft.EntityFrameworkCore;
+using FribergHomes.API.Data;
+using FribergHomes.API.Models;
+using FribergHomes.API.Data.Interfaces;
 
 namespace FribergHomes.API.Controllers
 {
+    /* Controller for SalesObject
+    * @ Author: Rebecka 2024-04-17        
+    */
     [Route("api/[controller]")]
     [ApiController]
     public class SalesObjectController : ControllerBase
@@ -17,48 +25,100 @@ namespace FribergHomes.API.Controllers
             _salesRepo = salesRepo;
         }
 
-        // GET: api/<SalesObjectController>
+        // GET: api/SalesObjects
+        /* Gets All the SalesObjects from the Database */
         [HttpGet]
-        public async Task<List<SalesObject>> GetAllSalesObjects()
-        {
-            var salesObjects = await _salesRepo.GetAllSalesObjectsAsync();
-            return salesObjects;
-        }
-
-        // GET api/<SalesObjectController>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetSalesObjectById(int id)
-        {
-            var salesObject = await _salesRepo.GetSalesObjectByIdAsync(id);
-            return Ok(salesObject);
-        }
-
-        // POST api/<SalesObjectController>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SalesObject salesObject)
+        public async Task<ActionResult<IEnumerable<SalesObject>>> GetSalesObjects()
         {
             try
             {
-                var addedSalesObject = await _salesRepo.AddSalesObjectAsync(salesObject);
-                return CreatedAtAction(nameof(GetSalesObjectById), new { id = addedSalesObject.Id }, addedSalesObject);
-            } 
+                var salesObjects = await _salesRepo.GetAllSalesObjectsAsync();
+                if (salesObjects == null)
+                {
+                    return NoContent();
+                }
+                return Ok(salesObjects);
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, $"Något gick fel vid hämtning av alla Försäljningsobjekt! Felmeddelande: {ex.Message}");
             }
         }
 
-        // PUT api/<SalesObjectController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // GET: api/SalesObjects/{id}
+        /* Gets One SalesObject from Database, with int ID */
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SalesObject>> GetSalesObject(int id)
         {
-
+            try
+            {
+                var salesObject = await _salesRepo.GetSalesObjectByIdAsync(id);
+                if (salesObject == null)
+                {
+                    return NotFound();
+                }
+                return Ok(salesObject);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel vid hämtning av Försäljningsobjekt med id {id}! Felmeddelande: {ex.Message}");
+            }
         }
 
-        // DELETE api/<SalesObjectController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // PUT: api/SalesObjects/{id}
+        /* Updates one SalesObject in the Database */
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutSalesObject(int id, SalesObject salesObject)
         {
+            try
+            {
+                if (id != salesObject.Id)
+                {
+                    return BadRequest();
+                }
+                await _salesRepo.UpdateSalesObjectAsync(salesObject);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel vid uppdatering av Försäljningsobjekt med id {id}! Felmeddelande: {ex.Message}");
+            }
+        }
+
+        // POST: api/SalesObjects
+        /* Adds one SalesObject to the Database */
+        [HttpPost]
+        public async Task<ActionResult<SalesObject>> PostSalesObject(SalesObject salesObject)
+        {
+            try
+            {
+                await _salesRepo.AddSalesObjectAsync(salesObject);
+                return CreatedAtAction("GetSalesObject", new { id = salesObject.Id }, salesObject);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel när du skulle lägga till Försäljningsobjektet! Felmeddelande: {ex.Message}");
+            }
+        }
+
+        // DELETE: api/SalesObjects/{id}
+        /* Deletes one SalesObject, with int ID, from Database */
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSalesObject(int id)
+        {
+            try
+            {
+                var salesObject = await _salesRepo.GetSalesObjectByIdAsync(id);
+                if (salesObject != null)
+                {
+                    return NotFound();
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel när du skulle radera Fösäljningsobjekt med id '{id}'! Felmeddelande: {ex.Message}");
+            }
         }
     }
 }
