@@ -2,13 +2,15 @@
 using FribergHomes.API.Data;
 using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.Data.Repositories;
+using FribergHomes.API.Seeders;
 using Microsoft.EntityFrameworkCore;
 
 namespace FribergHomes.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        //public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +65,19 @@ namespace FribergHomes.API
 
 
             var app = builder.Build();
+
+            // Seed Agencies / Reb 2024-04-17
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var dbContext = services.GetRequiredService<ApplicationDBContext>();
+
+                var seedAgencies = new AgencySeeder();
+                await seedAgencies.SeedAgencies(dbContext);
+            }
+
+
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
