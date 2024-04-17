@@ -12,7 +12,7 @@ using FribergHomes.API.Data.Interfaces;
 namespace FribergHomes.API.Controllers
 {
 
-   //Author: Sanna 2024-04-16
+    //Author: Sanna 2024-04-16
 
     [Route("api/[controller]")]
     [ApiController]
@@ -37,12 +37,10 @@ namespace FribergHomes.API.Controllers
         public async Task<ActionResult<Agency>> GetAgency(int id)
         {
             var agency = await _agencyRepository.GetAgencyByIdAsync(id);
-
             if (agency == null)
             {
                 return NotFound();
             }
-
             return agency;
         }
 
@@ -57,14 +55,12 @@ namespace FribergHomes.API.Controllers
             {
                 return BadRequest();
             }
-
             var updatedAgency = await _agencyRepository.UpdateAgencyAsync(agency);
-
             if (updatedAgency == null)
             {
                 return NotFound();
             }
-            return NoContent();
+            return Ok(updatedAgency);
         }
 
         // POST: api/Agency
@@ -72,32 +68,24 @@ namespace FribergHomes.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Agency>> PostAgency(Agency agency)
         {
-            await _agencyRepository.AddAgencyAsync(agency);            
-
+            await _agencyRepository.AddAgencyAsync(agency);
             return CreatedAtAction("GetAgency", new { id = agency.Id }, agency);
         }
 
-        // DELETE: api/Agency/5
+        // DELETE: api/Agency/5             
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAgency(int id)
+        {
+            var realtor = await _agencyRepository.GetAgencyByIdAsync(id);
+            if (realtor == null)
+            {
+                return NotFound();
+            }
+            await _agencyRepository.DeleteAgencyAsync(id);
 
-        // Unfinished, will continue with these methods
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteAgency(int id)
-        //{
-        //    var agency = await _context.Agencies.FindAsync(id);
-        //    if (agency == null)
-        //    {
-        //        return NotFound();
-        //    }
+            //the NoContent return lets the client know that the agency has been deleted
+            return NoContent();
+        }
 
-        //    _context.Agencies.Remove(agency);
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
-
-        //private bool AgencyExists(int id)
-        //{
-        //    return _context.Agencies.Any(e => e.Id == id);
-        //}
     }
 }
