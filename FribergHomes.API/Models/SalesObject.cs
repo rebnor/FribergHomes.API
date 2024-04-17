@@ -20,9 +20,9 @@ namespace FribergHomes.API.Models
         [Required]
         public string CreatorName { get; set; } = string.Empty;
 
-        public DateTime ChangeDate { get; set; }
+        public DateTime? ChangeDate { get; set; }
 
-        public string ChangeName { get; set; } = string.Empty;
+        public string? ChangeName { get; set; } = string.Empty;
 
         [Required]
         [RegularExpression(@"^[a-zA-ZåäöÅÄÖ\s-\d]+$", ErrorMessage = "Adress får enbart innehålla a-ö, 0-9, bindestreck och mellanslag")]
@@ -54,6 +54,7 @@ namespace FribergHomes.API.Models
         [DisplayName("Hiss")]
         public bool? Lift { get; set; }
 
+        // Original price (for percent change comparison if object price changes).
         // Only gets set once when object is created.
         [Required]
         public int ListingPrice { get; init; }
