@@ -12,6 +12,5 @@ namespace FribergHomes.API.Data.Interfaces
         Task<Category> AddGategoryAsync(Category category);
         Task<Category> UpdateGategoryAsync(Category category);
         Task DeleteGategoryAsync(Category category);
-
     }
 }

@@ -18,7 +18,7 @@ namespace FribergHomes.API
              * First it will look for a Database called FribergHomesDB,
              * if not found a exception will be thrown and a Database will get created.
              * @ Author: Rebecka 2024-04-15
-             * @ Update: The code i thought about didnt work smooth, so i changed to get use sqlserver -> connectionstring. / Rebecka 2024-04-16
+             * @ Update: The code i thought about didnt+ work smooth, so i changed to get use sqlserver -> connectionstring. / Rebecka 2024-04-16
              */
             // Old code:
             //builder.Services.AddDbContext<ApplicationDBContext>(options =>
@@ -49,6 +49,10 @@ namespace FribergHomes.API
             builder.Services.AddTransient<ICounty, CountyRepository>(); // Reb
             builder.Services.AddTransient<ISalesObject, SalesObjectRepository>(); // Reb
             builder.Services.AddTransient<IAgency, AgencyRepository>(); // Sanna 
+            builder.Services.AddTransient<IRealtor, RealtorRepository>(); // Tobias
+            builder.Services.AddTransient<ICategory, CategoryRepository>(); // Reb
+
+
 
 
             builder.Services.AddControllers();
