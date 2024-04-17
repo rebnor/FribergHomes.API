@@ -54,6 +54,7 @@ namespace FribergHomes.API.Models
         [DisplayName("Hiss")]
         public bool? Lift { get; set; }
 
+        // Original price (for percent change comparison if object price changes).
         // Only gets set once when object is created.
         [Required]
         public int ListingPrice { get; init; }
