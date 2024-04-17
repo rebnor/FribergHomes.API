@@ -42,7 +42,7 @@ namespace FribergHomes.API
             //        context.Database.EnsureCreated();
             //    }
             //});
-            
+
             builder.Services.AddDbContext<ApplicationDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("FribergHomesDB") ?? throw new InvalidOperationException("Connection string 'FribergHomesDB' not found.")));
 
@@ -61,7 +61,7 @@ namespace FribergHomes.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            
+
 
 
             var app = builder.Build();
@@ -74,6 +74,11 @@ namespace FribergHomes.API
 
                 var seedAgencies = new AgencySeeder();
                 await seedAgencies.SeedAgencies(dbContext);
+
+                //RealtorSeeder added by Sanna 
+                //var seedRealtors = new RealtorSeeder();
+                //await seedRealtors.SeedRealtors(dbContext);
+                
             }
 
 
