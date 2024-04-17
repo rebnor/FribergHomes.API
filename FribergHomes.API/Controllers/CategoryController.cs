@@ -28,9 +28,21 @@ namespace FribergHomes.API.Controllers
         // GET: api/Categories
         /* Gets All the Categories from the Database*/
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+        public async Task<ActionResult<List<Category>>> GetCategories()
         {
-            return await _categoryRepo.GetAllCategoriesAsync();
+            try
+            {
+                var categories = await _categoryRepo.GetAllCategoriesAsync();
+                if (categories == null)
+                {
+                    return NoContent();
+                }
+                return Ok(categories);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel vid hämtning av alla Kategorier! Felmeddelande: {ex.Message}");
+            }
         }
 
         // GET: api/Categories/{id}
@@ -38,12 +50,19 @@ namespace FribergHomes.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
-            var category = await _categoryRepo.GetCategoryByIdAsync(id);
-            if (category == null)
+            try
             {
-                return NotFound();
+                var category = await _categoryRepo.GetCategoryByIdAsync(id);
+                if (category == null)
+                {
+                    return NotFound();
+                }
+                return Ok(category);
             }
-            return category;
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel vid hämtning av Kategori med id {id}! Felmeddelande: {ex.Message}");
+            }
         }
 
         // PUT: api/Categories/{id}
@@ -51,12 +70,19 @@ namespace FribergHomes.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategory(int id, Category category)
         {
-            if (id != category.Id)
+            try
             {
-                return BadRequest();
+                if (id != category.Id)
+                {
+                    return BadRequest();
+                }
+                await _categoryRepo.UpdateCategoryAsync(category);
+                return NoContent();
             }
-            await _categoryRepo.UpdateGategoryAsync(category);
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel vid uppdatering av Kategori med id {id}! Felmeddelande: {ex.Message}");
+            }
         }
 
         // POST: api/Categories
@@ -64,8 +90,15 @@ namespace FribergHomes.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
-            await _categoryRepo.AddGategoryAsync(category);
-            return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+            try
+            {
+                await _categoryRepo.AddCategoryAsync(category);
+                return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel när du skulle lägga till Kategori '{category.Name}'! Felmeddelande: {ex.Message}");
+            }
         }
 
         // DELETE: api/Categories/{id}
@@ -73,9 +106,19 @@ namespace FribergHomes.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var category = await _categoryRepo.GetCategoryByIdAsync(id);
-            await _categoryRepo.DeleteGategoryAsync(category);
-            return NoContent();
+            try
+            {
+                var category = await _categoryRepo.GetCategoryByIdAsync(id);
+                if (category != null)
+                {
+                    return NotFound();
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel när du skulle radera Kategori med id '{id}'! Felmeddelande: {ex.Message}");
+            }
         }
 
     }
