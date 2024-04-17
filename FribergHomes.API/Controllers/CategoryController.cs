@@ -16,11 +16,11 @@ namespace FribergHomes.API.Controllers
      */
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public class CategoryController : ControllerBase
     {
         private readonly ICategory _categoryRepo;
 
-        public CategoriesController(ICategory categoryRepo)
+        public CategoryController(ICategory categoryRepo)
         {
             _categoryRepo = categoryRepo;
         }

@@ -25,7 +25,7 @@ namespace FribergHomes.API.Controllers
         // GET method that returns a list of all Realtor objects stored in the DB.
         // GET: api/<RealtorController>
         [HttpGet]
-        public async Task<ActionResult<List<Realtor>>> GetAllRealtors()
+        public async Task<ActionResult<List<Realtor>>> GetRealtors()
         {
             var realtors = await _realtorRepository.GetAllRealtorsAsync();
             return Ok(realtors);
@@ -41,23 +41,22 @@ namespace FribergHomes.API.Controllers
             {
                 return NotFound();
             }
-
             return Ok(realtor);
         }
 
         // POST method that creates and stores a Realtor object in the DB.
         // POST api/<RealtorController>
         [HttpPost]
-        public async Task<ActionResult> CreateRealtor(Realtor realtor)
+        public async Task<ActionResult> PostRealtor(Realtor realtor)
         {
             await _realtorRepository.AddRealtorAsync(realtor);
-            return CreatedAtAction(nameof(GetRealtor), new { id = realtor.Id }, realtor); ;
+            return CreatedAtAction(nameof(GetRealtor), new { id = realtor.Id }, realtor);
         }
 
-        // PUT method that updates an existing Realtor object in the DB.
+        // PUT method that updates an existing Realtor object in the DB based on Id and Realtor object.
         // PUT api/<RealtorController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<Realtor>> UpdateRealtor(int id, Realtor realtor)
+        public async Task<ActionResult<Realtor>> PutRealtor(int id, Realtor realtor)
         {
             if(id != realtor.Id)
             {
@@ -72,7 +71,7 @@ namespace FribergHomes.API.Controllers
             return Ok(realtor);
         }
 
-        // DELETE method that deletes an existing Realtor object.
+        // DELETE method that finds and deletes an existing Realtor object based on Id.
         // DELETE api/<RealtorController>/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteRealtor(int id)

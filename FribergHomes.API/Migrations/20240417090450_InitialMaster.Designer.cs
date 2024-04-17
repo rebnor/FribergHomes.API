@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FribergHomes.API.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240416124703_InitReb")]
-    partial class InitReb
+    [Migration("20240417090450_InitialMaster")]
+    partial class InitialMaster
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -144,7 +144,7 @@ namespace FribergHomes.API.Migrations
                     b.Property<int>("BuildYear")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ChangeDate")
@@ -154,7 +154,7 @@ namespace FribergHomes.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CountyId")
+                    b.Property<int?>("CountyId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreationDate")
@@ -167,14 +167,15 @@ namespace FribergHomes.API.Migrations
                     b.Property<int>("CurrentPrice")
                         .HasColumnType("int");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
-
                     b.Property<string>("ImageLinks")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("Lift")
+                        .HasColumnType("bit");
 
                     b.Property<int>("ListingPrice")
                         .HasColumnType("int");
@@ -182,9 +183,18 @@ namespace FribergHomes.API.Migrations
                     b.Property<double>("LivingArea")
                         .HasColumnType("float");
 
+                    b.Property<double?>("MonthlyFee")
+                        .HasColumnType("float");
+
                     b.Property<string>("ObjectDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("PlotArea")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("RealtorId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Rooms")
                         .HasColumnType("int");
@@ -193,35 +203,18 @@ namespace FribergHomes.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double?>("YearlyCost")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("CountyId");
 
-                    b.ToTable("SalesObjects");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("SalesObject");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("FribergHomes.API.Models.House", b =>
-                {
-                    b.HasBaseType("FribergHomes.API.Models.SalesObject");
-
-                    b.Property<double>("PlotArea")
-                        .HasColumnType("float");
-
-                    b.Property<int>("RealtorId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("YearlyCost")
-                        .HasColumnType("float");
-
                     b.HasIndex("RealtorId");
 
-                    b.HasDiscriminator().HasValue("House");
+                    b.ToTable("SalesObjects");
                 });
 
             modelBuilder.Entity("FribergHomes.API.Models.Realtor", b =>
@@ -239,28 +232,19 @@ namespace FribergHomes.API.Migrations
                 {
                     b.HasOne("FribergHomes.API.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("FribergHomes.API.Models.County", "County")
                         .WithMany()
-                        .HasForeignKey("CountyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CountyId");
+
+                    b.HasOne("FribergHomes.API.Models.Realtor", "Realtor")
+                        .WithMany("SalesObjects")
+                        .HasForeignKey("RealtorId");
 
                     b.Navigation("Category");
 
                     b.Navigation("County");
-                });
-
-            modelBuilder.Entity("FribergHomes.API.Models.House", b =>
-                {
-                    b.HasOne("FribergHomes.API.Models.Realtor", "Realtor")
-                        .WithMany("Houses")
-                        .HasForeignKey("RealtorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Realtor");
                 });
@@ -272,7 +256,7 @@ namespace FribergHomes.API.Migrations
 
             modelBuilder.Entity("FribergHomes.API.Models.Realtor", b =>
                 {
-                    b.Navigation("Houses");
+                    b.Navigation("SalesObjects");
                 });
 #pragma warning restore 612, 618
         }

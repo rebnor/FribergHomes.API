@@ -5,6 +5,8 @@ namespace FribergHomes.API.Models
 {
      /* Class for SalesObject which forms the base class for all real estate objects.
       * Author: Tobias 2024-04-15
+      * Revised: Tobias 2024-04-17 - Flattened model structure.
+      * Integrated all derived class properties into SalesObject. Added Display-names and updated required attributes.
       */
 
     public class SalesObject
@@ -27,20 +29,39 @@ namespace FribergHomes.API.Models
         public string Adress { get; set; } = string.Empty;
 
         [Required]
+        [DisplayName("Rum")]
+        public int Rooms { get; set; }
+
+        [Required]
         [DisplayName("Boarea")]
         public double LivingArea { get; set; }
 
-        [Required]
         [DisplayName("Biarea")]
         public double AncillaryArea { get; set; }
 
-        // Only gets set once (when created).
+        [DisplayName("Tomtarea")]
+        public double? PlotArea { get; set; }
+
+        [DisplayName("Driftkostnad")]
+        public double? YearlyCost { get; set; }
+
+        [DisplayName("Månadsavgift")]
+        public double? MonthlyFee { get; set; }
+
+        [DisplayName("Våning")]
+        public int? Level { get; set; }
+
+        [DisplayName("Hiss")]
+        public bool? Lift { get; set; }
+
+        // Only gets set once when object is created.
         [Required]
         public int ListingPrice { get; init; }
 
 
         private int _currentPrice;
 
+        [DisplayName("Pris")]
         public int CurrentPrice
         { 
             get => _currentPrice;
@@ -56,27 +77,27 @@ namespace FribergHomes.API.Models
                     _currentPrice = ListingPrice;
                 }
             }
-        }  
+        }
 
+        [Required]
+        [DisplayName("Objektbeskrivning")]
         public string ObjectDescription { get; set; } = string.Empty;
 
-        [Required]
-        public int Rooms { get; set; }
-
-        [Required]
+        [DisplayName("Byggnadsår")]
         public int BuildYear { get; set; }
 
         public List<string> ImageLinks { get; set; } = [];
 
+        [DisplayName("Visningsdatum")]
         public List<DateTime> ViewingDates { get; set; } = [];
 
-        [Required]
+        [DisplayName("Mäklare")]
         public Realtor? Realtor { get; set; }
 
-        [Required]
+        [DisplayName("Kommun")]
         public County? County { get; set; }
 
-        [Required]
+        [DisplayName("Bostadskategori")]
         public Category? Category { get; set; }
 
     }
