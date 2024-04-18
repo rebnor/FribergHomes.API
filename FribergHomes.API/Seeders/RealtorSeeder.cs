@@ -7,24 +7,15 @@ using Microsoft.EntityFrameworkCore;
 namespace FribergHomes.API.Seeders
 {
     public class RealtorSeeder
-    {
-          //private readonly IAgency _agencyRepository;
+    {      
+        // Author: Sanna 2024-04-17  
 
-        // Author: Sanna 2024-04-17 
-
-        //public RealtorSeeder(IAgency agencyRepository)
-        //{
-        //    //_appDbCtx = appDbCtx;
-        //    _agencyRepository = agencyRepository;
-        //}
-
-        public async Task SeedRealtors(ApplicationDBContext _appDbCtx)
+        public async Task SeedRealtors(ApplicationDBContext appDbCtx)
         {
-            if (!_appDbCtx.Realtors.Any())
+            if (!appDbCtx.Realtors.Any())
             {
-                var agencies = await _appDbCtx.Agencies.OrderBy(a => a.Id).ToListAsync();
-
-                await _appDbCtx.AddRangeAsync(
+                var agencies = await appDbCtx.Agencies.OrderBy(a => a.Id).ToListAsync();
+                await appDbCtx.AddRangeAsync(
                   new Realtor
                   {
                       FirstName = "Sanna",
@@ -77,8 +68,7 @@ namespace FribergHomes.API.Seeders
                        SalesObjects = null
                    }
                   );
-                await _appDbCtx.SaveChangesAsync();
-
+                await appDbCtx.SaveChangesAsync();
             }
         }
     }
