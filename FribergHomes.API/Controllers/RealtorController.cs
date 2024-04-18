@@ -7,14 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 namespace FribergHomes.API.Controllers
 {
 
-     /* API controller to handle HTTP requests and responses related to Realtor objects.
-      * Author: Tobias 2024-04-16
-      */
+    /* API controller to handle HTTP requests and responses related to Realtor objects.
+     * Author: Tobias 2024-04-16
+     * Revised: Tobias 2024-04-18 Implemented exception handling and
+     * generalFaultMessage for status code 500 responses.
+     */
 
     [Route("api/[controller]")]
     [ApiController]
     public class RealtorController : ControllerBase
     {
+        private readonly string _generalFaultMessage = "Ett oväntat fel uppstod vid hanteringen av förfrågan!";
         private readonly IRealtor _realtorRepository;
 
         public RealtorController(IRealtor realtorRepository)
@@ -27,8 +30,16 @@ namespace FribergHomes.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Realtor>>> GetRealtors()
         {
-            var realtors = await _realtorRepository.GetAllRealtorsAsync();
-            return Ok(realtors);
+            try
+            {
+                var realtors = await _realtorRepository.GetAllRealtorsAsync();
+                return Ok(realtors);
+            }
+            
+            catch (Exception)
+            {
+                return StatusCode(500, _generalFaultMessage);
+            }
         }
 
         // GET method that returns a Realtor object stored in the DB based on Id.
@@ -36,12 +47,20 @@ namespace FribergHomes.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Realtor>> GetRealtor(int id)
         {
-            var realtor = await _realtorRepository.GetRealtorByIdAsync(id);
-            if(realtor == null)
+            try
             {
-                return NotFound();
+                var realtor = await _realtorRepository.GetRealtorByIdAsync(id);
+                if (realtor == null)
+                {
+                    return NotFound();
+                }
+                return Ok(realtor);
             }
-            return Ok(realtor);
+            catch (Exception)
+            {
+                return StatusCode(500, _generalFaultMessage);
+            }
+
         }
 
         // POST method that creates and stores a Realtor object in the DB.
@@ -49,8 +68,15 @@ namespace FribergHomes.API.Controllers
         [HttpPost]
         public async Task<ActionResult> PostRealtor(Realtor realtor)
         {
-            await _realtorRepository.AddRealtorAsync(realtor);
-            return CreatedAtAction(nameof(GetRealtor), new { id = realtor.Id }, realtor);
+            try
+            {
+                await _realtorRepository.AddRealtorAsync(realtor);
+                return CreatedAtAction(nameof(GetRealtor), new { id = realtor.Id }, realtor);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, _generalFaultMessage);
+            }
         }
 
         // PUT method that updates an existing Realtor object in the DB based on Id and Realtor object.
@@ -62,13 +88,21 @@ namespace FribergHomes.API.Controllers
             {
                 return BadRequest();
             }
-            var existingRealtor = await _realtorRepository.GetRealtorByIdAsync(id);
-            if (existingRealtor == null)
+            try
             {
-                return NotFound();
+                var existingRealtor = await _realtorRepository.GetRealtorByIdAsync(id);
+                if (existingRealtor == null)
+                {
+                    return NotFound();
+                }
+                await _realtorRepository.UpdateRealtorAsync(realtor);
+                return Ok(realtor);
             }
-            await _realtorRepository.UpdateRealtorAsync(realtor);
-            return Ok(realtor);
+            
+            catch (Exception)
+            {
+                return StatusCode(500, _generalFaultMessage);
+            }
         }
 
         // DELETE method that finds and deletes an existing Realtor object based on Id.
@@ -76,13 +110,20 @@ namespace FribergHomes.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteRealtor(int id)
         {
-            var realtor = await _realtorRepository.GetRealtorByIdAsync(id);
-            if (realtor == null)
+            try
             {
-                return NotFound();
+                var realtor = await _realtorRepository.GetRealtorByIdAsync(id);
+                if (realtor == null)
+                {
+                    return NotFound();
+                }
+                await _realtorRepository.DeleteRealtorAsync(realtor);
+                return Ok();
             }
-            await _realtorRepository.DeleteRealtorAsync(realtor);
-            return Ok();
+            catch (Exception)
+            {
+                return StatusCode(500, _generalFaultMessage);
+            }
         }
     }
 }
