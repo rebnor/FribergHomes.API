@@ -76,9 +76,14 @@ namespace FribergHomes.API
                 var seedAgencies = new AgencySeeder();
                 await seedAgencies.SeedAgencies(dbContext);
 
-                ////RealtorSeeder added by Sanna 2024-04-18
+                //RealtorSeeder added by Sanna 2024-04-18
                 var seedRealtors = new RealtorSeeder();
                 await seedRealtors.SeedRealtors(dbContext);
+
+                //CategorySeeder added by Sanna 2024-04-18
+                var seedCategories = new CategorySeeder();
+                await seedCategories.SeedCategories(dbContext);
+
             }
 
           
