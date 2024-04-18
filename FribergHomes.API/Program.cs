@@ -8,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace FribergHomes.API
 {
     public class Program
-    {
+    {      
+
         //public static void Main(string[] args)
         public static async Task Main(string[] args)
         {
@@ -75,15 +76,12 @@ namespace FribergHomes.API
                 var seedAgencies = new AgencySeeder();
                 await seedAgencies.SeedAgencies(dbContext);
 
-                //RealtorSeeder added by Sanna 
-                //var seedRealtors = new RealtorSeeder();
-                //await seedRealtors.SeedRealtors(dbContext);
-                
+                ////RealtorSeeder added by Sanna 2024-04-18
+                var seedRealtors = new RealtorSeeder();
+                await seedRealtors.SeedRealtors(dbContext);
             }
 
-
-
-
+          
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
