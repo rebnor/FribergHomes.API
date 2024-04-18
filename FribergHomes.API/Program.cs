@@ -8,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace FribergHomes.API
 {
     public class Program
-    {
+    {      
+
         //public static void Main(string[] args)
         public static async Task Main(string[] args)
         {
@@ -42,7 +43,7 @@ namespace FribergHomes.API
             //        context.Database.EnsureCreated();
             //    }
             //});
-            
+
             builder.Services.AddDbContext<ApplicationDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("FribergHomesDB") ?? throw new InvalidOperationException("Connection string 'FribergHomesDB' not found.")));
 
@@ -61,7 +62,7 @@ namespace FribergHomes.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            
+
 
 
             var app = builder.Build();
@@ -74,11 +75,13 @@ namespace FribergHomes.API
 
                 var seedAgencies = new AgencySeeder();
                 await seedAgencies.SeedAgencies(dbContext);
+
+                ////RealtorSeeder added by Sanna 2024-04-18
+                var seedRealtors = new RealtorSeeder();
+                await seedRealtors.SeedRealtors(dbContext);
             }
 
-
-
-
+          
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
