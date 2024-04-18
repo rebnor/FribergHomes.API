@@ -8,12 +8,14 @@ namespace FribergHomes.API.Controllers
 
      /* API controller to handle HTTP requests and responses related to County objects.
       * Author: Tobias 2024-04-17
+      * Revised: Tobias 2024-04-18 Implemented generalFaultMessage for status code 500 responses.
       */
 
     [Route("api/[controller]")]
     [ApiController]
     public class CountyController : ControllerBase
     {
+        private readonly string _generalFaultMessage = "Ett oväntat fel uppstod vid hanteringen av förfrågan!";
         private readonly ICounty _countyRepository;
 
         public CountyController(ICounty countyRepository)
@@ -34,7 +36,7 @@ namespace FribergHomes.API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(500, "Ett oväntat fel uppstod vid hanteringen av förfrågan!");
+                return StatusCode(500, _generalFaultMessage);
             }
         }
 
@@ -54,7 +56,7 @@ namespace FribergHomes.API.Controllers
             }
             catch(Exception)
             {
-                return StatusCode(500, "Ett oväntat fel uppstod vid hanteringen av förfrågan!");
+                return StatusCode(500, _generalFaultMessage);
             }
         }
 
@@ -74,7 +76,7 @@ namespace FribergHomes.API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(500, "Ett oväntat fel uppstod vid hanteringen av förfrågan!");
+                return StatusCode(500, _generalFaultMessage);
             }
             
         }
@@ -91,7 +93,7 @@ namespace FribergHomes.API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(500, "Ett oväntat fel uppstod vid hanteringen av förfrågan!");
+                return StatusCode(500, _generalFaultMessage);
             }
             
         }
@@ -117,7 +119,7 @@ namespace FribergHomes.API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(500, "Ett oväntat fel uppstod vid hanteringen av förfrågan!");
+                return StatusCode(500, _generalFaultMessage);
             }
 
 
@@ -140,7 +142,7 @@ namespace FribergHomes.API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(500, "Ett oväntat fel uppstod vid hanteringen av förfrågan!");
+                return StatusCode(500, _generalFaultMessage);
             }
         }
 
