@@ -72,7 +72,7 @@ namespace FribergHomes.API
                 var seedAgencies = new AgencySeeder();
                 await seedAgencies.SeedAgencies(dbContext);
 
-                // Seed counties /Tobias 2024-04-18
+                // County seeder /Tobias 2024-04-18
                 var config = services.GetRequiredService<IConfiguration>();
                 var countySeeder = new CountySeeder(dbContext, config);
                 await countySeeder.SeedCounties();
@@ -84,6 +84,11 @@ namespace FribergHomes.API
                 //CategorySeeder added by Sanna 2024-04-18
                 var seedCategories = new CategorySeeder();
                 await seedCategories.SeedCategories(dbContext);
+
+                // SalesObject seeder /Tobias 2024-04-19
+                //SeedSalesObject parameters: int objectAmount (amount of objects to generate and store to DB).
+                var salesObjectSeeder = new SalesObjectSeeder(dbContext);
+                await salesObjectSeeder.SeedSalesObjects(100);
             }
 
           
