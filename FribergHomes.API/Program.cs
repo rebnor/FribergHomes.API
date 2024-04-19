@@ -62,12 +62,13 @@ namespace FribergHomes.API
           
             var app = builder.Build();
 
-            // Seed Agencies / Reb 2024-04-17
+            // Seeders  / Reb 2024-04-17
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var dbContext = services.GetRequiredService<ApplicationDBContext>();
 
+                // Seed agenies /Rebecka 2024-04-17
                 var seedAgencies = new AgencySeeder();
                 await seedAgencies.SeedAgencies(dbContext);
 

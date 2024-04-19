@@ -1,10 +1,16 @@
 ﻿using FribergHomes.API.Data;
 using FribergHomes.API.Models;
+using System.Collections.Generic;
 
 namespace FribergHomes.API.Seeders
 {
-    public class AgencySeeder 
+    public class AgencySeeder
     {
+        /* Seeder for Agency
+         * Checks if the database table "Agenies" has any posts,
+         * if not: it makes 5 different Agencies and saves into database.
+        * @ Author: Rebecka 2024-04-17        
+        */
         public async Task SeedAgencies(ApplicationDBContext appDBctx)
         {
             if (!appDBctx.Agencies.Any())
