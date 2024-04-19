@@ -8,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace FribergHomes.API
 {
     public class Program
-    {
+    {      
+
         //public static void Main(string[] args)
         public static async Task Main(string[] args)
         {
@@ -42,7 +43,7 @@ namespace FribergHomes.API
             //        context.Database.EnsureCreated();
             //    }
             //});
-            
+
             builder.Services.AddDbContext<ApplicationDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("FribergHomesDB") ?? throw new InvalidOperationException("Connection string 'FribergHomesDB' not found.")));
 
@@ -57,7 +58,8 @@ namespace FribergHomes.API
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            
+
+          
             var app = builder.Build();
 
             // Seed Agencies / Reb 2024-04-17
@@ -73,11 +75,17 @@ namespace FribergHomes.API
                 var config = services.GetRequiredService<IConfiguration>();
                 var countySeeder = new CountySeeder(dbContext, config);
                 await countySeeder.SeedCounties();
+
+                //RealtorSeeder added by Sanna 2024-04-18
+                var seedRealtors = new RealtorSeeder();
+                await seedRealtors.SeedRealtors(dbContext);
+
+                //CategorySeeder added by Sanna 2024-04-18
+                var seedCategories = new CategorySeeder();
+                await seedCategories.SeedCategories(dbContext);
             }
 
-
-
-
+          
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
