@@ -55,16 +55,11 @@ namespace FribergHomes.API
             builder.Services.AddTransient<IRealtor, RealtorRepository>(); // Tobias
             builder.Services.AddTransient<ICategory, CategoryRepository>(); // Reb
 
-
-
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-
-
+          
             var app = builder.Build();
 
             // Seed Agencies / Reb 2024-04-17
@@ -76,6 +71,11 @@ namespace FribergHomes.API
                 var seedAgencies = new AgencySeeder();
                 await seedAgencies.SeedAgencies(dbContext);
 
+                // Seed counties /Tobias 2024-04-18
+                var config = services.GetRequiredService<IConfiguration>();
+                var countySeeder = new CountySeeder(dbContext, config);
+                await countySeeder.SeedCounties();
+
                 //RealtorSeeder added by Sanna 2024-04-18
                 var seedRealtors = new RealtorSeeder();
                 await seedRealtors.SeedRealtors(dbContext);
@@ -83,7 +83,6 @@ namespace FribergHomes.API
                 //CategorySeeder added by Sanna 2024-04-18
                 var seedCategories = new CategorySeeder();
                 await seedCategories.SeedCategories(dbContext);
-
             }
 
           
