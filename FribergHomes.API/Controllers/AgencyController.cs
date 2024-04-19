@@ -33,11 +33,10 @@ namespace FribergHomes.API.Controllers
         {
             try
             {
-
                 var agencies = await _agencyRepository.GetAllAgenciesAsync();
                 if (agencies == null)
                 {
-                    return NotFound("Inga kommuner hittades.");
+                    return NotFound("Det finns inga mäklarbyråer att visa.");
                 }
                 return Ok(agencies);
             }
@@ -52,11 +51,11 @@ namespace FribergHomes.API.Controllers
         public async Task<ActionResult<Agency>> GetAgency(int id)
         {
             try
-            {
+            {              
                 var agency = await _agencyRepository.GetAgencyByIdAsync(id);
                 if (agency == null)
                 {
-                    return NotFound($"Tyvärr existerar det ingen mäklarfirma med id {id}. :(");
+                    return NotFound($"Det existerar ingen mäklarbyrå med ID {id}.");
                 }
                 return Ok(agency);
             }
@@ -76,12 +75,12 @@ namespace FribergHomes.API.Controllers
             {
                 if (id != agency.Id)
                 {
-                    return BadRequest($"Det finns ingen mäklarfirma som matchar med ID {id}");
+                    return BadRequest($"Ingen mäklarbyrå har ID {id}.");
                 }
                 var updatedAgency = await _agencyRepository.UpdateAgencyAsync(agency);
                 if (updatedAgency == null)
                 {
-                    return NotFound($"{agency.Name} verkar inte existera.");
+                    return NotFound($"Mäklarbyrån du försökte uppdatera existerar inte.");
                 }
                 return Ok(updatedAgency);
             }
@@ -112,11 +111,11 @@ namespace FribergHomes.API.Controllers
         public async Task<IActionResult> DeleteAgency(int id)
         {
             try
-            {
+            {               
                 var realtor = await _agencyRepository.GetAgencyByIdAsync(id);
                 if (realtor == null)
                 {
-                    return NotFound($"Det existerar ingen mäklarfirma med id {id}");
+                    return NotFound($"Mäklarbyrån du försökte radera existerar inte.");
                 }
                 await _agencyRepository.DeleteAgencyAsync(id);
                 return NoContent();
