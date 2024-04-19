@@ -12,7 +12,8 @@ using FribergHomes.API.Data.Interfaces;
 namespace FribergHomes.API.Controllers
 {
     /* Controller for SalesObject
-    * @ Author: Rebecka 2024-04-17        
+    * @ Author: Rebecka 2024-04-17  
+    * @ Updates: changed from ienumerable to list in GetSalesObjects() / Rebecka 2024-04-19
     */
     [Route("api/[controller]")]
     [ApiController]
@@ -28,7 +29,7 @@ namespace FribergHomes.API.Controllers
         // GET: api/SalesObjects
         /* Gets All the SalesObjects from the Database */
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SalesObject>>> GetSalesObjects()
+        public async Task<ActionResult<List<SalesObject>>> GetSalesObjects()
         {
             try
             {
