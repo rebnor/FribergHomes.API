@@ -13,12 +13,14 @@ namespace FribergHomes.API.Controllers
 {
 
     //Author: Sanna 2024-04-16
+    //Added error handling 2024-04-19
 
     [Route("api/[controller]")]
     [ApiController]
     public class AgencyController : ControllerBase
     {
         private readonly IAgency _agencyRepository;
+        private readonly string _generalFaultMessage = "Ett oväntat fel uppstod vid hanteringen av förfrågan!";
 
         public AgencyController(IAgency agencyRepository)
         {
@@ -27,40 +29,65 @@ namespace FribergHomes.API.Controllers
 
         // GET: api/Agency
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Agency>>> GetAgencies()
+        public async Task<ActionResult<List<Agency>>> GetAgencies()
         {
-            return await _agencyRepository.GetAllAgenciesAsync();
+            try
+            {
+                var agencies = await _agencyRepository.GetAllAgenciesAsync();
+                if (agencies == null)
+                {
+                    return NotFound("Det finns inga mäklarbyråer att visa.");
+                }
+                return Ok(agencies);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, _generalFaultMessage);
+            }
         }
 
         // GET: api/Agency/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Agency>> GetAgency(int id)
         {
-            var agency = await _agencyRepository.GetAgencyByIdAsync(id);
-            if (agency == null)
-            {
-                return NotFound();
+            try
+            {              
+                var agency = await _agencyRepository.GetAgencyByIdAsync(id);
+                if (agency == null)
+                {
+                    return NotFound($"Det existerar ingen mäklarbyrå med ID {id}.");
+                }
+                return Ok(agency);
             }
-            return agency;
+            catch (Exception)
+            {
+                return StatusCode(500, _generalFaultMessage);
+            }
         }
 
         // PUT: api/Agency/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        // @ Created the varieable updatedAgency to make sure the updated object that returns from the repo has a value
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754       
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAgency(int id, Agency agency)
         {
-            if (id != agency.Id)
+            try
             {
-                return BadRequest();
+                if (id != agency.Id)
+                {
+                    return BadRequest($"Ingen mäklarbyrå har ID {id}.");
+                }
+                var updatedAgency = await _agencyRepository.UpdateAgencyAsync(agency);
+                if (updatedAgency == null)
+                {
+                    return NotFound($"Mäklarbyrån du försökte uppdatera existerar inte.");
+                }
+                return Ok(updatedAgency);
             }
-            var updatedAgency = await _agencyRepository.UpdateAgencyAsync(agency);
-            if (updatedAgency == null)
+            catch (Exception)
             {
-                return NotFound();
+                return StatusCode(500, _generalFaultMessage);
             }
-            return Ok(updatedAgency);
         }
 
         // POST: api/Agency
@@ -68,23 +95,35 @@ namespace FribergHomes.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Agency>> PostAgency(Agency agency)
         {
-            await _agencyRepository.AddAgencyAsync(agency);
-            return CreatedAtAction("GetAgency", new { id = agency.Id }, agency);
+            try
+            {
+                await _agencyRepository.AddAgencyAsync(agency);
+                return CreatedAtAction("GetAgency", new { id = agency.Id }, agency);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, _generalFaultMessage);
+            }
         }
 
         // DELETE: api/Agency/5             
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAgency(int id)
         {
-            var realtor = await _agencyRepository.GetAgencyByIdAsync(id);
-            if (realtor == null)
-            {
-                return NotFound();
+            try
+            {               
+                var realtor = await _agencyRepository.GetAgencyByIdAsync(id);
+                if (realtor == null)
+                {
+                    return NotFound($"Mäklarbyrån du försökte radera existerar inte.");
+                }
+                await _agencyRepository.DeleteAgencyAsync(id);
+                return NoContent();
             }
-            await _agencyRepository.DeleteAgencyAsync(id);
-
-            //the NoContent return lets the client know that the agency has been deleted
-            return NoContent();
+            catch (Exception)
+            {
+                return StatusCode(500, _generalFaultMessage);
+            }
         }
 
     }
