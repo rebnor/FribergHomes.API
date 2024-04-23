@@ -1,57 +1,57 @@
 ﻿@page "/weather"
-@inject HttpClient Http
+@using System.Text.Json
+@inject HttpClient HttpClient
 
 <PageTitle>Weather</PageTitle>
 
 <h1>Weather</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<p>Hämtning från vårt WebAPI</p>
 
-@if (forecasts == null)
+@if (categories == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Väntar på kategorier...</em></p>
 }
 else
 {
-    <table class="table">
+    <table>
         <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
+            <tr>Id</tr>
+            <tr>Name</tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var category in categories)
             {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
+                <tr>@category.Id</tr>
+                <tr>@category.Name</tr>
             }
         </tbody>
+
     </table>
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private List<Category>? categories;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        try
+        {
+            categories = await HttpClient.GetFromJsonAsync<List<Category>>("api/Category");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+
     }
 
-    public class WeatherForecast
+
+    public class Category
     {
-        public DateOnly Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string IconUrl { get; set; }
     }
 }
