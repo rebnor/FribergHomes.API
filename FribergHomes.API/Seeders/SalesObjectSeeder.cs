@@ -171,7 +171,7 @@ namespace FribergHomes.API.Seeders
                             salesObjects[i].Level = Random.Shared.Next(0, 5);
                             salesObjects[i].Lift = Random.Shared.Next(2) == 0;
                             salesObjects[i].ObjectDescription = descriptionApartment[Random.Shared.Next(0, descriptionApartment.Length)];
-                            salesObjects[i].ImageLinks = imgApartment.ToList();
+                            salesObjects[i].ImageUrls = imgApartment.ToList();
                             break;
 
                         case "House":
@@ -182,7 +182,7 @@ namespace FribergHomes.API.Seeders
                             salesObjects[i].PlotArea = Random.Shared.Next(500, 5001);
                             salesObjects[i].YearlyCost = Random.Shared.Next(10000, 70001);
                             salesObjects[i].ObjectDescription = descriptionHouse[Random.Shared.Next(0, descriptionHouse.Length)];
-                            salesObjects[i].ImageLinks = imgHouse.ToList();
+                            salesObjects[i].ImageUrls = imgHouse.ToList();
                             break;
 
                         case "TownHouse":
@@ -193,7 +193,7 @@ namespace FribergHomes.API.Seeders
                             salesObjects[i].AncillaryArea = Random.Shared.Next(31);
                             salesObjects[i].PlotArea = Random.Shared.Next(250, 501);
                             salesObjects[i].ObjectDescription = descriptionTownhouse[Random.Shared.Next(0, descriptionTownhouse.Length)];
-                            salesObjects[i].ImageLinks = imgHouse.ToList();
+                            salesObjects[i].ImageUrls = imgHouse.ToList();
                             break;
 
                         case "VacationHome":
@@ -203,7 +203,7 @@ namespace FribergHomes.API.Seeders
                             salesObjects[i].AncillaryArea = Random.Shared.Next(51);
                             salesObjects[i].PlotArea = Random.Shared.Next(300, 5001);
                             salesObjects[i].ObjectDescription = descriptionVacationhome[Random.Shared.Next(0, descriptionVacationhome.Length)];
-                            salesObjects[i].ImageLinks = imgHouse.ToList();
+                            salesObjects[i].ImageUrls = imgHouse.ToList();
                             break;
 
                         default:
