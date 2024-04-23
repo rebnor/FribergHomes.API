@@ -8,6 +8,8 @@ namespace FribergHomes.API.Data.Repositories
      * All in Async.
      * @ Author: Rebecka 2024-04-15
      * @ Update: I Included Realtor and Agency in GetSalesObjectByIdAsync, i think its needed  // Rebecka 2023-04-23
+     * @ Update: Added inclusion of Realtor, Agency, County and Category when querying DB for SalesObject(s).
+     *           Changed GetSalesObjectsByCountyAsync parameter to int countyId (County county) //Tobias 2024-04-23
      */
     public class SalesObjectRepository : ISalesObject
     {
@@ -33,19 +35,32 @@ namespace FribergHomes.API.Data.Repositories
 
         public async Task<SalesObject> GetSalesObjectByIdAsync(int? id)
         {
-            var salesObject = await _appDBctx.SalesObjects.Include(s=>s.Realtor).ThenInclude(r=>r.Agency).FirstOrDefaultAsync(s => s.Id == id);
+            var salesObject = await _appDBctx.SalesObjects
+                .Include(s=>s.Realtor).ThenInclude(r=>r.Agency)
+                .Include(x => x.County)    //\\
+                .Include(x => x.Category) // Tobias 2024-04-23
+                .FirstOrDefaultAsync(s => s.Id == id);
             return salesObject;
         }
 
         public async Task<List<SalesObject>> GetAllSalesObjectsAsync()
         {
-            var salesObjects = await _appDBctx.SalesObjects.ToListAsync();
+            var salesObjects = await _appDBctx.SalesObjects
+                .Include(x => x.Realtor).ThenInclude(y => y.Agency) //\\
+                .Include(x => x.County)                            //  \\
+                .Include(x => x.Category)                         // Tobias 2024-04-23
+                .ToListAsync();
             return salesObjects;
         }
 
-        public async Task<List<SalesObject>> GetSalesObjectsByCountyAsync(County county)
+        public async Task<List<SalesObject>> GetSalesObjectsByCountyAsync(int id)
         {
-            var salesObjects = await _appDBctx.SalesObjects.Where(s => s.County.Id == county.Id).ToListAsync();
+            var salesObjects = await _appDBctx.SalesObjects
+                .Where(s => s.County.Id == id)
+                .Include(x => x.Realtor).ThenInclude(y => y.Agency) //\\
+                .Include(x => x.County)                            //  \\
+                .Include(x => x.Category)                         // Tobias 2024-04-23
+                .ToListAsync();
             return salesObjects;
         }
 
