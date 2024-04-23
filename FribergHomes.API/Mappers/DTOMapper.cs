@@ -29,5 +29,24 @@ namespace FribergHomes.API.Mappers
             return realtorDto;
         }
 
+        //DTO mapper for Agency
+        //Author: Sanna 
+        public static AgencyDTO MapAgencyToDto(Agency agency) 
+        {
+            if (agency == null)
+            {
+                return null; 
+            }
+
+            AgencyDTO agencyDTO = new AgencyDTO
+            {
+                Id = agency.Id,
+                Name = agency.Name,
+                Presentation = agency.Presentation,
+                Logo = agency.Logo,
+            };
+            return agencyDTO;
+        }
+
     }
 }
