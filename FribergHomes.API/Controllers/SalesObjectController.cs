@@ -8,12 +8,16 @@ using Microsoft.EntityFrameworkCore;
 using FribergHomes.API.Data;
 using FribergHomes.API.Models;
 using FribergHomes.API.Data.Interfaces;
+using FribergHomes.API.Mappers;
+using FribergHomes.API.DTOs;
 
 namespace FribergHomes.API.Controllers
 {
     /* Controller for SalesObject
     * @ Author: Rebecka 2024-04-17  
     * @ Updates: changed from ienumerable to list in GetSalesObjects() / Rebecka 2024-04-19
+    * @ Updates: Added conversion to SalesObjectDTO and List<SalesObjectDTO> and updated GET method return types to SalesObjectDTO.
+    *            Added GET-method to retrieve all SalesObjects by County Id / Tobias 2024-04-23
     */
     [Route("api/[controller]")]
     [ApiController]
@@ -29,7 +33,7 @@ namespace FribergHomes.API.Controllers
         // GET: api/SalesObjects
         /* Gets All the SalesObjects from the Database */
         [HttpGet]
-        public async Task<ActionResult<List<SalesObject>>> GetSalesObjects()
+        public async Task<ActionResult<List<SalesObjectDTO>>> GetSalesObjects()
         {
             try
             {
@@ -38,7 +42,8 @@ namespace FribergHomes.API.Controllers
                 {
                     return NoContent();
                 }
-                return Ok(salesObjects);
+                var salesObjectDTOs = DTOMapper.ToListSalesObjectDTO(salesObjects); // Tobias
+                return Ok(salesObjectDTOs);
             }
             catch (Exception ex)
             {
@@ -49,7 +54,7 @@ namespace FribergHomes.API.Controllers
         // GET: api/SalesObjects/{id}
         /* Gets One SalesObject from Database, with int ID */
         [HttpGet("{id}")]
-        public async Task<ActionResult<SalesObject>> GetSalesObject(int id)
+        public async Task<ActionResult<SalesObjectDTO>> GetSalesObject(int id)
         {
             try
             {
@@ -58,11 +63,33 @@ namespace FribergHomes.API.Controllers
                 {
                     return NotFound();
                 }
-                return Ok(salesObject);
+                var salesObjectDTO = DTOMapper.ToSalesObjectDTO(salesObject);
+                return Ok(salesObjectDTO);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Något gick fel vid hämtning av Försäljningsobjekt med id {id}! Felmeddelande: {ex.Message}");
+            }
+        }
+
+        // Gets all GetSalesObjects by county id from database. // Tobias 2024-04-23
+        // GET: api/SalesObjects/county/{id}
+        [HttpGet("county/{id}")]
+        public async Task<ActionResult<List<SalesObjectDTO>>> GetSalesObjects(int id)
+        {
+            try
+            {
+                var salesObjects = await _salesRepo.GetSalesObjectsByCountyAsync(id);
+                if (salesObjects == null)
+                {
+                    return NoContent();
+                }
+                var salesObjectDTOs = DTOMapper.ToListSalesObjectDTO(salesObjects);
+                return Ok(salesObjectDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel vid hämtning av försäljningsobjekt! Felmeddelande: {ex.Message}");
             }
         }
 
