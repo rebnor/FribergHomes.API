@@ -29,6 +29,7 @@ namespace FribergHomes.API.Mappers
             return realtorDto;
         }
 
+
         // Mapping function for SalesObject -> SalesObjectDTO    /Tobias 2024-04-23
         /// <summary>
         /// Creates a new SalesObjectDTO based on an existing SalesObject instance.
@@ -117,5 +118,26 @@ namespace FribergHomes.API.Mappers
 
             return salesObjectDTOs;
         }
+
+        //DTO mapper for Agency
+        //Author: Sanna 
+        public static AgencyDTO MapAgencyToDto(Agency agency) 
+        {
+            if (agency == null)
+            {
+                return null; 
+            }
+
+            AgencyDTO agencyDTO = new AgencyDTO
+            {
+                Id = agency.Id,
+                Name = agency.Name,
+                Presentation = agency.Presentation,
+                Logo = agency.Logo,
+            };
+            return agencyDTO;
+        }
+
+
     }
 }
