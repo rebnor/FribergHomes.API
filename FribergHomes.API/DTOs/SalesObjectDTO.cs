@@ -66,7 +66,7 @@ namespace FribergHomes.API.DTOs
         [MinLength(1800, ErrorMessage = "Byggnadsår får ej vara tidigare än 1800")]
         public int BuildYear { get; set; }
 
-        public List<string> ImageUrls { get; set; } = [];
+        public List<string> ImageLinks { get; set; } = [];
 
         [DisplayName("Visningsdatum")]
         public List<DateTime> ViewingDates { get; set; } = [];
