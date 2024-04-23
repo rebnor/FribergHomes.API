@@ -4,6 +4,7 @@ using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.Data.Repositories;
 using FribergHomes.API.Seeders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 
 namespace FribergHomes.API
 {
@@ -98,6 +99,14 @@ namespace FribergHomes.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            // Configured CORS policy  // Tobias 2024-04-23
+            app.UseCors(policy =>
+            {
+                policy.WithOrigins("https://localhost:7196", "http://localhost:5083")
+                .AllowAnyHeader()
+                .WithHeaders(HeaderNames.ContentType);
+            });
 
             app.UseHttpsRedirection();
 
