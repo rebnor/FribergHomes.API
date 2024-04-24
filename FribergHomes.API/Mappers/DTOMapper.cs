@@ -146,7 +146,7 @@ namespace FribergHomes.API.Mappers
             return salesObjectDTOs;
         }
 
-        //DTO mapper for Agency
+        //DTO mapper for Agency and list of agencies 
         //Author: Sanna 2024-04-23
         public static AgencyDTO MapAgencyToDto(Agency agency)
         {
