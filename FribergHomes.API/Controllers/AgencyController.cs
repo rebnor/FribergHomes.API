@@ -8,12 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using FribergHomes.API.Data;
 using FribergHomes.API.Models;
 using FribergHomes.API.Data.Interfaces;
+using FribergHomes.API.Mappers;
 
 namespace FribergHomes.API.Controllers
 {
 
     //Author: Sanna 2024-04-16
-    //Added error handling 2024-04-19
+    //@ Updates: Added error handling / Sanna 2024-04-19 
+    //@ Updates: GET methods now returns DTOs instead of models / Sanna 2024-04-24
 
     [Route("api/[controller]")]
     [ApiController]
@@ -36,9 +38,10 @@ namespace FribergHomes.API.Controllers
                 var agencies = await _agencyRepository.GetAllAgenciesAsync();
                 if (agencies == null)
                 {
-                    return NotFound("Det finns inga mäklarbyråer att visa.");
+                    return NotFound("Det finns inga mäklarbyråer.");
                 }
-                return Ok(agencies);
+                var agencyDTOs = DTOMapper.MapAgenciesToDtos(agencies);
+                return Ok(agencyDTOs);
             }
             catch (Exception)
             {
@@ -51,13 +54,15 @@ namespace FribergHomes.API.Controllers
         public async Task<ActionResult<Agency>> GetAgency(int id)
         {
             try
-            {              
+            {
                 var agency = await _agencyRepository.GetAgencyByIdAsync(id);
                 if (agency == null)
                 {
                     return NotFound($"Det existerar ingen mäklarbyrå med ID {id}.");
                 }
-                return Ok(agency);
+                var agencyDto = DTOMapper.MapAgencyToDto(agency);
+                return Ok(agencyDto);
+               
             }
             catch (Exception)
             {
@@ -111,7 +116,7 @@ namespace FribergHomes.API.Controllers
         public async Task<IActionResult> DeleteAgency(int id)
         {
             try
-            {               
+            {
                 var realtor = await _agencyRepository.GetAgencyByIdAsync(id);
                 if (realtor == null)
                 {
