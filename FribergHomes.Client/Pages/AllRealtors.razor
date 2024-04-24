@@ -1,0 +1,50 @@
+﻿@using System.Text.Json
+@using FribergHomes.Client.Services
+@inject RealtorService realtorService
+
+<h3>Realtors</h3>
+
+@if (Realtors == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Namn</th>
+                <th>Bild</th>
+                <th>Email</th>
+                <th>Telefon</th>
+                <th>Byrå</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var realtor in Realtors)
+            {
+                <tr>
+                    <td>@realtor.Id</td>
+                    <td>@realtor.FullName</td>
+                    <td><img src="@realtor.Picture" width="100" /></td>
+                    <td>@realtor.Email</td>
+                    <td>@realtor.PhoneNumber</td>
+                    <td>@realtor.Agency</td>
+                    <td><img src="@realtor.AgencyLogo" width="100" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    private List<RealtorDTO> Realtors;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Realtors = await realtorService.GetAllRealtors();
+    }
+}
