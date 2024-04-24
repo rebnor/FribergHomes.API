@@ -53,5 +53,12 @@ namespace FribergHomes.API.Data.Repositories
             await _appDbCtx.SaveChangesAsync();
             return realtor;
         }
+
+        // Update: Added this because its needed in the ModelMapper / Reb 2024-04-24
+        public async Task<Agency> GetAgencyByNameAsync(string name) 
+        {
+            var agency = _appDbCtx.Agencies.FirstOrDefault(a=>a.Name.ToLower() == name.ToLower());
+            return agency;
+        }
     }
 }
