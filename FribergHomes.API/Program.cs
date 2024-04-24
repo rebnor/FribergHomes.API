@@ -100,7 +100,7 @@ namespace FribergHomes.API
                 app.UseSwaggerUI();
             }
 
-            // Configured CORS policy  // Tobias 2024-04-23
+            // Added and configured CORS middleware  // Tobias 2024-04-23
             app.UseCors(policy =>
             {
                 policy.WithOrigins("https://localhost:7196", "http://localhost:5083")
