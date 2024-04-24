@@ -1,7 +1,9 @@
 ﻿using FribergHomes.API.Data;
 using FribergHomes.API.Data.Interfaces;
+using FribergHomes.API.Mappers;
 using FribergHomes.API.Models;
 using Microsoft.AspNetCore.Mvc;
+using FribergHomes.API.DTOs;
 
 
 namespace FribergHomes.API.Controllers
@@ -11,6 +13,7 @@ namespace FribergHomes.API.Controllers
      * Author: Tobias 2024-04-16
      * Revised: Tobias 2024-04-18 Implemented exception handling and
      * generalFaultMessage for status code 500 responses.
+     * @ Update: Switched from Realtor-object to RealtorDTO-object // Reb 2024-04-24
      */
 
     [Route("api/[controller]")]
@@ -28,14 +31,18 @@ namespace FribergHomes.API.Controllers
         // GET method that returns a list of all Realtor objects stored in the DB.
         // GET: api/<RealtorController>
         [HttpGet]
-        public async Task<ActionResult<List<Realtor>>> GetRealtors()
+        public async Task<ActionResult<List<RealtorDTO>>> GetRealtors()
         {
             try
             {
                 var realtors = await _realtorRepository.GetAllRealtorsAsync();
-                return Ok(realtors);
+                if (realtors == null)
+                {
+                    return NotFound();
+                }
+                var realtorsDtos = DTOMapper.MapRealtorListToDto(realtors);
+                return Ok(realtorsDtos);
             }
-            
             catch (Exception)
             {
                 return StatusCode(500, _generalFaultMessage);
@@ -45,7 +52,7 @@ namespace FribergHomes.API.Controllers
         // GET method that returns a Realtor object stored in the DB based on Id.
         // GET api/<RealtorController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Realtor>> GetRealtor(int id)
+        public async Task<ActionResult<RealtorDTO>> GetRealtor(int id)
         {
             try
             {
@@ -54,7 +61,8 @@ namespace FribergHomes.API.Controllers
                 {
                     return NotFound();
                 }
-                return Ok(realtor);
+                var realtorDto = DTOMapper.MapRealtorToDto(realtor);
+                return Ok(realtorDto);
             }
             catch (Exception)
             {

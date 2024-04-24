@@ -28,6 +28,33 @@ namespace FribergHomes.API.Mappers
 
             return realtorDto;
         }
+        /* DTO-Mapper for Realtor List
+         * @ Author: Rebecka 2024-04-24        
+         */
+        public static List<RealtorDTO> MapRealtorListToDto(List<Realtor> realtors)
+        {
+            if (realtors == null)
+                return null;
+
+            List<RealtorDTO> realtorsDtos = new List<RealtorDTO>();
+
+            foreach (var realtor in realtors)
+            {
+                RealtorDTO realtorDto = new RealtorDTO
+                {
+                    Id = realtor.Id,
+                    FullName = $"{realtor.FirstName} {realtor.LastName}",
+                    Email = realtor.Email,
+                    PhoneNumber = realtor.PhoneNumber,
+                    Picture = realtor.Picture,
+                    Agency = realtor.Agency.Name,
+                    AgencyLogo = realtor.Agency.Logo,
+                    SalesObjects = ToListSalesObjectDTO(realtor.SalesObjects)
+                };
+                realtorsDtos.Add(realtorDto);
+            }
+            return realtorsDtos;
+        }
 
 
         // Mapping function for SalesObject -> SalesObjectDTO    /Tobias 2024-04-23
