@@ -5,6 +5,9 @@ namespace FribergHomes.Client
 {
     public class Program
     {
+        /* Configured HttpClient base adress // Tobias 2024-04-23 
+        */
+
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
