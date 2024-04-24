@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FribergHomes.API.DTOs
+namespace FribergHomes.Client.DTOs
 {
     /* DTO for Realtor
      * Instead of first&last name its fullname
