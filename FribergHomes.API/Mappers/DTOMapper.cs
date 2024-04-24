@@ -108,39 +108,43 @@ namespace FribergHomes.API.Mappers
         {
             List<SalesObjectDTO> salesObjectDTOs = new();
 
-            foreach (var salesObject in salesObjects)
+            if (salesObjects != null) // added reb 
             {
-                SalesObjectDTO salesObjectDTO = new()
-                {
-                    Id = salesObject.Id,
-                    CreationDate = salesObject.CreationDate,
-                    CreatorName = salesObject.CreatorName,
-                    Adress = salesObject.Adress,
-                    Rooms = salesObject.Rooms,
-                    LivingArea = salesObject.LivingArea,
-                    AncillaryArea = salesObject.AncillaryArea,
-                    PlotArea = salesObject.PlotArea,
-                    YearlyCost = salesObject.YearlyCost,
-                    MonthlyFee = salesObject.MonthlyFee,
-                    Level = salesObject.Level,
-                    Lift = salesObject.Lift,
-                    ListingPrice = salesObject.ListingPrice,
-                    CurrentPrice = salesObject.CurrentPrice,
-                    ObjectDescription = salesObject.ObjectDescription,
-                    BuildYear = salesObject.BuildYear,
-                    ImageLinks = salesObject.ImageLinks,
-                    ViewingDates = salesObject.ViewingDates,
-                    RealtorId = salesObject.Realtor.Id,
-                    RealtorName = $"{salesObject.Realtor.FirstName} {salesObject.Realtor.LastName}",
-                    RealtorEmail = salesObject.Realtor.Email,
-                    RealtorPhone = salesObject.Realtor.PhoneNumber,
-                    AgencyName = salesObject.Realtor.Agency.Name,
-                    AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
-                    County = salesObject.County,
-                    Category = salesObject.Category
-                };
 
-                salesObjectDTOs.Add(salesObjectDTO);
+                foreach (var salesObject in salesObjects)
+                {
+                    SalesObjectDTO salesObjectDTO = new()
+                    {
+                        Id = salesObject.Id,
+                        CreationDate = salesObject.CreationDate,
+                        CreatorName = salesObject.CreatorName,
+                        Adress = salesObject.Adress,
+                        Rooms = salesObject.Rooms,
+                        LivingArea = salesObject.LivingArea,
+                        AncillaryArea = salesObject.AncillaryArea,
+                        PlotArea = salesObject.PlotArea,
+                        YearlyCost = salesObject.YearlyCost,
+                        MonthlyFee = salesObject.MonthlyFee,
+                        Level = salesObject.Level,
+                        Lift = salesObject.Lift,
+                        ListingPrice = salesObject.ListingPrice,
+                        CurrentPrice = salesObject.CurrentPrice,
+                        ObjectDescription = salesObject.ObjectDescription,
+                        BuildYear = salesObject.BuildYear,
+                        ImageLinks = salesObject.ImageLinks,
+                        ViewingDates = salesObject.ViewingDates,
+                        RealtorId = salesObject.Realtor.Id,
+                        RealtorName = $"{salesObject.Realtor.FirstName} {salesObject.Realtor.LastName}",
+                        RealtorEmail = salesObject.Realtor.Email,
+                        RealtorPhone = salesObject.Realtor.PhoneNumber,
+                        AgencyName = salesObject.Realtor.Agency.Name,
+                        AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
+                        County = salesObject.County,
+                        Category = salesObject.Category
+                    };
+
+                    salesObjectDTOs.Add(salesObjectDTO);
+                }
             }
 
             return salesObjectDTOs;

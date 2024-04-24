@@ -17,7 +17,7 @@ namespace FribergHomes.Client
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7161/") });
 
-            builder.Services.AddScoped<RealtorService>(); // Reb 2024-04-24
+            builder.Services.AddTransient<RealtorService>(); // Reb 2024-04-24
 
             await builder.Build().RunAsync();
         }

@@ -1,10 +1,7 @@
-﻿using FribergHomes.API.Models;
+﻿using FribergHomes.Client.DTOs;
 
-namespace FribergHomes.API.Data.Interfaces
+namespace FribergHomes.Client.Services.Interfaces
 {
-    /* Interface for County Reopsitory
-    * @ Authur: Rebecka 2024-04-15
-    */
     public interface ICounty
     {
         Task<County> GetCountyByIdAsync(int id);
