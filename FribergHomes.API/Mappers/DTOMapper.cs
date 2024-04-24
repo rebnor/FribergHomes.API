@@ -23,7 +23,7 @@ namespace FribergHomes.API.Mappers
                 Picture = realtor.Picture,
                 Agency = realtor.Agency.Name,
                 AgencyLogo = realtor.Agency.Logo,
-                // SalesObjects = MapSalesObjectsToDto(realtor.SalesObjects) // Se vad metoden heter när den är färdig
+                SalesObjects = ToListSalesObjectDTO(realtor.SalesObjects) 
             };
 
             return realtorDto;
