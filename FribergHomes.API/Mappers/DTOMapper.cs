@@ -23,7 +23,7 @@ namespace FribergHomes.API.Mappers
                 Picture = realtor.Picture,
                 Agency = realtor.Agency.Name,
                 AgencyLogo = realtor.Agency.Logo,
-                SalesObjects = ToListSalesObjectDTO(realtor.SalesObjects) 
+                SalesObjects = ToListSalesObjectDTO(realtor.SalesObjects)
             };
 
             return realtorDto;
@@ -139,7 +139,7 @@ namespace FribergHomes.API.Mappers
                     County = salesObject.County,
                     Category = salesObject.Category
                 };
-                
+
                 salesObjectDTOs.Add(salesObjectDTO);
             }
 
@@ -147,12 +147,12 @@ namespace FribergHomes.API.Mappers
         }
 
         //DTO mapper for Agency
-        //Author: Sanna 
-        public static AgencyDTO MapAgencyToDto(Agency agency) 
+        //Author: Sanna 2024-04-23
+        public static AgencyDTO MapAgencyToDto(Agency agency)
         {
             if (agency == null)
             {
-                return null; 
+                return null;
             }
 
             AgencyDTO agencyDTO = new AgencyDTO
@@ -163,6 +163,24 @@ namespace FribergHomes.API.Mappers
                 Logo = agency.Logo,
             };
             return agencyDTO;
+        }
+
+        public static List<AgencyDTO> MapAgenciesToDtos(List<Agency> agencies) 
+        {
+           var agencyDTOs = new List<AgencyDTO>();
+
+            foreach (Agency agency in agencies) 
+            {
+                var agencyDTO = new AgencyDTO
+                {
+                    Id = agency.Id,
+                    Name = agency.Name,
+                    Presentation = agency.Presentation,
+                    Logo = agency.Logo,
+                };
+                agencyDTOs.Add(agencyDTO);
+            }
+                return agencyDTOs;               
         }
 
 
