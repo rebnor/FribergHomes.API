@@ -1,7 +1,6 @@
-﻿using FribergHomes.API.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace FribergHomes.API.DTOs
+namespace FribergHomes.Client.DTOs
 {
     //DTO for Agency
     //Contains no list of Realtors   
