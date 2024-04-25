@@ -7,12 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FribergHomes.API.Data;
 using FribergHomes.API.Models;
+using FribergHomes.API.DTOs;
 using FribergHomes.API.Data.Interfaces;
+using FribergHomes.API.Mappers;
 
 namespace FribergHomes.API.Controllers
 {
     /* Controller for Category
-     * @ Author: Rebecka 2024-04-16        
+     * @ Author: Rebecka 2024-04-16
+     * @ Update: Added Model-DTO and DTO-Model conversions. Changed API-endpoint return types to DTO.  // Tobias 2024-04-25
      */
     [Route("api/[controller]")]
     [ApiController]
@@ -28,7 +31,7 @@ namespace FribergHomes.API.Controllers
         // GET: api/Categories
         /* Gets All the Categories from the Database*/
         [HttpGet]
-        public async Task<ActionResult<List<Category>>> GetCategories()
+        public async Task<ActionResult<List<CategoryDTO>>> GetCategories()
         {
             try
             {
@@ -37,7 +40,8 @@ namespace FribergHomes.API.Controllers
                 {
                     return NoContent();
                 }
-                return Ok(categories);
+                var categoryDTOs = DTOMapper.ToListCategoryDTO(categories); // Tobias 2024-04-25
+                return Ok(categoryDTOs);
             }
             catch (Exception ex)
             {
@@ -48,7 +52,7 @@ namespace FribergHomes.API.Controllers
         // GET: api/Categories/{id}
         /* Gets One Category from Database, with int ID*/
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        public async Task<ActionResult<CategoryDTO>> GetCategory(int id)
         {
             try
             {
@@ -57,7 +61,8 @@ namespace FribergHomes.API.Controllers
                 {
                     return NotFound();
                 }
-                return Ok(category);
+                var categoryDTO = DTOMapper.ToCategoryDTO(category); // Tobias 2024-04-25
+                return Ok(categoryDTO);
             }
             catch (Exception ex)
             {
@@ -68,14 +73,15 @@ namespace FribergHomes.API.Controllers
         // PUT: api/Categories/{id}
         /* Updates a Category in the Database */
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        public async Task<IActionResult> PutCategory(int id, CategoryDTO categoryDto)
         {
             try
             {
-                if (id != category.Id)
+                if (id != categoryDto.Id)
                 {
                     return BadRequest();
                 }
+                var category = ModelMapper.ToCategory(categoryDto); // Tobias 2024-04-25
                 await _categoryRepo.UpdateCategoryAsync(category);
                 return NoContent();
             }
@@ -88,16 +94,17 @@ namespace FribergHomes.API.Controllers
         // POST: api/Categories
         /* Adds a Category to the Database */
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        public async Task<ActionResult<CategoryDTO>> PostCategory(CategoryDTO categoryDto)
         {
             try
             {
+                var category = ModelMapper.ToCategory(categoryDto); // Tobias 2024-04-25
                 await _categoryRepo.AddCategoryAsync(category);
                 return CreatedAtAction("GetCategory", new { id = category.Id }, category);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Något gick fel när du skulle lägga till Kategori '{category.Name}'! Felmeddelande: {ex.Message}");
+                return StatusCode(500, $"Något gick fel när du skulle lägga till Kategori '{categoryDto.Name}'! Felmeddelande: {ex.Message}");
             }
         }
 
