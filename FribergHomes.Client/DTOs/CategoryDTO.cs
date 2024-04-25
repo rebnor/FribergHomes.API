@@ -6,7 +6,7 @@ namespace FribergHomes.Client.DTOs
      * IconUrl should be a https-link of an Icon, example FontAwesome.
      * @ Author: Rebecka 2024-04-15
      */
-    public class Category
+    public class CategoryDTO
     {
         public int Id { get; set; }
         [Required]
