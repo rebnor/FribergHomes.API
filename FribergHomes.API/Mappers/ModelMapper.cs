@@ -28,7 +28,7 @@ namespace FribergHomes.API.Mappers
                 Email = realtorDto.Email,
                 PhoneNumber = realtorDto.PhoneNumber,
                 Picture = realtorDto.Picture,
-                Agency = new Agency() { // Se över om detta går
+                Agency = new Agency() { 
                     Name = realtorDto.Agency,
                     Logo = "dublett",
                     Presentation = "dublett"
@@ -37,6 +37,7 @@ namespace FribergHomes.API.Mappers
             };
             return realtor;
         }
+
         /* Makes AgencyDTO to a Agency
          * @ Author: Rebecka 2024-04-24
          */
@@ -58,7 +59,6 @@ namespace FribergHomes.API.Mappers
         }
 
         /* Makes SalesObjectDTO to a SalesObject
-         * Not all done, need to see how Realtor will be handled
          * @ Author: Rebecka 2024-04-24
          */
         public static SalesObject DtoToSalesObject(SalesObjectDTO salesObjectDto)
@@ -86,12 +86,55 @@ namespace FribergHomes.API.Mappers
                 ImageLinks = salesObjectDto.ImageLinks,
                 ViewingDates = salesObjectDto.ViewingDates,
                 Category = salesObjectDto.Category,
-                County = salesObjectDto.County
+                County = new County()
+                {
+                    Name = salesObjectDto.CountyName
+                }
             };
 
             // TODO: Realtor...?
 
+
             return salesObject;
+        }
+
+        /* Makes CountyDTO to a County
+         * @ Author: Rebecka 2024-04-25
+         */
+        public static County DtoToCounty(CountyDTO countyDto)
+        {
+            if (countyDto == null)
+                return null;
+
+            County county = new County
+            {
+                Id = countyDto.Id,
+                Name = countyDto.Name,
+            };
+
+            return county;
+        }
+
+        /* Makes CountyDTO-List to a County-List
+         * @ Author: Rebecka 2024-04-25
+         */
+        public static List<County> MapCountyListToDtoList(List<CountyDTO> countiesDto)
+        {
+            if (countiesDto == null)
+                return null;
+
+            List<County> counties = new List<County>();
+
+            foreach (var countyDto in countiesDto)
+            {
+                County county = new County
+                {
+                    Id = countyDto.Id,
+                    Name = countyDto.Name,
+                };
+                counties.Add(county);
+            }
+            return counties;
         }
 
     }
