@@ -18,8 +18,12 @@ namespace FribergHomes.API.Controllers
     * @ Updates: changed from ienumerable to list in GetSalesObjects() / Rebecka 2024-04-19
     * @ Updates: Added conversion to SalesObjectDTO and List<SalesObjectDTO> and updated GET method return types to SalesObjectDTO.
     *            Added GET-method to retrieve all SalesObjects by County Id / Tobias 2024-04-23
+
+    * @ Update: Changed to SalesObjectDTO in Put and Post, and using Mappers  / Reb 2024-04-25
+
     * @ Updates: Updated Delete method (corrected salesObject null check (was checking for not null) and 
     *            added missing repository method call to erase object) / Tobias 2024-04-24
+
     */
     [Route("api/[controller]")]
     [ApiController]
@@ -97,17 +101,46 @@ namespace FribergHomes.API.Controllers
 
         // PUT: api/SalesObjects/{id}
         /* Updates one SalesObject in the Database */
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutSalesObject(int id, SalesObject salesObject)
+        //{
+        //    try
+        //    {
+        //        if (id != salesObject.Id)
+        //        {
+        //            return BadRequest();
+        //        }
+        //        await _salesRepo.UpdateSalesObjectAsync(salesObject);
+        //        return NoContent();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Något gick fel vid uppdatering av Försäljningsobjekt med id {id}! Felmeddelande: {ex.Message}");
+        //    }
+        //}
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSalesObject(int id, SalesObject salesObject)
+        public async Task<ActionResult<SalesObjectDTO>> PutSalesObject(int id, SalesObjectDTO salesObjectDto)
         {
             try
             {
-                if (id != salesObject.Id)
+                if (id != salesObjectDto.Id)
                 {
                     return BadRequest();
                 }
-                await _salesRepo.UpdateSalesObjectAsync(salesObject);
-                return NoContent();
+
+                var salesObject = ModelMapper.DtoToSalesObject(salesObjectDto);
+                var county = await _salesRepo.GetCountyByNameAsync(salesObjectDto.CountyName);
+                if (salesObjectDto.CountyName == county.Name)
+                {
+                    salesObject.County = county;
+                }
+
+                var updatedSalesObject = await _salesRepo.UpdateSalesObjectAsync(salesObject);
+
+                var dtoSalesObject = DTOMapper.ToSalesObjectDTO(updatedSalesObject);
+
+                return Ok(dtoSalesObject);
             }
             catch (Exception ex)
             {
@@ -117,19 +150,45 @@ namespace FribergHomes.API.Controllers
 
         // POST: api/SalesObjects
         /* Adds one SalesObject to the Database */
+        //[HttpPost]
+        //public async Task<ActionResult<SalesObject>> PostSalesObject(SalesObject salesObject)
+        //{
+        //    try
+        //    {
+        //        await _salesRepo.AddSalesObjectAsync(salesObject);
+        //        return CreatedAtAction("GetSalesObject", new { id = salesObject.Id }, salesObject);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Något gick fel när du skulle lägga till Försäljningsobjektet! Felmeddelande: {ex.Message}");
+        //    }
+        //}
+
         [HttpPost]
-        public async Task<ActionResult<SalesObject>> PostSalesObject(SalesObject salesObject)
+        public async Task<ActionResult<SalesObjectDTO>> PostSalesObject(SalesObjectDTO salesObjectDto)
         {
             try
             {
-                await _salesRepo.AddSalesObjectAsync(salesObject);
-                return CreatedAtAction("GetSalesObject", new { id = salesObject.Id }, salesObject);
+                var salesObject = ModelMapper.DtoToSalesObject(salesObjectDto);
+                var county = await _salesRepo.GetCountyByNameAsync(salesObjectDto.CountyName);
+                if (salesObjectDto.CountyName == county.Name)
+                {
+                    salesObject.County = county;
+                }
+                var addedSalesObject = await _salesRepo.AddSalesObjectAsync(salesObject);
+
+                var dtoSalesObject = DTOMapper.ToSalesObjectDTO(addedSalesObject);
+
+                return CreatedAtAction("GetSalesObject", new { id = salesObject.Id }, dtoSalesObject);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Något gick fel när du skulle lägga till Försäljningsobjektet! Felmeddelande: {ex.Message}");
             }
         }
+
+
+
 
         // DELETE: api/SalesObjects/{id}
         /* Deletes one SalesObject, with int ID, from Database */
@@ -143,8 +202,10 @@ namespace FribergHomes.API.Controllers
                 {
                     return NotFound();
                 }
+
                 await _salesRepo.DeleteSalesObjectAsync(salesObject); // Tobias
                 return NoContent();
+
             }
             catch (Exception ex)
             {

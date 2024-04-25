@@ -5,6 +5,7 @@ namespace FribergHomes.API.Data.Interfaces
     /* Interface for SalesObject Reopsitory
      * @ Authur: Rebecka 2024-04-15
      * @ Update: Changed GetSalesObjectsByCountyAsync parameter to int id (County county). //Tobias 2024-04-23 
+     * @ Update: Added a GetCountyByNameAsync method because its needed in ModelMapper / Reb 2024-05-25
      */
     public interface ISalesObject
     {
@@ -14,6 +15,9 @@ namespace FribergHomes.API.Data.Interfaces
         Task<SalesObject> AddSalesObjectAsync(SalesObject salesObject);
         Task DeleteSalesObjectAsync(SalesObject salesObject);
         Task<SalesObject> UpdateSalesObjectAsync(SalesObject salesObject);
+
+        // Update: Added this because its needed in the ModelMapper / Reb 2024-04-25
+        Task<County> GetCountyByNameAsync(string countyName);
 
     }
 }

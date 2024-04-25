@@ -8,6 +8,7 @@ namespace FribergHomes.API.Data.Repositories
 {
     //Author: Sanna 
     // @ Update: Included Agency & Salesobjects when you Get realtor/realtors / Reb 2024-04-24
+    // @ Update: Added GetAgencyByNameAsync() beasue its needed in ModelMapper / Reb 2024-04-24
     public class RealtorRepository : IRealtor
     {
         private readonly ApplicationDBContext _appDbCtx;
@@ -57,7 +58,7 @@ namespace FribergHomes.API.Data.Repositories
         // Update: Added this because its needed in the ModelMapper / Reb 2024-04-24
         public async Task<Agency> GetAgencyByNameAsync(string name) 
         {
-            var agency = _appDbCtx.Agencies.FirstOrDefault(a=>a.Name.ToLower() == name.ToLower());
+            var agency = await _appDbCtx.Agencies.FirstOrDefaultAsync(a=>a.Name.ToLower() == name.ToLower());
             return agency;
         }
     }

@@ -135,9 +135,11 @@ namespace FribergHomes.API.Controllers
                     realtor.Agency = agency;
                 }
 
+                var addedRealtor = await _realtorRepository.AddRealtorAsync(realtor);
 
-                await _realtorRepository.AddRealtorAsync(realtor);
-                return CreatedAtAction(nameof(GetRealtor), new { id = realtor.Id }, realtor);
+                var dtoRealtor = DTOMapper.MapRealtorToDto(addedRealtor);
+
+                return CreatedAtAction(nameof(GetRealtor), new { id = realtor.Id }, dtoRealtor);
             }
             catch (Exception)
             {
@@ -176,7 +178,7 @@ namespace FribergHomes.API.Controllers
         // PUT method that updates an existing Realtor object in the DB based on Id and Realtor object.
         // PUT api/<RealtorController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<Realtor>> PutRealtor(RealtorDTO realtorDto)
+        public async Task<ActionResult<RealtorDTO>> PutRealtor(RealtorDTO realtorDto)
         {
             try
             {
@@ -187,9 +189,9 @@ namespace FribergHomes.API.Controllers
                     realtor.Agency = agency;
                 }
 
-                await _realtorRepository.UpdateRealtorAsync(realtor);
+                var updatedRealtor = await _realtorRepository.UpdateRealtorAsync(realtor);
 
-                var dtoRealtor = DTOMapper.MapRealtorToDto(realtor);
+                var dtoRealtor = DTOMapper.MapRealtorToDto(updatedRealtor);
 
                 return Ok(dtoRealtor);
             }
