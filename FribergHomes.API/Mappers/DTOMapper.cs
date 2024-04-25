@@ -147,9 +147,9 @@ namespace FribergHomes.API.Mappers
 
                     salesObjectDTOs.Add(salesObjectDTO);
                 }
+                return salesObjectDTOs;
             }
-
-            return salesObjectDTOs;
+            return null;
         }
 
         //DTO mapper for Agency
