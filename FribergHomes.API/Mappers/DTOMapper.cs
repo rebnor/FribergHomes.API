@@ -23,10 +23,37 @@ namespace FribergHomes.API.Mappers
                 Picture = realtor.Picture,
                 Agency = realtor.Agency.Name,
                 AgencyLogo = realtor.Agency.Logo,
-                SalesObjects = ToListSalesObjectDTO(realtor.SalesObjects) 
+                SalesObjects = ToListSalesObjectDTO(realtor.SalesObjects)
             };
 
             return realtorDto;
+        }
+        /* DTO-Mapper for Realtor List
+         * @ Author: Rebecka 2024-04-24        
+         */
+        public static List<RealtorDTO> MapRealtorListToDto(List<Realtor> realtors)
+        {
+            if (realtors == null)
+                return null;
+
+            List<RealtorDTO> realtorsDtos = new List<RealtorDTO>();
+
+            foreach (var realtor in realtors)
+            {
+                RealtorDTO realtorDto = new RealtorDTO
+                {
+                    Id = realtor.Id,
+                    FullName = $"{realtor.FirstName} {realtor.LastName}",
+                    Email = realtor.Email,
+                    PhoneNumber = realtor.PhoneNumber,
+                    Picture = realtor.Picture,
+                    Agency = realtor.Agency.Name,
+                    AgencyLogo = realtor.Agency.Logo,
+                    SalesObjects = ToListSalesObjectDTO(realtor.SalesObjects)
+                };
+                realtorsDtos.Add(realtorDto);
+            }
+            return realtorsDtos;
         }
 
 
@@ -81,51 +108,55 @@ namespace FribergHomes.API.Mappers
         {
             List<SalesObjectDTO> salesObjectDTOs = new();
 
-            foreach (var salesObject in salesObjects)
+            if (salesObjects != null) // added reb 
             {
-                SalesObjectDTO salesObjectDTO = new()
+
+                foreach (var salesObject in salesObjects)
                 {
-                    Id = salesObject.Id,
-                    CreationDate = salesObject.CreationDate,
-                    CreatorName = salesObject.CreatorName,
-                    Adress = salesObject.Adress,
-                    Rooms = salesObject.Rooms,
-                    LivingArea = salesObject.LivingArea,
-                    AncillaryArea = salesObject.AncillaryArea,
-                    PlotArea = salesObject.PlotArea,
-                    YearlyCost = salesObject.YearlyCost,
-                    MonthlyFee = salesObject.MonthlyFee,
-                    Level = salesObject.Level,
-                    Lift = salesObject.Lift,
-                    ListingPrice = salesObject.ListingPrice,
-                    CurrentPrice = salesObject.CurrentPrice,
-                    ObjectDescription = salesObject.ObjectDescription,
-                    BuildYear = salesObject.BuildYear,
-                    ImageLinks = salesObject.ImageLinks,
-                    ViewingDates = salesObject.ViewingDates,
-                    RealtorId = salesObject.Realtor.Id,
-                    RealtorName = $"{salesObject.Realtor.FirstName} {salesObject.Realtor.LastName}",
-                    RealtorEmail = salesObject.Realtor.Email,
-                    RealtorPhone = salesObject.Realtor.PhoneNumber,
-                    AgencyName = salesObject.Realtor.Agency.Name,
-                    AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
-                    County = salesObject.County,
-                    Category = salesObject.Category
-                };
-                
-                salesObjectDTOs.Add(salesObjectDTO);
+                    SalesObjectDTO salesObjectDTO = new()
+                    {
+                        Id = salesObject.Id,
+                        CreationDate = salesObject.CreationDate,
+                        CreatorName = salesObject.CreatorName,
+                        Adress = salesObject.Adress,
+                        Rooms = salesObject.Rooms,
+                        LivingArea = salesObject.LivingArea,
+                        AncillaryArea = salesObject.AncillaryArea,
+                        PlotArea = salesObject.PlotArea,
+                        YearlyCost = salesObject.YearlyCost,
+                        MonthlyFee = salesObject.MonthlyFee,
+                        Level = salesObject.Level,
+                        Lift = salesObject.Lift,
+                        ListingPrice = salesObject.ListingPrice,
+                        CurrentPrice = salesObject.CurrentPrice,
+                        ObjectDescription = salesObject.ObjectDescription,
+                        BuildYear = salesObject.BuildYear,
+                        ImageLinks = salesObject.ImageLinks,
+                        ViewingDates = salesObject.ViewingDates,
+                        RealtorId = salesObject.Realtor.Id,
+                        RealtorName = $"{salesObject.Realtor.FirstName} {salesObject.Realtor.LastName}",
+                        RealtorEmail = salesObject.Realtor.Email,
+                        RealtorPhone = salesObject.Realtor.PhoneNumber,
+                        AgencyName = salesObject.Realtor.Agency.Name,
+                        AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
+                        County = salesObject.County,
+                        Category = salesObject.Category
+                    };
+
+                    salesObjectDTOs.Add(salesObjectDTO);
+                }
             }
 
             return salesObjectDTOs;
         }
 
         //DTO mapper for Agency
-        //Author: Sanna 
-        public static AgencyDTO MapAgencyToDto(Agency agency) 
+        //Author: Sanna 2024-04-23
+        public static AgencyDTO MapAgencyToDto(Agency agency)
         {
             if (agency == null)
             {
-                return null; 
+                return null;
             }
 
             AgencyDTO agencyDTO = new AgencyDTO
@@ -136,6 +167,24 @@ namespace FribergHomes.API.Mappers
                 Logo = agency.Logo,
             };
             return agencyDTO;
+        }
+
+        public static List<AgencyDTO> MapAgenciesToDtos(List<Agency> agencies) 
+        {
+           var agencyDTOs = new List<AgencyDTO>();
+
+            foreach (Agency agency in agencies) 
+            {
+                var agencyDTO = new AgencyDTO
+                {
+                    Id = agency.Id,
+                    Name = agency.Name,
+                    Presentation = agency.Presentation,
+                    Logo = agency.Logo,
+                };
+                agencyDTOs.Add(agencyDTO);
+            }
+                return agencyDTOs;               
         }
 
 

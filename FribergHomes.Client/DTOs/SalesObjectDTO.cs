@@ -1,10 +1,10 @@
-﻿using FribergHomes.API.Models;
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Microsoft.SqlServer.Server;
-using Mono.TextTemplating;
+//using Mono.TextTemplating;
 
-namespace FribergHomes.API.DTOs
+namespace FribergHomes.Client.DTOs
 {
     /* SalesObjectDTO that will be used in client-API requests and responses.
      * Author: Tobias 2024-04-23

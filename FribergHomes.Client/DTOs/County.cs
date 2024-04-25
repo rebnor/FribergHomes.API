@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FribergHomes.API.Models
+namespace FribergHomes.Client.DTOs
 {
      /* Class for County (kommun).
       * Author: Tobias 2024-04-15

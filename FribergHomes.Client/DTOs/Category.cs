@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FribergHomes.API.Models
+namespace FribergHomes.Client.DTOs
 {
     /* Class for Category.
      * IconUrl should be a https-link of an Icon, example FontAwesome.

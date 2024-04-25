@@ -1,4 +1,5 @@
-﻿using FribergHomes.API.DTOs;
+﻿
+using FribergHomes.Client.DTOs;
 
 namespace FribergHomes.Client.Services.Interfaces
 {
