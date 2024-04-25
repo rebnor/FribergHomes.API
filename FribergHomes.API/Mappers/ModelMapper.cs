@@ -3,6 +3,7 @@ using FribergHomes.API.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System;
 using FribergHomes.API.Data.Interfaces;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 
 namespace FribergHomes.API.Mappers
 {
@@ -11,12 +12,12 @@ namespace FribergHomes.API.Mappers
         /* Makes RealtorDTO to a Realtor
          * @ Author: Rebecka 2024-04-24
          */
-        public static Realtor DtoToRealtor(RealtorDTO realtorDto) 
+        public static Realtor DtoToRealtor(RealtorDTO realtorDto)
         {
             if (realtorDto == null)
                 return null;
 
-            string[] names = realtorDto.FullName.Split(' ',2);
+            string[] names = realtorDto.FullName.Split(' ', 2);
             string firstName = names[0];
             string lastName = names[1];
 
@@ -28,7 +29,8 @@ namespace FribergHomes.API.Mappers
                 Email = realtorDto.Email,
                 PhoneNumber = realtorDto.PhoneNumber,
                 Picture = realtorDto.Picture,
-                Agency = new Agency() { // Se över om detta går
+                Agency = new Agency()
+                { // Se över om detta går
                     Name = realtorDto.Agency,
                     Logo = "dublett",
                     Presentation = "dublett"
@@ -92,6 +94,49 @@ namespace FribergHomes.API.Mappers
             // TODO: Realtor...?
 
             return salesObject;
+        }
+
+        // Author: Tobias 2024-04-25
+        /// <summary>
+        /// Creates a new Category object based on the provided CategoryDTO object.
+        /// </summary>
+        /// <param name="categoryDto"></param>
+        /// <returns>A Category object</returns>
+        public static Category ToCategory(CategoryDTO categoryDto)
+        {
+            Category category = new()
+            {
+                Id = categoryDto.Id,
+                Name = categoryDto.Name,
+                IconUrl = categoryDto.IconUrl
+            };
+
+            return category;
+        }
+
+        // Author: Tobias 2024-04-25
+        /// <summary>
+        /// Creates a new List&lt;Category&gt; based on the provided List&lt;CategoryDTO&gt;.
+        /// </summary>
+        /// <param name="categoryDtos"></param>
+        /// <returns>A List&lt;Category&gt;</returns>
+        public static List<Category> ToListCategory(List<CategoryDTO> categoryDtos)
+        {
+            List<Category> categories = new();
+
+            foreach (var categoryDto in categoryDtos)
+            {
+                Category category = new()
+                {
+                    Id = categoryDto.Id,
+                    Name = categoryDto.Name,
+                    IconUrl = categoryDto.IconUrl
+                };
+
+                categories.Add(category);
+            }
+
+            return categories;
         }
 
     }
