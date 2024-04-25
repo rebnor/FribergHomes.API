@@ -18,6 +18,8 @@ namespace FribergHomes.API.Controllers
     * @ Updates: changed from ienumerable to list in GetSalesObjects() / Rebecka 2024-04-19
     * @ Updates: Added conversion to SalesObjectDTO and List<SalesObjectDTO> and updated GET method return types to SalesObjectDTO.
     *            Added GET-method to retrieve all SalesObjects by County Id / Tobias 2024-04-23
+    * @ Updates: Updated Delete method (corrected salesObject null check (was checking for not null) and 
+    *            added missing repository method call to erase object) / Tobias 2024-04-24
     */
     [Route("api/[controller]")]
     [ApiController]
@@ -137,10 +139,11 @@ namespace FribergHomes.API.Controllers
             try
             {
                 var salesObject = await _salesRepo.GetSalesObjectByIdAsync(id);
-                if (salesObject != null)
+                if (salesObject == null)
                 {
                     return NotFound();
                 }
+                await _salesRepo.DeleteSalesObjectAsync(salesObject); // Tobias
                 return NoContent();
             }
             catch (Exception ex)

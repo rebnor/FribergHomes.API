@@ -1,8 +1,5 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using Microsoft.SqlServer.Server;
-//using Mono.TextTemplating;
 
 namespace FribergHomes.Client.DTOs
 {
