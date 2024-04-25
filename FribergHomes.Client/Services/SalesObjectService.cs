@@ -2,10 +2,11 @@
 using System.Net;
 using System.Runtime.Serialization;
 using FribergHomes.Client.DTOs;
+using FribergHomes.Client.Services.Interfaces;
 
 namespace FribergHomes.Client.Services
 {
-    public class SalesObjectService
+    public class SalesObjectService : ISalesObject
     {
         /* Repository that manages API requests and responses related to SalesObjects.
          * Author: Tobias 2024-04-24
