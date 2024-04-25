@@ -85,11 +85,14 @@ namespace FribergHomes.API.DTOs
 
         public string AgencyLogoUrl { get; set; } = string.Empty;
 
-        //public County? County { get; set; }
-        public string CountyName { get; set; }
+        public int CountyId { get; set; }
 
-        public Category? Category { get; set; }
-        
+        public string CountyName { get; set; } = string.Empty;
+
+        public int CategoryId { get; set; }
+
+        public string CategoryName { get; set; } = string.Empty;
+
 
 
     }
