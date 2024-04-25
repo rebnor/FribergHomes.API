@@ -189,6 +189,8 @@ namespace FribergHomes.API.Controllers
                     realtor.Agency = agency;
                 }
 
+                //var salesObjects = await _realtorRepository.GetRealtorsSalesObjects(realtor);
+
                 var updatedRealtor = await _realtorRepository.UpdateRealtorAsync(realtor);
 
                 var dtoRealtor = DTOMapper.MapRealtorToDto(updatedRealtor);

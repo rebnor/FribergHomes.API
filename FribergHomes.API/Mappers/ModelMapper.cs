@@ -34,8 +34,10 @@ namespace FribergHomes.API.Mappers
                     Logo = "dublett",
                     Presentation = "dublett"
                 }
-                // SalesObject
+                // TODO: se över
             };
+            realtor.SalesObjects = ModelMapper.DtoListToSalesObjectList(realtorDto.SalesObjects, realtor);
+
             return realtor;
         }
 
@@ -99,6 +101,57 @@ namespace FribergHomes.API.Mappers
             return salesObject;
         }
 
+
+        /* Makes SalesObjectDTO-List to a SalesObject-List
+         * @ Author: Rebecka 2024-04-25
+         */
+        public static List<SalesObject> DtoListToSalesObjectList(List<SalesObjectDTO> salesObjectDtos, Realtor realtor)
+        {
+            if (salesObjectDtos == null)
+                return null;
+
+            List<SalesObject> salesObjects = new List<SalesObject>();
+
+            foreach (var dto in salesObjectDtos)
+            {
+
+                SalesObject salesObject = new SalesObject()
+                {
+                    Id = dto.Id,
+                    CreationDate = dto.CreationDate,
+                    CreatorName = dto.CreatorName,
+                    ChangeDate = dto.ChangeDate,
+                    ChangeName = dto.ChangeName,
+                    Adress = dto.Adress,
+                    Rooms = dto.Rooms,
+                    LivingArea = dto.LivingArea,
+                    AncillaryArea = dto.AncillaryArea,
+                    PlotArea = dto.PlotArea,
+                    YearlyCost = dto.YearlyCost,
+                    MonthlyFee = dto.MonthlyFee,
+                    Level = dto.Level,
+                    Lift = dto.Lift,
+                    ListingPrice = dto.ListingPrice,
+                    CurrentPrice = dto.CurrentPrice,
+                    ObjectDescription = dto.ObjectDescription,
+                    BuildYear = dto.BuildYear,
+                    ImageLinks = dto.ImageLinks,
+                    ViewingDates = dto.ViewingDates,
+                    Category = dto.Category,
+                    County = new County()
+                    {
+                        Name = dto.CountyName
+                    },
+                    Realtor = realtor
+                };
+
+                salesObjects.Add(salesObject);
+
+            }
+            return salesObjects;
+        }
+
+
         // Author: Tobias 2024-04-25
         /// <summary>
         /// Creates a new Category object based on the provided CategoryDTO object.
@@ -141,6 +194,7 @@ namespace FribergHomes.API.Mappers
 
             return categories;
         }
+
 
         /* Makes CountyDTO to a County
          * @ Author: Rebecka 2024-04-25
