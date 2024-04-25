@@ -6,11 +6,13 @@ using FribergHomes.Client.Services.Interfaces;
 
 namespace FribergHomes.Client.Services
 {
+
+    /* Service that manages API requests and responses related to SalesObjectDTOs.
+     * Author: Tobias 2024-04-24
+     */
+
     public class SalesObjectService : ISalesObject
     {
-        /* Repository that manages API requests and responses related to SalesObjects.
-         * Author: Tobias 2024-04-24
-         */
 
         private readonly HttpClient _client;
 
