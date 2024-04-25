@@ -57,9 +57,9 @@ namespace FribergHomes.API.Mappers
         }
 
 
-        // Mapping function for SalesObject -> SalesObjectDTO    /Tobias 2024-04-23
+        // Author: Tobias 2024-04-23
         /// <summary>
-        /// Creates a new SalesObjectDTO based on an existing SalesObject instance.
+        /// Creates a new SalesObjectDTO object based on the provided SalesObject object.
         /// </summary>
         /// <param name="salesObject">SalesObject entity</param>
         /// <returns>An object of type SalesObjectDTO</returns>
@@ -98,12 +98,12 @@ namespace FribergHomes.API.Mappers
             return salesObjectDTO;
         }
 
-        // Mapping function for List<SalesObject> -> List<SalesObjectDTO>    /Tobias 2024-04-23
+        // Author: Tobias 2024-04-23
         /// <summary>
-        /// Creates a new List of SalesObjectDTOs based on an existing List of SalesObjects.
+        /// Creates a new List&lt;SalesObjectDTO&gt; based on the provided List&lt;SalesObject&gt;.
         /// </summary>
         /// <param name="salesObjects">List of SalesObjects</param>
-        /// <returns>A List of SalesObjectDTOs</returns>
+        /// <returns>A List&lt;SalesObjectDTO&gt;</returns>
         public static List<SalesObjectDTO> ToListSalesObjectDTO(List<SalesObject> salesObjects)
         {
             List<SalesObjectDTO> salesObjectDTOs = new();
@@ -187,6 +187,47 @@ namespace FribergHomes.API.Mappers
                 return agencyDTOs;               
         }
 
+        // Author: Tobias 2024-04-25
+        /// <summary>
+        /// Creates a new CategoryDTO object based on the provided Category object.
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns>A CategoryDTO object</returns>
+        public static CategoryDTO ToCategoryDTO(Category category)
+        {
+            CategoryDTO categoryDTO = new()
+            {
+                Id = category.Id,
+                Name = category.Name,
+                IconUrl = category.IconUrl
+            };
 
+            return categoryDTO;
+        }
+
+        // Author: Tobias 2024-04-25
+        /// <summary>
+        /// Creates a new List&lt;CategoryDTO&gt; from an existing List&lt;Category&gt;.
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns>A List&lt;CategoryDTO&gt; </returns>
+        public static List<CategoryDTO> ToListCategoryDTO(List<Category> categories)
+        {
+            List<CategoryDTO> categoryDTOs = new();
+
+            foreach (var category in categories)
+            {
+                CategoryDTO categoryDTO = new()
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                    IconUrl = category.IconUrl
+                };
+
+                categoryDTOs.Add(categoryDTO);
+            }
+
+            return categoryDTOs;
+        }
     }
 }
