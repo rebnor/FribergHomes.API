@@ -130,6 +130,7 @@ namespace FribergHomes.API.Controllers
                 }
 
                 var salesObject = ModelMapper.DtoToSalesObject(salesObjectDto);
+
                 var county = await _salesRepo.GetCountyByNameAsync(salesObjectDto.CountyName);
                 if (salesObjectDto.CountyName == county.Name)
                 {
