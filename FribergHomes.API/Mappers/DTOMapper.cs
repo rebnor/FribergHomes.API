@@ -63,6 +63,7 @@ namespace FribergHomes.API.Mappers
         /// </summary>
         /// <param name="salesObject">SalesObject entity</param>
         /// <returns>An object of type SalesObjectDTO</returns>
+        /// @ Update: Switched from County-Object to CountyName / Reb 2024-05-25
         public static SalesObjectDTO ToSalesObjectDTO(SalesObject salesObject)
         {
             SalesObjectDTO salesObjectDTO = new()
@@ -91,7 +92,7 @@ namespace FribergHomes.API.Mappers
                 RealtorPhone = salesObject.Realtor.PhoneNumber,
                 AgencyName = salesObject.Realtor.Agency.Name,
                 AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
-                County = salesObject.County,
+                CountyName = salesObject.County.Name,
                 Category = salesObject.Category
             };
 
@@ -104,6 +105,7 @@ namespace FribergHomes.API.Mappers
         /// </summary>
         /// <param name="salesObjects">List of SalesObjects</param>
         /// <returns>A List of SalesObjectDTOs</returns>
+        /// @ Update: Switched from County-Object to CountyName / Reb 2024-05-25
         public static List<SalesObjectDTO> ToListSalesObjectDTO(List<SalesObject> salesObjects)
         {
             List<SalesObjectDTO> salesObjectDTOs = new();
@@ -139,7 +141,7 @@ namespace FribergHomes.API.Mappers
                         RealtorPhone = salesObject.Realtor.PhoneNumber,
                         AgencyName = salesObject.Realtor.Agency.Name,
                         AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
-                        County = salesObject.County,
+                        CountyName = salesObject.County.Name,
                         Category = salesObject.Category
                     };
 
@@ -186,6 +188,47 @@ namespace FribergHomes.API.Mappers
             }
                 return agencyDTOs;               
         }
+
+
+        /* DTO-Mapper for County
+         * @ Author: Rebecka 2024-04-25        
+         */
+        public static CountyDTO MapCountyToDto(County county)
+        {
+            if (county == null)
+                return null;
+
+            CountyDTO countyDto = new CountyDTO
+            {
+                Id = county.Id,
+                Name = county.Name,
+            };
+
+            return countyDto;
+        }
+        /* DTO-Mapper for County-List
+         * @ Author: Rebecka 2024-04-25        
+         */
+        public static List<CountyDTO> MapCountyListToDtoList(List<County> counties)
+        {
+            if (counties == null)
+                return null;
+
+            List<CountyDTO> countiesDto = new List<CountyDTO>();
+
+            foreach (var county in counties)
+            {
+                CountyDTO countyDto = new CountyDTO
+                {
+                    Id = county.Id,
+                    Name = county.Name,
+                };
+                countiesDto.Add(countyDto);
+            }
+            
+            return countiesDto;
+        }
+
 
 
     }
