@@ -16,11 +16,11 @@ namespace FribergHomes.Client.Services.Interfaces
 
         Task<List<SalesObjectDTO>> GetAll(int countyId);
 
-        Task Create(SalesObjectDTO salesObject);
+        Task<SalesObjectDTO> Create(SalesObjectDTO salesObject);
 
-        Task<SalesObjectDTO> Update(int id, SalesObjectDTO salesObject);
+        Task Update(int id, SalesObjectDTO salesObject);
 
-        Task<SalesObjectDTO> Delete(int id);
+        Task Delete(int id);
 
     }
 }

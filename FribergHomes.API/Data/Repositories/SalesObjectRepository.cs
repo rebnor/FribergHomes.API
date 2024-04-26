@@ -10,6 +10,7 @@ namespace FribergHomes.API.Data.Repositories
      * @ Update: I Included Realtor and Agency in GetSalesObjectByIdAsync, i think its needed  // Rebecka 2023-04-23
      * @ Update: Added inclusion of Realtor, Agency, County and Category when querying DB for SalesObject(s).
      *           Changed GetSalesObjectsByCountyAsync parameter to int countyId (County county) //Tobias 2024-04-23
+     * @ Upodate: Added GetCountyByNameAsync() method, because its needed with the DTO&Model-mapping / Reb 2024-05-25
      */
     public class SalesObjectRepository : ISalesObject
     {
@@ -69,6 +70,13 @@ namespace FribergHomes.API.Data.Repositories
             _appDBctx.Update(salesObject);
             await _appDBctx.SaveChangesAsync();
             return salesObject;
+        }
+
+        // Update: Added this because its needed in the ModelMapper / Reb 2024-04-25
+        public async Task<County> GetCountyByNameAsync(string countyName) 
+        {
+            var county = await _appDBctx.Counties.FirstOrDefaultAsync(c=>c.Name.ToLower() == countyName.ToLower());
+            return county;
         }
     }
 }

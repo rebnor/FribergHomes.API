@@ -8,6 +8,8 @@ namespace FribergHomes.API.Data.Repositories
 {
     //Author: Sanna 
     // @ Update: Included Agency & Salesobjects when you Get realtor/realtors / Reb 2024-04-24
+    // @ Update: Added GetAgencyByNameAsync() beasue its needed in ModelMapper / Reb 2024-04-24
+    // @ Update: Added GetRealtorsSalesObjects() becuase its needed in ModelMapper / Reb 2024-04-25 <- Kanske inte alls behövs? SE ÖVER
     public class RealtorRepository : IRealtor
     {
         private readonly ApplicationDBContext _appDbCtx;
@@ -52,6 +54,17 @@ namespace FribergHomes.API.Data.Repositories
             _appDbCtx.Realtors.Update(realtor);
             await _appDbCtx.SaveChangesAsync();
             return realtor;
+        }
+
+        
+        public async Task<Agency> GetAgencyByNameAsync(string name) 
+        {
+            var agency = await _appDbCtx.Agencies.FirstOrDefaultAsync(a=>a.Name.ToLower() == name.ToLower());
+            return agency;
+        }
+        public async Task<List<SalesObject>> GetRealtorsSalesObjects(Realtor realtor)
+        {
+            return await _appDbCtx.SalesObjects.Where(s => s.Realtor.Id == realtor.Id).Include(s=>s.County).Include(ss=>ss.Category).ToListAsync();
         }
     }
 }

@@ -2,11 +2,12 @@
 
 namespace FribergHomes.Client.DTOs
 {
-     /* Class for County (kommun).
+    /* Class for County (kommun).
       * Author: Tobias 2024-04-15
+      * @ Update: Updated from County to CountyDTO / Reb 2024-05-25
       */
 
-    public class County
+    public class CountyDTO
     {
         [Key]
         public int Id { get; set; }

@@ -57,12 +57,13 @@ namespace FribergHomes.API.Mappers
         }
 
 
-        // Mapping function for SalesObject -> SalesObjectDTO    /Tobias 2024-04-23
+        // Author: Tobias 2024-04-23
         /// <summary>
-        /// Creates a new SalesObjectDTO based on an existing SalesObject instance.
+        /// Creates a new SalesObjectDTO object based on the provided SalesObject object.
         /// </summary>
         /// <param name="salesObject">SalesObject entity</param>
         /// <returns>An object of type SalesObjectDTO</returns>
+        /// @ Update: Switched from County-Object to CountyName / Reb 2024-05-25
         public static SalesObjectDTO ToSalesObjectDTO(SalesObject salesObject)
         {
             SalesObjectDTO salesObjectDTO = new()
@@ -91,59 +92,65 @@ namespace FribergHomes.API.Mappers
                 RealtorPhone = salesObject.Realtor.PhoneNumber,
                 AgencyName = salesObject.Realtor.Agency.Name,
                 AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
-                County = salesObject.County,
+                CountyName = salesObject.County.Name,
                 Category = salesObject.Category
             };
 
             return salesObjectDTO;
         }
 
-        // Mapping function for List<SalesObject> -> List<SalesObjectDTO>    /Tobias 2024-04-23
+        // Author: Tobias 2024-04-23
+        // @ Update: Switched from County-Object to CountyName / Reb 2024-05-25
         /// <summary>
-        /// Creates a new List of SalesObjectDTOs based on an existing List of SalesObjects.
+        /// Creates a new List&lt;SalesObjectDTO&gt; based on the provided List&lt;SalesObject&gt;.
         /// </summary>
         /// <param name="salesObjects">List of SalesObjects</param>
+        /// <returns>A List&lt;SalesObjectDTO&gt;</returns>
         /// <returns>A List of SalesObjectDTOs</returns>
         public static List<SalesObjectDTO> ToListSalesObjectDTO(List<SalesObject> salesObjects)
         {
             List<SalesObjectDTO> salesObjectDTOs = new();
 
-            foreach (var salesObject in salesObjects)
+            if (salesObjects != null) // added reb 
             {
-                SalesObjectDTO salesObjectDTO = new()
+
+                foreach (var salesObject in salesObjects)
                 {
-                    Id = salesObject.Id,
-                    CreationDate = salesObject.CreationDate,
-                    CreatorName = salesObject.CreatorName,
-                    Adress = salesObject.Adress,
-                    Rooms = salesObject.Rooms,
-                    LivingArea = salesObject.LivingArea,
-                    AncillaryArea = salesObject.AncillaryArea,
-                    PlotArea = salesObject.PlotArea,
-                    YearlyCost = salesObject.YearlyCost,
-                    MonthlyFee = salesObject.MonthlyFee,
-                    Level = salesObject.Level,
-                    Lift = salesObject.Lift,
-                    ListingPrice = salesObject.ListingPrice,
-                    CurrentPrice = salesObject.CurrentPrice,
-                    ObjectDescription = salesObject.ObjectDescription,
-                    BuildYear = salesObject.BuildYear,
-                    ImageLinks = salesObject.ImageLinks,
-                    ViewingDates = salesObject.ViewingDates,
-                    RealtorId = salesObject.Realtor.Id,
-                    RealtorName = $"{salesObject.Realtor.FirstName} {salesObject.Realtor.LastName}",
-                    RealtorEmail = salesObject.Realtor.Email,
-                    RealtorPhone = salesObject.Realtor.PhoneNumber,
-                    AgencyName = salesObject.Realtor.Agency.Name,
-                    AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
-                    County = salesObject.County,
-                    Category = salesObject.Category
-                };
+                    SalesObjectDTO salesObjectDTO = new()
+                    {
+                        Id = salesObject.Id,
+                        CreationDate = salesObject.CreationDate,
+                        CreatorName = salesObject.CreatorName,
+                        Adress = salesObject.Adress,
+                        Rooms = salesObject.Rooms,
+                        LivingArea = salesObject.LivingArea,
+                        AncillaryArea = salesObject.AncillaryArea,
+                        PlotArea = salesObject.PlotArea,
+                        YearlyCost = salesObject.YearlyCost,
+                        MonthlyFee = salesObject.MonthlyFee,
+                        Level = salesObject.Level,
+                        Lift = salesObject.Lift,
+                        ListingPrice = salesObject.ListingPrice,
+                        CurrentPrice = salesObject.CurrentPrice,
+                        ObjectDescription = salesObject.ObjectDescription,
+                        BuildYear = salesObject.BuildYear,
+                        ImageLinks = salesObject.ImageLinks,
+                        ViewingDates = salesObject.ViewingDates,
+                        RealtorId = salesObject.Realtor.Id,
+                        RealtorName = $"{salesObject.Realtor.FirstName} {salesObject.Realtor.LastName}",
+                        RealtorEmail = salesObject.Realtor.Email,
+                        RealtorPhone = salesObject.Realtor.PhoneNumber,
+                        AgencyName = salesObject.Realtor.Agency.Name,
+                        AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
+                        CountyName = salesObject.County.Name,
+                        Category = salesObject.Category
+                    };
 
-                salesObjectDTOs.Add(salesObjectDTO);
+                    salesObjectDTOs.Add(salesObjectDTO);
+                }
+                return salesObjectDTOs;
             }
-
-            return salesObjectDTOs;
+            return null;
         }
 
         //DTO mapper for Agency and list of agencies 
@@ -183,6 +190,88 @@ namespace FribergHomes.API.Mappers
                 return agencyDTOs;               
         }
 
+        // Author: Tobias 2024-04-25
+        /// <summary>
+        /// Creates a new CategoryDTO object based on the provided Category object.
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns>A CategoryDTO object</returns>
+        public static CategoryDTO ToCategoryDTO(Category category)
+        {
+            CategoryDTO categoryDTO = new()
+            {
+                Id = category.Id,
+                Name = category.Name,
+                IconUrl = category.IconUrl
+            };
 
+            return categoryDTO;
+        }
+
+        // Author: Tobias 2024-04-25
+        /// <summary>
+        /// Creates a new List&lt;CategoryDTO&gt; from an existing List&lt;Category&gt;.
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns>A List&lt;CategoryDTO&gt; </returns>
+        public static List<CategoryDTO> ToListCategoryDTO(List<Category> categories)
+        {
+            List<CategoryDTO> categoryDTOs = new();
+
+            foreach (var category in categories)
+            {
+                CategoryDTO categoryDTO = new()
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                    IconUrl = category.IconUrl
+                };
+
+                categoryDTOs.Add(categoryDTO);
+            }
+
+            return categoryDTOs;
+        }
+
+        /* DTO-Mapper for County
+         * @ Author: Rebecka 2024-04-25        
+         */
+        public static CountyDTO MapCountyToDto(County county)
+        {
+            if (county == null)
+                return null;
+
+            CountyDTO countyDto = new CountyDTO
+            {
+                Id = county.Id,
+                Name = county.Name,
+            };
+
+            return countyDto;
+        }
+      
+        /* DTO-Mapper for County-List
+         * @ Author: Rebecka 2024-04-25        
+         */
+        public static List<CountyDTO> MapCountyListToDtoList(List<County> counties)
+        {
+            if (counties == null)
+                return null;
+
+            List<CountyDTO> countiesDto = new List<CountyDTO>();
+
+            foreach (var county in counties)
+            {
+                CountyDTO countyDto = new CountyDTO
+                {
+                    Id = county.Id,
+                    Name = county.Name,
+                };
+                countiesDto.Add(countyDto);
+            }
+            
+            return countiesDto;
+        }
+      
     }
 }

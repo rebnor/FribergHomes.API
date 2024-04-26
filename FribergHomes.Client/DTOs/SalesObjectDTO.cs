@@ -1,13 +1,11 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using Microsoft.SqlServer.Server;
-//using Mono.TextTemplating;
 
 namespace FribergHomes.Client.DTOs
 {
     /* SalesObjectDTO that will be used in client-API requests and responses.
      * Author: Tobias 2024-04-23
+     * @ Update: Switched from County-object to CountyName string / Reb 2024-05-25
      */
 
     public class SalesObjectDTO
@@ -84,7 +82,8 @@ namespace FribergHomes.Client.DTOs
 
         public string AgencyLogoUrl { get; set; } = string.Empty;
 
-        public County? County { get; set; }
+        //public County? County { get; set; }
+        public string CountyName { get; set; }
 
         public Category? Category { get; set; }
 
