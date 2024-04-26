@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FribergHomes.API.Models
 {
     //Author: Sanna 
+    //Update: Added attribute to List<SalesObject> to eliminate circular reference /Tobias 2024-05-26
     public class Realtor
     {
         [Key]
@@ -18,7 +20,9 @@ namespace FribergHomes.API.Models
         [Required]
         public string Picture { get; set; }
         [Required, Display(Name = "Mäklarbyrå")]
-        public Agency Agency { get; set; }       
+        public Agency Agency { get; set; }
+
+        [InverseProperty("Realtor")]
         public List<SalesObject>? SalesObjects { get; set; }
 
 

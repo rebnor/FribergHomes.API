@@ -24,6 +24,7 @@ namespace FribergHomes.Client
 
             builder.Services.AddTransient<RealtorService>(); // Reb 2024-04-24
             builder.Services.AddTransient<CountyService>(); // Reb 2024-04-25
+            builder.Services.AddTransient<ISalesObject, SalesObjectService>(); // Tobias 2024-04-25
 
 
             await builder.Build().RunAsync();
