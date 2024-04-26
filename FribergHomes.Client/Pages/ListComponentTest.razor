@@ -1,7 +1,10 @@
 ﻿@* Author: Sanna
    Component for listing generic objects by using typeparam TItem
 *@
+@using FribergHomes.Client.Services.Interfaces
 @typeparam TItem
+@inject IAgencyService agencyservice
+@inject ISalesObject salesobject 
 
 <h3>ListComponentTest</h3>
 
@@ -11,7 +14,7 @@
     <ul>
         @foreach (var item in Items)
         {
-            <li>@item.ToString()</li>
+            <li>@DisplayItem(item)</li>
         }
     </ul>
 }
@@ -24,4 +27,17 @@ else
     [Parameter]
     public IEnumerable<TItem> Items { get; set; }
 
+    private string DisplayItem(object item)
+    {
+        if(item is AgencyDTO agency)
+        {
+            return $"{agency.Name}";
+       
+        }
+        else if (item is RealtorDTO realtor)
+        {
+            return $"{realtor.FullName}";
+        }
+        return item.ToString();
+    }
 }

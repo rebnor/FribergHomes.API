@@ -3,17 +3,17 @@
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
 @inject IAgencyService agencyService
+@inject IRealtor realtorService
 
 <h3>Agency</h3>
 <ListComponentTest TItem="AgencyDTO" Items="agencies"/>
 
-
 @code {
-    private List<AgencyDTO> agencies;
-
+    private List<AgencyDTO> agencies; 
 
     protected override async Task OnInitializedAsync()
     {
         agencies = await agencyService.GetAllAgenciesAsync();
     }
+
 }
