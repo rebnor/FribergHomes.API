@@ -3,7 +3,6 @@
 * Started this just to test
 * @ Author: Rebecka 2024-04-24
 *@
-
 @using System.Text.Json
 @using FribergHomes.Client.Services.Interfaces;
 @inject IRealtor realtorService
@@ -12,7 +11,7 @@
 
 @if (Realtors == null)
 {
-    <p>Loading...</p>
+    <p>Söker efter mäklare...</p>
 }
 else
 {
@@ -30,6 +29,7 @@ else
         </thead>
         <tbody>
             @foreach (var realtor in Realtors)
+
             {
                 <tr>
                     <td>@realtor.Id</td>
@@ -47,7 +47,7 @@ else
 
 @code {
 
-    private List<RealtorDTO>? Realtors;
+    private List<RealtorDTO>? Realtors = new List<RealtorDTO>();
 
     protected override async Task OnInitializedAsync()
     {

@@ -1,5 +1,6 @@
 ﻿@page "/weather"
 @using System.Text.Json
+@using FribergHomes.Client.Components
 @inject HttpClient HttpClient
 
 <PageTitle>Weather</PageTitle>
@@ -31,6 +32,8 @@ else
 }
 
 <AllRealtors></AllRealtors> 
+
+@* <GetById ObjectType="County" ObjectId="1" /> *@
 
 @code {
     private List<Category>? categories;
