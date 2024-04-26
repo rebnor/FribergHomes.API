@@ -17,7 +17,10 @@ namespace FribergHomes.Client.Services
 
         public async Task<List<CountyDTO>> GetAllCountiesAsync()
         {
-            return await _client.GetFromJsonAsync<List<CountyDTO>>("api/County");
+            return await _client.GetFromJsonAsync<List<CountyDTO>>("/api/County");
+            //var response = await _client.GetAsync("api/County");
+            //response.EnsureSuccessStatusCode();
+            //return await response.Content.ReadFromJsonAsync<List<CountyDTO>>();
         }
 
         public async Task<CountyDTO> GetCountyByIdAsync(int id)
