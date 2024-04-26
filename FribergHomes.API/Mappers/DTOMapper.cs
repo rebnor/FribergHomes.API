@@ -96,6 +96,7 @@ namespace FribergHomes.API.Mappers
                 AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
                 CountyId = salesObject.County.Id,
                 CountyName = salesObject.County.Name,
+                CategoryId = salesObject.Category.Id,
                 CategoryName = salesObject.Category.Name,
                 CategoryLogoUrl = salesObject.Category.IconUrl
             };
@@ -149,6 +150,7 @@ namespace FribergHomes.API.Mappers
                         AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
                         CountyId = salesObject.County.Id,
                         CountyName = salesObject.County.Name,
+                        CategoryId = salesObject.Category.Id,
                         CategoryName = salesObject.Category.Name,
                         CategoryLogoUrl = salesObject.Category.IconUrl
                     };
