@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace FribergHomes.API.Models
 {
     //Author: Sanna 
+    //Update: Added attribute to List<SalesObject> to eliminate circular reference /Tobias 2024-05-26
     public class Realtor
     {
         [Key]
