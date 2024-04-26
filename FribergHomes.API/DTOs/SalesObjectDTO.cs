@@ -81,6 +81,8 @@ namespace FribergHomes.API.DTOs
 
         public string RealtorPhone { get; set; } = string.Empty;
 
+        public int AgencyId { get; set; }
+
         public string AgencyName { get; set; } = string.Empty; 
 
         public string AgencyLogoUrl { get; set; } = string.Empty;
@@ -92,8 +94,8 @@ namespace FribergHomes.API.DTOs
         public int CategoryId { get; set; }
 
         public string CategoryName { get; set; } = string.Empty;
-
-
+      
+        public string CategoryLogoUrl { get; set; } = string.Empty;
 
     }
 }

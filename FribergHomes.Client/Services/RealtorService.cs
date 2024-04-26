@@ -19,7 +19,10 @@ namespace FribergHomes.Client.Services
         }
         public async Task<List<RealtorDTO>> GetAllRealtorsAsync()
         {
-            return await _client.GetFromJsonAsync<List<RealtorDTO>>("api/Realtor");
+            //return await _client.GetFromJsonAsync<List<RealtorDTO>>("api/Realtor");
+            var response = await _client.GetAsync("api/realtor");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<RealtorDTO>>();
         }
         public async Task<RealtorDTO> GetRealtorByIdAsync(int id)
         {
