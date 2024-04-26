@@ -91,8 +91,10 @@ namespace FribergHomes.API.Mappers
                 RealtorName = $"{salesObject.Realtor.FirstName} {salesObject.Realtor.LastName}",
                 RealtorEmail = salesObject.Realtor.Email,
                 RealtorPhone = salesObject.Realtor.PhoneNumber,
+                AgencyId = salesObject.Realtor.Agency.Id,
                 AgencyName = salesObject.Realtor.Agency.Name,
                 AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
+                CountyId = salesObject.County.Id,
                 CountyName = salesObject.County.Name,
                 CategoryName = salesObject.Category.Name,
                 CategoryLogoUrl = salesObject.Category.IconUrl
@@ -142,8 +144,10 @@ namespace FribergHomes.API.Mappers
                         RealtorName = $"{salesObject.Realtor.FirstName} {salesObject.Realtor.LastName}",
                         RealtorEmail = salesObject.Realtor.Email,
                         RealtorPhone = salesObject.Realtor.PhoneNumber,
+                        AgencyId = salesObject.Realtor.Agency.Id,
                         AgencyName = salesObject.Realtor.Agency.Name,
                         AgencyLogoUrl = salesObject.Realtor.Agency.Logo,
+                        CountyId = salesObject.County.Id,
                         CountyName = salesObject.County.Name,
                         CategoryName = salesObject.Category.Name,
                         CategoryLogoUrl = salesObject.Category.IconUrl
