@@ -137,6 +137,12 @@ namespace FribergHomes.API.Controllers
                     salesObject.County = county;
                 }
 
+                var category = await _salesRepo.GetCategoryByNameAsync(salesObjectDto.CategoryName);
+                if (salesObjectDto.CategoryName == category.Name)
+                {
+                    salesObject.Category = category;
+                }
+
                 var updatedSalesObject = await _salesRepo.UpdateSalesObjectAsync(salesObject);
 
                 var dtoSalesObject = DTOMapper.ToSalesObjectDTO(updatedSalesObject);

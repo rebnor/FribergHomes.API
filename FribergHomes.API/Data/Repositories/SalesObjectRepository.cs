@@ -78,5 +78,10 @@ namespace FribergHomes.API.Data.Repositories
             var county = await _appDBctx.Counties.FirstOrDefaultAsync(c=>c.Name.ToLower() == countyName.ToLower());
             return county;
         }
+        public async Task<Category> GetCategoryByNameAsync(string categoryName)
+        {
+            var category = await _appDBctx.Categories.FirstOrDefaultAsync(c => c.Name.ToLower() == categoryName.ToLower());
+            return category;
+        }
     }
 }
