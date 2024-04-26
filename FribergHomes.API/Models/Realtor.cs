@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FribergHomes.API.Models
 {
@@ -18,7 +19,9 @@ namespace FribergHomes.API.Models
         [Required]
         public string Picture { get; set; }
         [Required, Display(Name = "Mäklarbyrå")]
-        public Agency Agency { get; set; }       
+        public Agency Agency { get; set; }
+
+        [InverseProperty("Realtor")]
         public List<SalesObject>? SalesObjects { get; set; }
 
 
