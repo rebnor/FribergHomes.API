@@ -4,6 +4,9 @@ using System.Net.Http.Json;
 
 namespace FribergHomes.Client.Services
 {
+    /* CategoryService that inherit from ICategory. 
+     * @ Author: Rebecka 2024-04-26
+     */
     public class CategoryService : ICategory
     {
         private readonly HttpClient _client;
