@@ -2,6 +2,9 @@
 
 namespace FribergHomes.Client.Services.Interfaces
 {
+    /* Interface for CategoryDTOs
+     * @ Author: Rebecka 2024-04-26
+     */
     public interface ICategory
     {
         Task<CategoryDTO> GetCategoryByIdAsync(int? id);

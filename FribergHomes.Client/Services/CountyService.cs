@@ -5,6 +5,9 @@ using System.Reflection.Metadata;
 
 namespace FribergHomes.Client.Services
 {
+    /* CountyService that inherit from ICounty. 
+     * @ Author: Rebecka 2024-04-25
+     */
     public class CountyService : ICounty
     {
         private readonly HttpClient _client;

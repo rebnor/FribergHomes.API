@@ -2,6 +2,9 @@
 
 namespace FribergHomes.Client.Services.Interfaces
 {
+    /* Interface for CountyDTO
+     * @ Author: Rebecka 2024-04-25
+     */
     public interface ICounty
     {
         Task<CountyDTO> GetCountyByIdAsync(int id);
