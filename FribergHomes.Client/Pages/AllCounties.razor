@@ -1,0 +1,44 @@
+﻿@* Gets all Counties
+* CountyService that inherit from ICounty.
+* Started this just to test
+* @ Author: Rebecka 2024-04-25
+*@
+@using System.Text.Json
+@using FribergHomes.Client.Services.Interfaces;
+@inject ICounty countyService
+
+<h3>Kommuner</h3>
+
+@if (Counties == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Namn</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var county in Counties)
+            {
+                <tr>
+                    <td>@county.Id</td>
+                    <td>@county.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    private List<CountyDTO> Counties;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Counties = await countyService.GetAllCountiesAsync();
+    }
+}

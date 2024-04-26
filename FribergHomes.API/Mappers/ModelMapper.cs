@@ -88,11 +88,15 @@ namespace FribergHomes.API.Mappers
                 BuildYear = salesObjectDto.BuildYear,
                 ImageLinks = salesObjectDto.ImageLinks,
                 ViewingDates = salesObjectDto.ViewingDates,
-                Category = salesObjectDto.Category,
                 County = new County()
                 {
                     Name = salesObjectDto.CountyName
+                },
+                Category = new Category()
+                { 
+                    Name = salesObjectDto.CategoryName
                 }
+                
             };
 
             // TODO: Realtor...?
@@ -137,10 +141,13 @@ namespace FribergHomes.API.Mappers
                     BuildYear = dto.BuildYear,
                     ImageLinks = dto.ImageLinks,
                     ViewingDates = dto.ViewingDates,
-                    Category = dto.Category,
                     County = new County()
                     {
                         Name = dto.CountyName
+                    },
+                    Category = new Category()
+                    {
+                        Name = dto.CategoryName
                     },
                     Realtor = realtor
                 };
@@ -216,7 +223,7 @@ namespace FribergHomes.API.Mappers
         /* Makes CountyDTO-List to a County-List
          * @ Author: Rebecka 2024-04-25
          */
-        public static List<County> MapCountyListToDtoList(List<CountyDTO> countiesDto)
+        public static List<County> DtoListToCountyList(List<CountyDTO> countiesDto)
         {
             if (countiesDto == null)
                 return null;

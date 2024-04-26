@@ -18,6 +18,7 @@ namespace FribergHomes.API.Data.Interfaces
 
         // Update: Added this because its needed in the ModelMapper / Reb 2024-04-25
         Task<County> GetCountyByNameAsync(string countyName);
+        Task<Category> GetCategoryByNameAsync(string categoryName);
 
     }
 }
