@@ -1,48 +1,48 @@
 ﻿@page "/weather"
 @using System.Text.Json
 @using FribergHomes.Client.Components
-@using FribergHomes.Client.Services.Interfaces
-@inject ISalesObject SoService
+@inject HttpClient HttpClient
 
 <PageTitle>Weather</PageTitle>
 
+<h1>Weather</h1>
 
+<p>Hämtning från vårt WebAPI</p>
 
-<p>Skrivning mot vårt WebAPI</p>
+@if (categories == null)
+{
+    <p><em>Väntar på kategorier...</em></p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>Id</tr>
+            <tr>Name</tr>
+        </thead>
+        <tbody>
+            @foreach (var category in categories)
+            {
+                <tr>@category.Id</tr>
+                <tr>@category.Name</tr>
+            }
+        </tbody>
 
+    </table>
+}
 
+<AllRealtors></AllRealtors> 
 
-
+@* <GetById ObjectType="County" ObjectId="1" /> *@
 
 @code {
-    public SalesObjectDTO salesObject = new()
-    {
-        CreatorName = "Tobias Ledin",
-        Adress = "Blomgatan 1",
-        Rooms = 1,
-        LivingArea = 10,
-        AncillaryArea = 5,
-        MonthlyFee = 6000,
-        Level = 3,
-        Lift = true,
-        ListingPrice = 1000000,
-        CurrentPrice = 1000000,
-        ObjectDescription = "Mysig lägenhet.",
-        BuildYear = 2020,
-        RealtorId = 3,
-        AgencyId = 3,
-        CountyId = 183,
-        CategoryId = 1
-
-    };
+    private List<Category>? categories;
 
     protected override async Task OnInitializedAsync()
     {
-
-
         try
         {
-            await SoService.Create(salesObject);
+            categories = await HttpClient.GetFromJsonAsync<List<Category>>("api/Category");
         }
         catch (Exception ex)
         {
@@ -53,5 +53,10 @@
     }
 
 
-    
+    public class Category
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string IconUrl { get; set; }
+    }
 }

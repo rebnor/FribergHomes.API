@@ -2,8 +2,6 @@
 using FribergHomes.API.Data;
 using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.Data.Repositories;
-using FribergHomes.API.Mappers;
-using FribergHomes.API.Models;
 using FribergHomes.API.Seeders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
@@ -57,8 +55,6 @@ namespace FribergHomes.API
             builder.Services.AddTransient<IAgency, AgencyRepository>(); // Sanna 
             builder.Services.AddTransient<IRealtor, RealtorRepository>(); // Tobias
             builder.Services.AddTransient<ICategory, CategoryRepository>(); // Reb
-
-            builder.Services.AddAutoMapper(typeof(SalesObjectProfile));
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
