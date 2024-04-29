@@ -1,5 +1,4 @@
-﻿using FribergHomes.API.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FribergHomes.API.DTOs
 {
