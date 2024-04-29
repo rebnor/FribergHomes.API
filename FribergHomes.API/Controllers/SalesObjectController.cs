@@ -25,7 +25,8 @@ namespace FribergHomes.API.Controllers
     * @ Updates: Updated Delete method (corrected salesObject null check (was checking for not null) and 
     *            added missing repository method call to erase object) / Tobias 2024-04-24
 
-    @ Updates: Implemented AutoMapper (injection of IMapper). Revised POST-method / Tobias 2024-04-28
+    @ Updates: Implemented AutoMapper (injection of IMapper). Revised POST-method.
+               Added GetSalesObjectsByRealtor GET-end point / Tobias 2024-04-28.
     */
     [Route("api/[controller]")]
     [ApiController]
@@ -59,9 +60,6 @@ namespace FribergHomes.API.Controllers
                     var salesObjectDTO = _mapper.Map<SalesObjectDTO>(salesObject);
                     salesObjectDTOs.Add(salesObjectDTO);
                 }
-
-                //var salesObjectDTOs = DTOMapper.ToListSalesObjectDTO(salesObjects); // Tobias
-
                 return Ok(salesObjectDTOs);
             }
             catch (Exception ex)
@@ -94,7 +92,7 @@ namespace FribergHomes.API.Controllers
         // Gets all GetSalesObjects by county id from database. // Tobias 2024-04-23
         // GET: api/SalesObject/county/{id}
         [HttpGet("county/{id}")]
-        public async Task<ActionResult<List<SalesObjectDTO>>> GetSalesObjects(int id)
+        public async Task<ActionResult<List<SalesObjectDTO>>> GetSalesObjectsByCounty(int id)
         {
             try
             {
@@ -106,6 +104,36 @@ namespace FribergHomes.API.Controllers
                 }
 
                 List<SalesObjectDTO> salesObjectDTOs = new();
+                foreach (var salesObject in salesObjects)
+                {
+                    var salesObjectDTO = _mapper.Map<SalesObjectDTO>(salesObject);
+                    salesObjectDTOs.Add(salesObjectDTO);
+                }
+
+                return Ok(salesObjectDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel vid hämtning av försäljningsobjekt! Felmeddelande: {ex.Message}");
+            }
+        }
+
+        // Gets all GetSalesObjects by realtor id from database. // Tobias 2024-04-29
+        // GET: api/SalesObject/realtor/{id}
+        [HttpGet("realtor/{id}")]
+        public async Task<ActionResult<List<SalesObjectDTO>>> GetSalesObjectsByRealtor(int id)
+        {
+            try
+            {
+                var salesObjects = await _salesRepo.GetSalesObjectsByRealtorAsync(id);
+
+                if (salesObjects == null)
+                {
+                    return NoContent();
+                }
+
+                List<SalesObjectDTO> salesObjectDTOs = new();
+
                 foreach (var salesObject in salesObjects)
                 {
                     var salesObjectDTO = _mapper.Map<SalesObjectDTO>(salesObject);
