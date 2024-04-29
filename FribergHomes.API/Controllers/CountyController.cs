@@ -2,7 +2,6 @@
 using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.DTOs;
 using FribergHomes.API.Models;
-using FribergHomes.Client.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 
