@@ -9,6 +9,8 @@ namespace FribergHomes.Client.Services
 
     /* Service that manages API requests and responses related to SalesObjectDTOs.
      * Author: Tobias 2024-04-24
+     * 
+     * Update: Added GetAllByRealtor method. Changed name of GetAll(countId) to GetAllByCounty / Tobias 2024-04-29
      */
 
     public class SalesObjectService : ISalesObject
@@ -73,12 +75,32 @@ namespace FribergHomes.Client.Services
         /// <summary>
         /// GET method that retrieves all SalesObjects with specific county id from the database.
         /// </summary>
-        /// <param name="countyId"></param>
+        /// <param name="int id"></param>
         /// <returns>A List&lt;SalesObjectDTO&gt;</returns>
         /// <exception cref="HttpRequestException"></exception>
-        public async Task<List<SalesObjectDTO>> GetAll(int countyId)
+        public async Task<List<SalesObjectDTO>> GetAllByCounty(int id)
         {
-            var response = await _client.GetAsync($"api/salesobject/county/{countyId}");
+            var response = await _client.GetAsync($"api/salesobject/county/{id}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException("Något gick fel vid hämtningen av data!");
+            }
+
+            var salesObjects = await response.Content.ReadFromJsonAsync<List<SalesObjectDTO>>();
+
+            return salesObjects ?? new List<SalesObjectDTO>();
+        }
+
+        /// <summary>
+        /// GET method that retrieves all SalesObjects with specific realtor id from the database.
+        /// </summary>
+        /// <param name="int id"></param>
+        /// <returns>A List&lt;SalesObjectDTO&gt;</returns>
+        /// <exception cref="HttpRequestException"></exception>
+        public async Task<List<SalesObjectDTO>> GetAllByRealtor(int id)
+        {
+            var response = await _client.GetAsync($"api/salesobject/realtor/{id}");
 
             if (!response.IsSuccessStatusCode)
             {

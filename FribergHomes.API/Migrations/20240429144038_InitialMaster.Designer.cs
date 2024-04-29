@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FribergHomes.API.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240417120229_InitialMasterbranch")]
-    partial class InitialMasterbranch
+    [Migration("20240429144038_InitialMaster")]
+    partial class InitialMaster
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -138,7 +138,7 @@ namespace FribergHomes.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("AncillaryArea")
+                    b.Property<double?>("AncillaryArea")
                         .HasColumnType("float");
 
                     b.Property<int>("BuildYear")
@@ -219,7 +219,7 @@ namespace FribergHomes.API.Migrations
             modelBuilder.Entity("FribergHomes.API.Models.Realtor", b =>
                 {
                     b.HasOne("FribergHomes.API.Models.Agency", "Agency")
-                        .WithMany("Realtors")
+                        .WithMany()
                         .HasForeignKey("AgencyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -238,7 +238,7 @@ namespace FribergHomes.API.Migrations
                         .HasForeignKey("CountyId");
 
                     b.HasOne("FribergHomes.API.Models.Realtor", "Realtor")
-                        .WithMany("SalesObjects")
+                        .WithMany()
                         .HasForeignKey("RealtorId");
 
                     b.Navigation("Category");
@@ -246,16 +246,6 @@ namespace FribergHomes.API.Migrations
                     b.Navigation("County");
 
                     b.Navigation("Realtor");
-                });
-
-            modelBuilder.Entity("FribergHomes.API.Models.Agency", b =>
-                {
-                    b.Navigation("Realtors");
-                });
-
-            modelBuilder.Entity("FribergHomes.API.Models.Realtor", b =>
-                {
-                    b.Navigation("SalesObjects");
                 });
 #pragma warning restore 612, 618
         }

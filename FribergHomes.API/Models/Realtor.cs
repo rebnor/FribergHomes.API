@@ -9,9 +9,9 @@ namespace FribergHomes.API.Models
     {
         [Key]
         public int Id { get; set; }
-        [Required, Display(Name="Förnamn") ]
+        [Required]
         public string FirstName { get; set; }
-        [Required, Display(Name = "Efternamn")]
+        [Required]
         public string LastName { get; set; }
         [Required, EmailAddress]
         public string Email { get; set; }
@@ -22,8 +22,8 @@ namespace FribergHomes.API.Models
         [Required, Display(Name = "Mäklarbyrå")]
         public Agency Agency { get; set; }
 
-        [InverseProperty("Realtor")]
-        public List<SalesObject>? SalesObjects { get; set; }
+        //[InverseProperty("Realtor")]
+        //public List<SalesObject>? SalesObjects { get; set; }
 
 
     }

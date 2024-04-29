@@ -1,6 +1,6 @@
-﻿using FribergHomes.API.Data.Interfaces;
+﻿using AutoMapper;
+using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.DTOs;
-using FribergHomes.API.Mappers;
 using FribergHomes.API.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace FribergHomes.API.Controllers
 {
 
-     /* API controller to handle HTTP requests and responses related to County objects.
-      * Author: Tobias 2024-04-17
-      * Revised: Tobias 2024-04-18 Implemented generalFaultMessage for status code 500 responses.
-      * @ Update: Switched from County to CountyDTO in methods 
-      *         Added DTO&Model-Mapping where its needed / Reb 2024-04-25
-      */
+    /* API controller to handle HTTP requests and responses related to County objects.
+     * Author: Tobias 2024-04-17
+     * Revised: Tobias 2024-04-18 Implemented generalFaultMessage for status code 500 responses.
+     * @ Update: Switched from County to CountyDTO in methods 
+     *         Added DTO&Model-Mapping where its needed / Reb 2024-04-25
+     */
 
     [Route("api/[controller]")]
     [ApiController]
@@ -21,10 +21,12 @@ namespace FribergHomes.API.Controllers
     {
         private readonly string _generalFaultMessage = "Ett oväntat fel uppstod vid hanteringen av förfrågan!";
         private readonly ICounty _countyRepository;
+        private readonly IMapper _mapper;
 
-        public CountyController(ICounty countyRepository)
+        public CountyController(ICounty countyRepository, IMapper mapper)
         {
             _countyRepository = countyRepository;
+            _mapper = mapper;
         }
 
 
@@ -36,10 +38,15 @@ namespace FribergHomes.API.Controllers
             try
             {
                 var counties = await _countyRepository.GetAllCountiesAsync();
-                var countiesDto = DTOMapper.MapCountyListToDtoList(counties);
-                if (countiesDto == null)
-                    return NotFound();
-                return Ok(countiesDto);
+
+                List<CountyDTO> countyDTOs = new();
+                foreach (var county in counties)
+                {
+                    var countyDTO = _mapper.Map<CountyDTO>(county);
+                    countyDTOs.Add(countyDTO);
+                }
+
+                return Ok(countyDTOs);
             }
             catch (Exception)
             {
@@ -55,14 +62,17 @@ namespace FribergHomes.API.Controllers
             try
             {
                 var county = await _countyRepository.GetCountyByIdAsync(id);
+
                 if (county == null)
                 {
                     return NotFound($"Kommun med ID: {id} ej funnen!");
                 }
-                var countyDto = DTOMapper.MapCountyToDto(county);
-                return Ok(countyDto);
+
+                var countyDTO = _mapper.Map<CountyDTO>(county);
+
+                return Ok(countyDTO);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return StatusCode(500, _generalFaultMessage);
             }
@@ -76,37 +86,44 @@ namespace FribergHomes.API.Controllers
             try
             {
                 var county = await _countyRepository.GetCountyByNameAsync(name);
+
                 if (county == null)
                 {
                     return NotFound($"Kommun med namn: {name} ej funnen!");
                 }
-                var countyDto = DTOMapper.MapCountyToDto(county);
-                return Ok(countyDto);
+
+                var countyDTO = _mapper.Map<CountyDTO>(county);
+
+                return Ok(countyDTO);
             }
             catch (Exception)
             {
                 return StatusCode(500, _generalFaultMessage);
             }
-            
+
         }
 
         // POST method that creates and stores a County object in the DB.
         // POST api/<RealtorController>
         [HttpPost]
-        public async Task<ActionResult> PostCounty(CountyDTO countyDto)
+        public async Task<ActionResult> PostCounty(CountyDTO countyDTO)
         {
             try
             {
-                var county = ModelMapper.DtoToCounty(countyDto);
-                var addedCounty = await _countyRepository.AddCountyAsync(county);
-                var dtoCounty = DTOMapper.MapCountyToDto(addedCounty);
-                return CreatedAtAction(nameof(GetCounty), new { id = county.Id }, dtoCounty);
+                var county = _mapper.Map<County>(countyDTO);
+
+                //var addedCounty = await _countyRepository.AddCountyAsync(county);
+                await _countyRepository.AddCountyAsync(county);
+
+                //var dtoCounty = DTOMapper.MapCountyToDto(addedCounty);
+
+                return CreatedAtAction(nameof(GetCounty), new { id = county.Id }, county);
             }
             catch (Exception)
             {
                 return StatusCode(500, _generalFaultMessage);
             }
-            
+
         }
 
         // PUT method that finds and updates an existing County object in the DB based on Id and Realtor object.
@@ -143,16 +160,22 @@ namespace FribergHomes.API.Controllers
             {
                 return BadRequest($"Angivet ID stämmer ej överens med kommun-ID!");
             }
+
+            var existingCounty = await _countyRepository.GetCountyByIdAsync(countyDto.Id);
+            if (existingCounty == null)
+            {
+                return NotFound($"Kommun med ID: {id} ej funnen!");
+            }
+
             try
             {
-                var county = await _countyRepository.GetCountyByIdAsync(countyDto.Id);
-                if (county == null)
-                {
-                    return NotFound($"Kommun med ID: {id} ej funnen!");
-                }
+                var county = _mapper.Map<County>(countyDto);
+
                 var updatedCounty = await _countyRepository.UpdateCountyAsync(county);
-                var dtoCounty = DTOMapper.MapCountyToDto(updatedCounty);
-                return Ok(dtoCounty);
+
+                var updatedCountyDto = _mapper.Map<CategoryDTO>(updatedCounty);
+
+                return Ok(updatedCountyDto);
             }
             catch (Exception)
             {

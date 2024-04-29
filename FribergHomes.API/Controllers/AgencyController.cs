@@ -9,6 +9,8 @@ using FribergHomes.API.Data;
 using FribergHomes.API.Models;
 using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.Mappers;
+using AutoMapper;
+using FribergHomes.API.DTOs;
 
 namespace FribergHomes.API.Controllers
 {
@@ -22,16 +24,18 @@ namespace FribergHomes.API.Controllers
     public class AgencyController : ControllerBase
     {
         private readonly IAgency _agencyRepository;
+        private readonly IMapper _mapper;
         private readonly string _generalFaultMessage = "Ett oväntat fel uppstod vid hanteringen av förfrågan!";
 
-        public AgencyController(IAgency agencyRepository)
+        public AgencyController(IAgency agencyRepository, IMapper mapper)
         {
             _agencyRepository = agencyRepository;
+            _mapper = mapper;
         }
 
         // GET: api/Agency
         [HttpGet]
-        public async Task<ActionResult<List<Agency>>> GetAgencies()
+        public async Task<ActionResult<List<AgencyDTO>>> GetAgencies()
         {
             try
             {
@@ -40,7 +44,14 @@ namespace FribergHomes.API.Controllers
                 {
                     return NotFound("Det finns inga mäklarbyråer.");
                 }
-                var agencyDTOs = DTOMapper.MapAgenciesToDtos(agencies);
+
+                List<AgencyDTO> agencyDTOs = new();
+                foreach(var agency in agencies)
+                {
+                    var agencyDTO = _mapper.Map<AgencyDTO>(agency);
+                    agencyDTOs.Add(agencyDTO);
+                }
+                
                 return Ok(agencyDTOs);
             }
             catch (Exception)
@@ -51,7 +62,7 @@ namespace FribergHomes.API.Controllers
 
         // GET: api/Agency/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Agency>> GetAgency(int id)
+        public async Task<ActionResult<AgencyDTO>> GetAgency(int id)
         {
             try
             {
@@ -60,8 +71,8 @@ namespace FribergHomes.API.Controllers
                 {
                     return NotFound($"Det existerar ingen mäklarbyrå med ID {id}.");
                 }
-                var agencyDto = DTOMapper.MapAgencyToDto(agency);
-                return Ok(agencyDto);
+                var agencyDTO = _mapper.Map<AgencyDTO>(agency);
+                return Ok(agencyDTO);
                
             }
             catch (Exception)
@@ -74,14 +85,15 @@ namespace FribergHomes.API.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754       
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAgency(int id, Agency agency)
+        public async Task<IActionResult> PutAgency(int id, AgencyDTO agencyDTO)
         {
             try
             {
-                if (id != agency.Id)
+                if (id != agencyDTO.Id)
                 {
                     return BadRequest($"Ingen mäklarbyrå har ID {id}.");
                 }
+                var agency = _mapper.Map<Agency>(agencyDTO);
                 var updatedAgency = await _agencyRepository.UpdateAgencyAsync(agency);
                 if (updatedAgency == null)
                 {
@@ -98,10 +110,11 @@ namespace FribergHomes.API.Controllers
         // POST: api/Agency
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Agency>> PostAgency(Agency agency)
+        public async Task<ActionResult<AgencyDTO>> PostAgency(AgencyDTO agencyDTO)
         {
             try
             {
+                var agency = _mapper.Map<Agency>(agencyDTO);
                 await _agencyRepository.AddAgencyAsync(agency);
                 return CreatedAtAction("GetAgency", new { id = agency.Id }, agency);
             }

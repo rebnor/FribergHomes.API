@@ -10,6 +10,7 @@ using FribergHomes.API.Models;
 using FribergHomes.API.DTOs;
 using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.Mappers;
+using AutoMapper;
 
 namespace FribergHomes.API.Controllers
 {
@@ -22,10 +23,12 @@ namespace FribergHomes.API.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategory _categoryRepo;
+        private readonly IMapper _mapper;
 
-        public CategoryController(ICategory categoryRepo)
+        public CategoryController(ICategory categoryRepo, IMapper mapper)
         {
             _categoryRepo = categoryRepo;
+            _mapper = mapper;
         }
 
         // GET: api/Categories
@@ -40,7 +43,14 @@ namespace FribergHomes.API.Controllers
                 {
                     return NoContent();
                 }
-                var categoryDTOs = DTOMapper.ToListCategoryDTO(categories); // Tobias 2024-04-25
+
+                List<CategoryDTO> categoryDTOs = new();
+                foreach(var category in categories)
+                {
+                    var categoryDTO = _mapper.Map<CategoryDTO>(category);
+                    categoryDTOs.Add(categoryDTO);
+                }
+
                 return Ok(categoryDTOs);
             }
             catch (Exception ex)
@@ -61,7 +71,9 @@ namespace FribergHomes.API.Controllers
                 {
                     return NotFound();
                 }
-                var categoryDTO = DTOMapper.ToCategoryDTO(category); // Tobias 2024-04-25
+                
+                var categoryDTO = _mapper.Map<CategoryDTO>(category);
+
                 return Ok(categoryDTO);
             }
             catch (Exception ex)
@@ -81,8 +93,10 @@ namespace FribergHomes.API.Controllers
                 {
                     return BadRequest();
                 }
-                var category = ModelMapper.ToCategory(categoryDto); // Tobias 2024-04-25
+                
+                var category = _mapper.Map<Category>(categoryDto);
                 await _categoryRepo.UpdateCategoryAsync(category);
+
                 return NoContent();
             }
             catch (Exception ex)
@@ -98,8 +112,9 @@ namespace FribergHomes.API.Controllers
         {
             try
             {
-                var category = ModelMapper.ToCategory(categoryDto); // Tobias 2024-04-25
+                var category = _mapper.Map<Category>(categoryDto);
                 await _categoryRepo.AddCategoryAsync(category);
+
                 return CreatedAtAction("GetCategory", new { id = category.Id }, category);
             }
             catch (Exception ex)
