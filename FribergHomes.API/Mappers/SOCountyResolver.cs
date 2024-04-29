@@ -5,11 +5,11 @@ using FribergHomes.API.Models;
 
 namespace FribergHomes.API.Mappers
 {
-    public class CountyResolver : IValueResolver<SalesObjectDTO, SalesObject, County?>
+    public class SOCountyResolver : IValueResolver<SalesObjectDTO, SalesObject, County?>
     {
         private readonly ICounty _countyRepository;
 
-        public CountyResolver(ICounty countyRepository)
+        public SOCountyResolver(ICounty countyRepository)
         {
             _countyRepository = countyRepository;
         }

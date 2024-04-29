@@ -5,11 +5,11 @@ using FribergHomes.API.Models;
 
 namespace FribergHomes.API.Mappers
 {
-    public class CategoryResolver : IValueResolver<SalesObjectDTO, SalesObject, Category?>
+    public class SOCategoryResolver : IValueResolver<SalesObjectDTO, SalesObject, Category?>
     {
         private readonly ICategory _categoryRepository;
 
-        public CategoryResolver(ICategory categoryRepository)
+        public SOCategoryResolver(ICategory categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }

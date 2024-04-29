@@ -7,10 +7,8 @@ namespace FribergHomes.API.Mappers
 {
     public class SalesObjectProfile : Profile
     {
-
         public SalesObjectProfile()
         {
-
             CreateMap<SalesObject, SalesObjectDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => src.CreationDate))
@@ -45,7 +43,6 @@ namespace FribergHomes.API.Mappers
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category!.Name))
                 .ForMember(dest => dest.CategoryLogoUrl, opt => opt.MapFrom(src => src.Category!.IconUrl));
 
-
             CreateMap<SalesObjectDTO, SalesObject>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => src.CreationDate))
@@ -67,10 +64,10 @@ namespace FribergHomes.API.Mappers
                 .ForMember(dest => dest.BuildYear, opt => opt.MapFrom(src => src.BuildYear))
                 .ForMember(dest => dest.ImageLinks, opt => opt.MapFrom(src => src.ImageLinks))
                 .ForMember(dest => dest.ViewingDates, opt => opt.MapFrom(src => src.ViewingDates))
-                .ForMember(dest => dest.Realtor, opt => opt.MapFrom<RealtorResolver>())
-                .ForMember(dest => dest.County, opt => opt.MapFrom<CountyResolver>())
-                .ForMember(dest => dest.Category, opt => opt.MapFrom<CategoryResolver>());
-                
+                .ForMember(dest => dest.Realtor, opt => opt.MapFrom<SORealtorResolver>())
+                .ForMember(dest => dest.County, opt => opt.MapFrom<SOCountyResolver>())
+                .ForMember(dest => dest.Category, opt => opt.MapFrom<SOCategoryResolver>());
         }
+
     }
 }
