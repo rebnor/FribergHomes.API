@@ -1,0 +1,30 @@
+﻿@page "/edit/{dtotype}/{id}"
+
+@using FribergHomes.Client.Services.Interfaces
+
+@inject ISalesObject SalesObjectService
+@inject IRealtor RealtorService
+@inject IAgencyService AgencyService
+@inject ICounty CountyService
+@inject ICategory CategoryService
+
+@* Add authorization! *@
+
+
+
+
+
+
+
+
+@code {
+
+    [SupplyParameterFromQuery(Name = "dtotype")]
+    public string? DtoType { get; set; }
+
+    [SupplyParameterFromQuery(Name = "id")]
+    public int Id { get; set; }
+
+
+    
+}
