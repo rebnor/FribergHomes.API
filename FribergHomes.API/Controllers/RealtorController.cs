@@ -4,6 +4,7 @@ using FribergHomes.API.Mappers;
 using FribergHomes.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using FribergHomes.API.DTOs;
+using AutoMapper;
 
 
 namespace FribergHomes.API.Controllers
@@ -25,10 +26,12 @@ namespace FribergHomes.API.Controllers
     {
         private readonly string _generalFaultMessage = "Ett oväntat fel uppstod vid hanteringen av förfrågan!";
         private readonly IRealtor _realtorRepository;
+        private readonly IMapper _mapper;
 
-        public RealtorController(IRealtor realtorRepository)
+        public RealtorController(IRealtor realtorRepository, IMapper mapper)
         {
             _realtorRepository = realtorRepository;
+            _mapper = mapper;
         }
 
         // GET method that returns a list of all Realtor objects stored in the DB.
@@ -39,12 +42,20 @@ namespace FribergHomes.API.Controllers
             try
             {
                 var realtors = await _realtorRepository.GetAllRealtorsAsync();
-                if (realtors == null)
+                
+                if(realtors.Any())
                 {
-                    return NotFound();
+                    List<RealtorDTO> realtorDtos = new();
+                    foreach (var realtor in realtors)
+                    {
+                        var realtorDTO = _mapper.Map<RealtorDTO>(realtor);
+                        realtorDtos.Add(realtorDTO);
+                    }
+
+                    return Ok(realtorDtos);
                 }
-                var realtorsDtos = DTOMapper.MapRealtorListToDto(realtors);
-                return Ok(realtorsDtos);
+
+                return NoContent();
             }
             catch (Exception)
             {
@@ -64,7 +75,9 @@ namespace FribergHomes.API.Controllers
                 {
                     return NotFound();
                 }
-                var realtorDto = DTOMapper.MapRealtorToDto(realtor);
+
+                var realtorDto = _mapper.Map<RealtorDTO>(realtor);
+
                 return Ok(realtorDto);
             }
             catch (Exception)
@@ -90,9 +103,15 @@ namespace FribergHomes.API.Controllers
                 }
 
                 var realtors = await _realtorRepository.GetRealtorsByAgencyAsync(agency);
-                var dtoList = DTOMapper.MapRealtorListToDto(realtors);
-                return Ok(dtoList);
 
+                List<RealtorDTO> realtorDtos = new();
+                foreach (var realtor in realtors)
+                {
+                    var realtorDto = _mapper.Map<RealtorDTO>(realtor);
+                    realtorDtos.Add(realtorDto);
+                }
+
+                return Ok(realtorDtos);
             }
             catch (Exception)
             {
@@ -100,8 +119,6 @@ namespace FribergHomes.API.Controllers
             }
 
         }
-
-
 
 
         // POST method that creates and stores a Realtor object in the DB.
@@ -127,19 +144,17 @@ namespace FribergHomes.API.Controllers
         {
             try
             {
+                var realtor = _mapper.Map<Realtor>(realtorDto);
 
-                var realtor = ModelMapper.DtoToRealtor(realtorDto);
-                var agency = await _realtorRepository.GetAgencyByNameAsync(realtorDto.Agency);
-                if (realtorDto.Agency == agency.Name)
-                {
-                    realtor.Agency = agency;
-                }
+                //var agency = await _realtorRepository.GetAgencyByNameAsync(realtorDto.Agency);
+                //if (realtorDto.Agency == agency.Name)
+                //{
+                //    realtor.Agency = agency;
+                //}
 
-                var addedRealtor = await _realtorRepository.AddRealtorAsync(realtor);
+                await _realtorRepository.AddRealtorAsync(realtor);
 
-                var dtoRealtor = DTOMapper.MapRealtorToDto(addedRealtor);
-
-                return CreatedAtAction(nameof(GetRealtor), new { id = realtor.Id }, dtoRealtor);
+                return CreatedAtAction(nameof(GetRealtor), new { id = realtor.Id }, realtor);
             }
             catch (Exception)
             {
@@ -182,20 +197,21 @@ namespace FribergHomes.API.Controllers
         {
             try
             {
-                var realtor = ModelMapper.DtoToRealtor(realtorDto);
-                var agency = await _realtorRepository.GetAgencyByNameAsync(realtorDto.Agency);
-                if (realtorDto.Agency == agency.Name)
-                {
-                    realtor.Agency = agency;
-                }
+                var realtor = _mapper.Map<Realtor>(realtorDto);
+
+                //var agency = await _realtorRepository.GetAgencyByNameAsync(realtorDto.Agency);
+                //if (realtorDto.Agency == agency.Name)
+                //{
+                //    realtor.Agency = agency;
+                //}
 
                 //var salesObjects = await _realtorRepository.GetRealtorsSalesObjects(realtor);
 
                 var updatedRealtor = await _realtorRepository.UpdateRealtorAsync(realtor);
 
-                var dtoRealtor = DTOMapper.MapRealtorToDto(updatedRealtor);
+                var updatedRealtorDto = _mapper.Map<RealtorDTO>(updatedRealtor);
 
-                return Ok(dtoRealtor);
+                return Ok(updatedRealtorDto);
             }
 
             catch (Exception)

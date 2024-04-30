@@ -18,6 +18,7 @@
     <div class="card shadow">
         @if (ObjectToShow is RealtorDTO realtor)
         {
+
             <h2>@realtor.FullName - @realtor.Agency</h2>
             <div class="pictures">
                 <img src="@realtor.Picture" width="300" />
@@ -25,6 +26,7 @@
             </div>
             <p>@realtor.Email</p>
             <p>@realtor.PhoneNumber</p>
+
         }
         else if (ObjectToShow is SalesObjectDTO salesObject)
         {

@@ -39,7 +39,7 @@ namespace FribergHomes.API.Models
         [Required]
         public double LivingArea { get; set; }
 
-        public double AncillaryArea { get; set; }
+        public double? AncillaryArea { get; set; }
 
         public double? PlotArea { get; set; }
 

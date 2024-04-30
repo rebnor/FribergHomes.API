@@ -10,6 +10,7 @@ namespace FribergHomes.API.Data.Repositories
     // @ Update: Included Agency & Salesobjects when you Get realtor/realtors / Reb 2024-04-24
     // @ Update: Added GetAgencyByNameAsync() beasue its needed in ModelMapper / Reb 2024-04-24
     // @ Update: Added GetRealtorsSalesObjects() becuase its needed in ModelMapper / Reb 2024-04-25 <- Kanske inte alls behövs? SE ÖVER
+    // @ Update: GetAllRealtorsAsync - removed include(salesobjects). / Tobias 2024-04-29
     public class RealtorRepository : IRealtor
     {
         private readonly ApplicationDBContext _appDbCtx;

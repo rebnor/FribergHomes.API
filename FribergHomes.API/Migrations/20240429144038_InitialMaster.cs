@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FribergHomes.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMasterbranch : Migration
+    public partial class InitialMaster : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -90,7 +90,7 @@ namespace FribergHomes.API.Migrations
                     Adress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Rooms = table.Column<int>(type: "int", nullable: false),
                     LivingArea = table.Column<double>(type: "float", nullable: false),
-                    AncillaryArea = table.Column<double>(type: "float", nullable: false),
+                    AncillaryArea = table.Column<double>(type: "float", nullable: true),
                     PlotArea = table.Column<double>(type: "float", nullable: true),
                     YearlyCost = table.Column<double>(type: "float", nullable: true),
                     MonthlyFee = table.Column<double>(type: "float", nullable: true),

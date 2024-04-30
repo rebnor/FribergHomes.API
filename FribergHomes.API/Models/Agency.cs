@@ -13,7 +13,7 @@ namespace FribergHomes.API.Models
         public string Presentation { get; set; }
         [Required]
         public string Logo { get; set; }
-        [Display(Name = "Mäklare")]
-        public List<Realtor>? Realtors { get; set; }
+        //[Display(Name = "Mäklare")]
+        //public List<Realtor>? Realtors { get; set; } / Tobias 2024-04-29
     }
 }

@@ -1,5 +1,4 @@
-﻿using FribergHomes.API.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FribergHomes.API.DTOs
 {
@@ -7,12 +6,19 @@ namespace FribergHomes.API.DTOs
     //Contains no list of Realtors   
 
     // Author: Sanna 2024-04-23
+    // Update: Added attributes / Tobias 2024-04-29
     public class AgencyDTO
     {
-        public int Id { get; set; }        
-        public string Name { get; set; }       
-        public string Presentation { get; set; }      
-        public string Logo { get; set; }       
-      
+        public int Id { get; set; }
+
+        [Required, Display(Name = "Mäklarbyrå")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required, Display(Name = "Beskrivning")]
+        public string Presentation { get; set; } = string.Empty;
+
+        [Required]
+        public string Logo { get; set; } = string.Empty;
+
     }
 }
