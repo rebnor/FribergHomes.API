@@ -91,7 +91,7 @@ namespace FribergHomes.API.Controllers
         // Added from Repository 2024-04-24 Reb
         // GET method that returns a Realtor object stored in the DB based on Id.
         // GET api/<RealtorController>/by-agency/{string}
-        [HttpGet("by-agency/{string}")]
+        [HttpGet("by-agency/{agencyName}")]
         public async Task<ActionResult<List<RealtorDTO>>> GetRealtorsByAgency(string agencyName)
         {
             try

@@ -53,6 +53,31 @@ namespace FribergHomes.Client.Services
             return salesObject;
         }
 
+
+
+
+        /***Test**/
+        public async Task<List<SalesObjectDTO>> GetSalesByCounty(string name)
+        {
+            var response = await _client.GetAsync($"api/salesobject/county-name/{name}");
+            var salesObjects = await response.Content.ReadFromJsonAsync<List<SalesObjectDTO>>();
+            if (salesObjects == null)
+            {
+                return null;
+            }
+
+            return salesObjects;
+        }
+
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// GET method that retrieves all SalesObjects from the database.
         /// </summary>

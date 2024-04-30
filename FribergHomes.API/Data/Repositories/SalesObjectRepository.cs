@@ -1,6 +1,7 @@
 ﻿using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 
 namespace FribergHomes.API.Data.Repositories
 {
@@ -95,5 +96,20 @@ namespace FribergHomes.API.Data.Repositories
             var category = await _appDBctx.Categories.FirstOrDefaultAsync(c => c.Name.ToLower() == categoryName.ToLower());
             return category;
         }
+        public async Task<List<SalesObject>> GetSalesObjectsByCountyNameAsync(string countyName)
+        {
+            var salesObject = await _appDBctx.SalesObjects.Where(s => s.County.Name.ToLower() == countyName.ToLower()).ToListAsync();
+            return salesObject;
+        }
+
+        public async Task<List<SalesObject>> GetRealtorsSalesObjectsAsync(int realtorId)
+        {
+            var salesObjects = await _appDBctx.SalesObjects.Where(s=>s.Realtor.Id == realtorId).ToListAsync();
+            return salesObjects;
+
+        }
+
+
+
     }
 }

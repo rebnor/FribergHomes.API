@@ -101,3 +101,19 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+
+.card {
+    min-width: 280px;
+    max-width: 300px;
+    max-height: 800px;
+    box-shadow: 5px 5px 15px black;
+    color: black;
+    /*text-shadow: 0.5px 0.5px 1px #21242C;*/
+    /*background: linear-gradient(45deg, #F4F4FC, #2C597E, #16293C, #21242C,#16293C, #2C597E, #F4F4FC, #2C597E, #16293C);*/
+}
+
+    .card img {
+        margin: auto;
+        border: 2px solid black;
+    }

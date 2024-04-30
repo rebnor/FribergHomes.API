@@ -28,12 +28,12 @@ namespace FribergHomes.Client.Services
 
         public async Task<CountyDTO> GetCountyByIdAsync(int id)
         {
-            return await _client.GetFromJsonAsync<CountyDTO>($"api/County/by-id/{id}");
+            return await _client.GetFromJsonAsync<CountyDTO>($"api/county/by-id/{id}");
         }
 
         public async Task<CountyDTO> GetCountyByNameAsync(string name)
         {
-            return await _client.GetFromJsonAsync<CountyDTO>($"api/county/{name}");
+            return await _client.GetFromJsonAsync<CountyDTO>($"api/county/by-name/{name}");
         }
 
 

@@ -148,6 +148,34 @@ namespace FribergHomes.API.Controllers
             }
         }
 
+
+
+
+        /********TEST**************/
+        [HttpGet("county-name/{name}")]
+        public async Task<ActionResult<List<SalesObjectDTO>>> GetSalesObjects(string name)
+        {
+            try
+            {
+                var salesObjects = await _salesRepo.GetSalesObjectsByCountyNameAsync(name);
+                if (salesObjects == null)
+                {
+                    return NoContent();
+                }
+                var salesObjectDTOs = DTOMapper.ToListSalesObjectDTO(salesObjects);
+                return Ok(salesObjectDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel vid hämtning av försäljningsobjekt! Felmeddelande: {ex.Message}");
+            }
+        }
+
+
+
+
+
+
         // PUT: api/SalesObjects/{id}
         /* Updates one SalesObject in the Database */
         //[HttpPut("{id}")]
