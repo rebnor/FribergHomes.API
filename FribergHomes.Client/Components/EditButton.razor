@@ -1,0 +1,30 @@
+﻿@* Author: Tobias 2024-04-30 *@
+
+@typeparam TModel
+@inject NavigationManager navMan
+
+<button @onclick="@(() => EditObject(Dto))" class="btn btn-primary"> 
+    Edit 
+</button>
+
+
+@code {
+
+    [Parameter]
+    public TModel? Dto { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private void EditObject(TModel? dto)
+    {
+        if (dto == null)
+        {
+            return;
+        }
+
+        var dtoType = typeof(TModel).Name;
+
+        navMan.NavigateTo($"/edit/{dtoType}/{Id}");
+    }
+}
