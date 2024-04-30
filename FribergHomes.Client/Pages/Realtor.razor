@@ -1,0 +1,62 @@
+﻿@* Author: Reb *@
+@page "/realtor"
+@using FribergHomes.Client.DTOs
+@using FribergHomes.Client.Services.Interfaces
+@using FribergHomes.Client.Components
+@inject IRealtor realtorService
+
+<h1>Mäklare</h1>
+
+<hr />
+
+<h3>Alla Mäklare:</h3>
+
+
+
+<h3>Sök mäklare via Id:</h3>
+<form @onsubmit="SubmitId">
+    <input type="number" @bind="realtorId" />
+    <button type="submit">Hämta annons</button>
+</form>
+@if (RealtorDto != null)
+{
+    <GetById ObjectId="@realtorId" ObjectType="Realtor" ObjectToShow="null" />
+}
+
+<h3>Sök mäklare via Byrå:</h3>
+<form @onsubmit="SubmitAgency">
+    <input type="text" @bind="agency" /> 
+    <button type="submit">Hämta mäklare från byrå</button>
+</form>
+@if (RealtorDtoList != null)
+{
+    foreach (var realtor in RealtorDtoList)
+    {
+        <GetById ObjectId="@realtor.Id" ObjectType="Realtor" ObjectToShow="null" />
+    }
+}
+
+
+
+@code {
+    private RealtorDTO RealtorDto { get; set; }
+    private List<RealtorDTO> RealtorDtoList;
+
+    private int realtorId;
+    private string agency;
+
+    private async void SubmitId()
+    {
+        RealtorDto = await realtorService.GetRealtorByIdAsync(realtorId);
+        StateHasChanged();
+    }
+
+    private async void SubmitAgency()
+    {
+        RealtorDtoList = await realtorService.GetRealtorsByAgencyAsync(agency);
+        StateHasChanged();
+    }
+
+
+
+}

@@ -22,5 +22,11 @@ namespace FribergHomes.Client.Services.Interfaces
 
         Task Delete(int id);
 
+
+
+
+        Task<List<SalesObjectDTO>> GetSalesByCounty(string name);
+
+
     }
 }

@@ -20,5 +20,9 @@ namespace FribergHomes.API.Data.Interfaces
         Task<County> GetCountyByNameAsync(string countyName);
         Task<Category> GetCategoryByNameAsync(string categoryName);
 
+        // Needed / Reb
+        Task<List<SalesObject>> GetSalesObjectsByCountyNameAsync(string name);
+        Task<List<SalesObject>> GetRealtorsSalesObjectsAsync(int realtorId);
+
     }
 }

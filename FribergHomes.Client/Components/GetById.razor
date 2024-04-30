@@ -3,6 +3,7 @@
 * @ Author: Rebecka 2024-04-26
 *@
 @using System.Text.Json
+@using System.Net.Http.Json
 @using FribergHomes.Client.Services.Interfaces;
 @using FribergHomes.Client.DTOs
 @inject IRealtor realtorService
@@ -11,20 +12,77 @@
 @inject IAgencyService agencyService
 @inject ISalesObject salesService
 
-<h1>GetById</h1>
 
 @if (ObjectToShow != null)
 {
-    <div>
+    <div class="card shadow">
         @if (ObjectToShow is RealtorDTO realtor)
         {
-            <h3>@realtor.FullName</h3>
-            <p>@realtor.Email - @realtor.Agency</p>
+            <h2>@realtor.FullName - @realtor.Agency</h2>
+            <div class="pictures">
+                <img src="@realtor.Picture" width="300" />
+                <img src="@realtor.AgencyLogo" width="150" id="agencyLogo" />
+            </div>
+            <p>@realtor.Email</p>
+            <p>@realtor.PhoneNumber</p>
         }
         else if (ObjectToShow is SalesObjectDTO salesObject)
         {
             <h3>@salesObject.Adress</h3>
-            <p>@salesObject.CurrentPrice</p>
+            foreach (var picture in salesObject.ImageLinks)
+            {
+                <img src="@picture" width="500" />
+            }
+            if (salesObject.CurrentPrice > salesObject.ListingPrice)
+            {
+                <del>@salesObject.ListingPrice kr</del>
+                <p>@salesObject.CurrentPrice kr</p>
+            }
+            else
+            {
+                <p>@salesObject.CurrentPrice kr</p>
+            }
+            <p>@salesObject.CategoryName</p>
+            <img src="@salesObject.CategoryLogoUrl" width="50" />
+            <p>Rum @salesObject.Rooms</p>
+            <p>Byggnadsår: @salesObject.BuildYear</p>
+            <p>Boarea: @salesObject.LivingArea m<sup>2</sup></p>
+            if(salesObject.AncillaryArea > 0)
+            {
+            <p>Biarea: @salesObject.AncillaryArea m<sup>2</sup></p>
+            }
+            if (salesObject.CategoryName == "Apartment")
+            {
+                <p>Våning: @salesObject.Level</p>
+                if (salesObject.Lift == true)
+                {
+                    <p>Hiss: Ja</p>
+                }
+                else
+                {
+                    <p>Hiss: Nej</p>
+                }
+            }
+            else
+            {
+                <p>Tomtarea: @salesObject.PlotArea m<sup>2</sup></p>
+            }
+            <p>Driftkostnad: @salesObject.YearlyCost kr</p>
+            <p>Månadsavgift: @salesObject.MonthlyFee kr</p>
+            <p>
+                Visningsdatum:
+                @foreach (var date in salesObject.ViewingDates)
+                {
+                    date.ToString("YYYY-mm-dd");
+                }
+            </p>
+            <h4>Beskrivning:</h4>
+            <p>@salesObject.ObjectDescription</p>
+            <h3>Mäklare</h3>
+            <p>@salesObject.RealtorName - @salesObject.AgencyName</p>
+            <p>@salesObject.RealtorEmail</p>
+            <p>@salesObject.RealtorPhone</p>
+            <img src="@salesObject.AgencyLogoUrl" width="50" />
         }
         else if (ObjectToShow is AgencyDTO agency)
         {
@@ -42,9 +100,6 @@
         }
     </div>
 }
-
-
-
 
 @code {
 

@@ -1,0 +1,69 @@
+﻿@* Author: Reb *@
+@page "/salesObject"
+@using FribergHomes.Client.DTOs
+@using FribergHomes.Client.Services.Interfaces
+@using FribergHomes.Client.Components
+@inject ISalesObject salesService
+
+<h1>Annonser</h1>
+
+<hr />
+
+
+<h3>Alla hus:</h3>
+<div class="row">
+<form @onsubmit="ShowAllSaleObjects">
+    <button type="submit">Hämta alla annonser</button>
+</form>
+<form @onsubmit="HideAllSaleObjects">
+    <button type="submit">Göm Lista</button>
+</form>
+@if (ListSalesDtos != null)
+{
+    <GetList ObjectType="SalesObject" TItem="SalesObjectDTO"></GetList>
+}
+</div>
+<hr />
+
+<h3>Sök bostad via Id:</h3>
+<form @onsubmit="SubmitId">
+    <input type="number" @bind="salesId" />
+    <button type="submit">Hämta annons</button>
+</form>
+@if (SalesObjectDto != null)
+{
+    <GetById ObjectId="@salesId" ObjectType="SalesObject" ObjectToShow="null" />
+}
+
+<hr />
+
+<Search></Search>
+
+
+
+@code {
+    private SalesObjectDTO SalesObjectDto { get; set; }
+    private List<SalesObjectDTO> ListSalesDtos;
+
+    private int salesId;
+    private string salesCounty;
+
+    private async void SubmitId()
+    {
+        SalesObjectDto = await salesService.Get(salesId);
+        StateHasChanged();
+    }
+
+    private async void ShowAllSaleObjects()
+    {
+        ListSalesDtos = await salesService.GetAll();
+        StateHasChanged();
+    }
+
+    private async void HideAllSaleObjects()
+    {
+        ListSalesDtos = null;
+        StateHasChanged();
+    }
+
+}

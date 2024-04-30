@@ -1,0 +1,85 @@
+﻿@* Gets Object by Name
+* Started this just to test
+* @ Author: Rebecka 2024-04-26
+*@
+@using System.Text.Json
+@using System.Net.Http.Json
+@using FribergHomes.Client.Services.Interfaces;
+@using FribergHomes.Client.DTOs
+@inject IRealtor realtorService
+@inject ICategory categoryService
+@inject ICounty countyService
+@inject IAgencyService agencyService
+@inject ISalesObject salesService
+
+
+@if (ObjectToShow != null)
+{
+    <div>
+
+@*         @if (ObjectToShow is RealtorDTO realtor)
+        {
+            <h3>@realtor.FullName</h3>
+            <p>@realtor.Email - @realtor.Agency</p>
+        }
+        else if (ObjectToShow is SalesObjectDTO salesObject)
+        {
+            <h3>@salesObject.Adress</h3>
+            <p>@salesObject.CurrentPrice</p>
+        }
+        else if (ObjectToShow is AgencyDTO agency)
+        {
+            <h2>@agency.Name</h2>
+            <img src="@agency.Logo" width="300" />
+        }
+        else if (ObjectToShow is CountyDTO county)
+        {
+            <h2>@county.Name</h2>
+        }
+        else if (ObjectToShow is CategoryDTO category)
+        {
+            <h2>@category.Name</h2>
+            <img src="@category.IconUrl" width="200" />
+        } *@
+
+        @if(ObjectToShow is CountyDTO county)
+        {
+            <h2>@county.Name</h2>
+        }
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string? ObjectType { get; set; }
+
+    [Parameter]
+    public string? ObjectName { get; set; }
+
+    [Parameter]
+    public object? ObjectToShow { get; set; }
+
+    private async Task GetObject()
+    {
+        // if (ObjectType == "Realtor")
+        //     ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId);
+        // else if (ObjectType == "SalesObject")
+        //     ObjectToShow = await salesService.Get(ObjectId);
+        // else if (ObjectType == "Category")
+        //     ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
+        // else if (ObjectType == "County")
+        //     ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
+        // else if (ObjectType == "Agency")
+        //     ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
+
+            ObjectToShow = await countyService.GetCountyByNameAsync(ObjectName);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetObject();
+    }
+
+}
+

@@ -48,9 +48,14 @@ namespace FribergHomes.Client.Services
             return await response.Content.ReadFromJsonAsync<RealtorDTO>();
         }
 
-        public async Task<List<RealtorDTO>> GetRealtorsByAgencyAsync(AgencyDTO agency)
+        //public async Task<List<RealtorDTO>> GetRealtorsByAgencyAsync(AgencyDTO agency)
+        //{
+        //    return await _client.GetFromJsonAsync<List<RealtorDTO>>($"api/realtor/{agency.Name}");
+        //}
+
+        public async Task<List<RealtorDTO>> GetRealtorsByAgencyAsync(string agencyName)
         {
-            return await _client.GetFromJsonAsync<List<RealtorDTO>>($"api/realtor/{agency.Name}");
+            return await _client.GetFromJsonAsync<List<RealtorDTO>>($"api/realtor/{agencyName}");
         }
     }
 }
