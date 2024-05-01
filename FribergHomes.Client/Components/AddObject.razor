@@ -1,0 +1,116 @@
+﻿@* Author: Rebecka
+   Co-author: Sanna
+*@
+@using FribergHomes.Client.Services.Interfaces
+@inject ISalesObject salesService
+@inject ICategory categoryService
+@inject IAgencyService agencyService
+@using FribergHomes.Client.DTOs
+@inject NavigationManager NavigationManager
+
+<h3>AddObject</h3>
+
+@* <EditForm Model="newSalesObject", OnValidSubmit="HandleValidSubmit">
+    <label for="address">Address: </label>
+    <InputText id="address" @bind-Value="@newSalesObject.Adress"/>
+    <button type="submit">Lägg till</button>
+</EditForm> *@
+
+@* <EditForm Model="newObject" , OnValidSubmit="HandleValidSubmit">
+    <label for="name">Name: </label>
+    <InputText id="name" @bind-Value="@newObject.Name" />
+    <label for="logo">Logga: </label>
+    <InputText id="name" @bind-Value="@newObject.IconUrl" />
+    <button type="submit">Lägg till</button>
+</EditForm>
+ *@
+
+@if (isAdded == true)
+{
+    <h1>Lyckades</h1>
+}
+else
+{
+    @if (newObject is CategoryDTO category)
+    {
+        <form @onsubmit="HandleValidSubmit">
+            <input type="hidden" @bind="category.Id" />
+            Namn: <input type="text" @bind="category.Name" />
+            Logga: <input type="text" @bind="category.IconUrl" />
+            <button type="submit">Lägg till kategori</button>
+        </form>
+    }
+    else if (newObject is AgencyDTO agency)
+    {
+        <form @onsubmit="HandleValidSubmit">
+            <input type="hidden" @bind="agency.Id"/>
+            Byrå: <input type="text" @bind="agency.Name"/>
+            Presentation: <input type="text" @bind="agency.Presentation"/>
+            Logga: <input type="text" @bind="agency.Logo"/>
+            <button type="submit">Lägg till mäklarbyrå</button>
+           
+
+        </form>
+    }
+}
+@if (errorMessage != "")
+{
+    <p>@errorMessage</p>
+}
+
+@code {
+    // private SalesObjectDTO newSalesObject = new SalesObjectDTO();
+    //isSubmitting - to prevent the user from clicking submit multiple times while the request is made, either by making the form temporarily disabled/showing a loading logo
+    // private bool isSubmitting = false;
+    public bool isAdded = false;
+
+
+    private object newObject { get; set; }
+
+    [Parameter]
+    public string ObjectType { get; set; }
+
+    public string errorMessage = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ObjectType == "category")
+        {
+            newObject = new CategoryDTO();
+        }
+        else if (ObjectType == "agency")
+        {
+            newObject = new AgencyDTO();
+        }
+
+    }
+
+    private async void HandleValidSubmit()
+    {
+        try
+        {
+            // isSubmitting = true;
+            if(ObjectType == "category")
+            {
+                await categoryService.AddCategoryAsync((CategoryDTO)newObject);
+            }
+            else if(ObjectType == "agency")
+            {
+                await agencyService.AddAgencyAsync((AgencyDTO)newObject);
+            }
+
+            isAdded = true;
+            StateHasChanged();
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+            // throw new Exception("Ett oväntat fel uppstod");
+            errorMessage = e.Message;
+        }
+        // finally
+        // {
+        //     isSubmitting = false;
+        // }
+    }
+}

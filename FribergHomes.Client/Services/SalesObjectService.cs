@@ -72,12 +72,6 @@ namespace FribergHomes.Client.Services
 
 
 
-
-
-
-
-
-
         /// <summary>
         /// GET method that retrieves all SalesObjects from the database.
         /// </summary>

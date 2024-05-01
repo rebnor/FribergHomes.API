@@ -1,7 +1,9 @@
 ﻿@page "/weather"
 @using System.Text.Json
 @using FribergHomes.Client.Components
+@using FribergHomes.Client.Services.Interfaces
 @inject HttpClient HttpClient
+@inject ICategory categoryService
 
 <PageTitle>Weather</PageTitle>
 
@@ -9,7 +11,7 @@
 
 <p>Hämtning från vårt WebAPI</p>
 
-@if (categories == null)
+@* @if (categories == null)
 {
     <p><em>Väntar på kategorier...</em></p>
 }
@@ -29,34 +31,37 @@ else
         </tbody>
 
     </table>
-}
+} *@
+
+<AddObject ObjectType="category" />
+<AddObject ObjectType="agency"/>
 
 <AllRealtors></AllRealtors> 
 
 @* <GetById ObjectType="County" ObjectId="1" /> *@
 
 @code {
-    private List<Category>? categories;
+    // private List<Category>? categories;
 
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            categories = await HttpClient.GetFromJsonAsync<List<Category>>("api/Category");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     try
+    //     {
+    //         categories = await HttpClient.GetFromJsonAsync<List<Category>>("api/Category");
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.WriteLine(ex);
+    //     }
 
 
     }
 
-
+@* 
     public class Category
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string IconUrl { get; set; }
-    }
+    } *@
 }

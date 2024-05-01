@@ -114,8 +114,9 @@ namespace FribergHomes.API.Controllers
             {
                 var category = _mapper.Map<Category>(categoryDto);
                 await _categoryRepo.AddCategoryAsync(category);
-
-                return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+                var addedCategoryDto = _mapper.Map<CategoryDTO>(category);
+                //return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+                return Ok(addedCategoryDto);
             }
             catch (Exception ex)
             {
