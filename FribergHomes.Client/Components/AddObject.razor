@@ -1,11 +1,13 @@
 ﻿@* Author: Rebecka
    Co-author: Sanna
 *@
+@page "/add"
 @using FribergHomes.Client.Services.Interfaces
+@using FribergHomes.Client.DTOs
 @inject ISalesObject salesService
 @inject ICategory categoryService
 @inject IAgencyService agencyService
-@using FribergHomes.Client.DTOs
+@inject IRealtor realtorService
 @inject NavigationManager NavigationManager
 
 <h3>AddObject</h3>
@@ -27,13 +29,13 @@
 
 @if (isAdded == true)
 {
-    <h1>Lyckades</h1>
+    <h1>Objektet lades till</h1>
 }
 else
 {
     @if (newObject is CategoryDTO category)
     {
-        <form @onsubmit="HandleValidSubmit">
+        <form @onsubmit="AddNewObject">
             <input type="hidden" @bind="category.Id" />
             Namn: <input type="text" @bind="category.Name" />
             Logga: <input type="text" @bind="category.IconUrl" />
@@ -42,13 +44,42 @@ else
     }
     else if (newObject is AgencyDTO agency)
     {
-        <form @onsubmit="HandleValidSubmit">
-            <input type="hidden" @bind="agency.Id"/>
-            Byrå: <input type="text" @bind="agency.Name"/>
-            Presentation: <input type="text" @bind="agency.Presentation"/>
-            Logga: <input type="text" @bind="agency.Logo"/>
+        <form @onsubmit="AddNewObject">
+            <input type="hidden" @bind="agency.Id" />
+            Mäklarbyrå: <input type="text" @bind="agency.Name" />
+            Presentation: <input type="text" @bind="agency.Presentation" />
+            Logga: <input type="text" @bind="agency.Logo" />
             <button type="submit">Lägg till mäklarbyrå</button>
-           
+        </form>
+    }
+    else if (newObject is RealtorDTO realtor)
+    {
+        <form @onsubmit="AddNewObject">
+            <input type="hidden" @bind="realtor.Id" /> 
+            Namn: <input type="text" @bind="realtor.FullName" />
+            Email: <input type="email" @bind="realtor.Email" />
+            Telefonnummer: <input type="text" @bind="realtor.PhoneNumber" />
+            Bild: <input type="text" @bind="realtor.Picture" />
+
+            @*
+    Mäklarbyrå:
+    <select @bind="realtor.AgencyId">
+    <option value="">Välj en mäklarbyrå</option>
+    @foreach (var a in agencyList)
+    {
+    <option value="@a.Id">@a.Name</option>
+    }
+    </select>
+    <button type="submit">Lägg till mäklare</button>      *@
+            Mäklarbyrå:
+            <select @bind="selectedAgencyId">
+                <option value="">Välj en mäklarbyrå</option>
+                @foreach (var a in agencyList)
+                {
+                    <option value="@a.Id">@a.Name</option>
+                }
+            </select>
+            <button type="submit">Lägg till mäklare</button>
 
         </form>
     }
@@ -59,18 +90,21 @@ else
 }
 
 @code {
-    // private SalesObjectDTO newSalesObject = new SalesObjectDTO();
-    //isSubmitting - to prevent the user from clicking submit multiple times while the request is made, either by making the form temporarily disabled/showing a loading logo
-    // private bool isSubmitting = false;
-    public bool isAdded = false;
-
-
-    private object newObject { get; set; }
 
     [Parameter]
     public string ObjectType { get; set; }
+    private object newObject { get; set; }
+    private string errorMessage = "";
+    private bool isAdded = false;
 
-    public string errorMessage = "";
+
+
+    private int selectedAgencyId;
+    private List<AgencyDTO> agencyList = new List<AgencyDTO>();
+    private RealtorDTO? realtor = new RealtorDTO();
+
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -82,21 +116,38 @@ else
         {
             newObject = new AgencyDTO();
         }
+        else if (ObjectType == "realtor")
+        {
+            agencyList = await agencyService.GetAllAgenciesAsync();
+            newObject = new RealtorDTO();
+        }
 
     }
 
-    private async void HandleValidSubmit()
+    private async void AddNewObject()
     {
         try
         {
-            // isSubmitting = true;
-            if(ObjectType == "category")
+
+            if (ObjectType == "category")
             {
                 await categoryService.AddCategoryAsync((CategoryDTO)newObject);
             }
-            else if(ObjectType == "agency")
+            else if (ObjectType == "agency")
             {
                 await agencyService.AddAgencyAsync((AgencyDTO)newObject);
+            }
+            else if (ObjectType == "realtor")
+            {
+                var selectedAgency = await agencyService.GetAgencyByIdAsync(selectedAgencyId);
+                if(selectedAgency != null)
+                {
+                    realtor.AgencyId = selectedAgency.Id;
+                    realtor.AgencyName = selectedAgency.Name;
+                realtor.AgencyLogo = selectedAgency.Logo;
+                await realtorService.AddRealtorAsync((RealtorDTO)newObject);
+                }
+                
             }
 
             isAdded = true;
