@@ -235,11 +235,12 @@ namespace FribergHomes.API.Controllers
                     return NotFound();
                 }
                 await _realtorRepository.DeleteRealtorAsync(realtor);
-                return Ok();
+                return NoContent();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return StatusCode(500, _generalFaultMessage);
+                return StatusCode(500, e.Message);
+                //return StatusCode(500, _generalFaultMessage);
             }
         }
     }

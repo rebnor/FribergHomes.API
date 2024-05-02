@@ -15,17 +15,21 @@
 
 @if (ObjectToShow != null)
 {
-    <div class="card shadow">
+    <div>
         @if (ObjectToShow is RealtorDTO realtor)
         {
 
-            <h2>@realtor.FullName - @realtor.Agency</h2>
+            <h2>@realtor.FullName - @realtor.AgencyName</h2>
             <div class="pictures">
                 <img src="@realtor.Picture" width="300" />
                 <img src="@realtor.AgencyLogo" width="150" id="agencyLogo" />
             </div>
             <p>@realtor.Email</p>
             <p>@realtor.PhoneNumber</p>
+
+            <div class="btn btn-danger">
+            <a href="/delete/Realtor/@realtor.Id">Ta bort Realtor</a>
+            </div>
 
         }
         else if (ObjectToShow is SalesObjectDTO salesObject)
@@ -45,7 +49,8 @@
                 <p>@salesObject.CurrentPrice kr</p>
             }
             <p>@salesObject.CategoryName</p>
-            <img src="@salesObject.CategoryLogoUrl" width="50" />
+            @* <img src="@salesObject.CategoryLogoUrl" width="50" /> *@
+            <div>@((MarkupString)@salesObject.CategoryLogoUrl)</div>
             <p>Rum @salesObject.Rooms</p>
             <p>Byggnadsår: @salesObject.BuildYear</p>
             <p>Boarea: @salesObject.LivingArea m<sup>2</sup></p>
@@ -85,22 +90,40 @@
             <p>@salesObject.RealtorEmail</p>
             <p>@salesObject.RealtorPhone</p>
             <img src="@salesObject.AgencyLogoUrl" width="50" />
+
+            <a href="/delete/Realtor/@salesObject.Id">Ta bort SalesObject</a>
+
         }
         else if (ObjectToShow is AgencyDTO agency)
         {
             <h2>@agency.Name</h2>
             <img src="@agency.Logo" width="300" />
+
+            <a href="/delete/Realtor/@agency.Id">Ta bort SalesObject</a>
+
         }
         else if (ObjectToShow is CountyDTO county)
         {
             <h2>@county.Name</h2>
+
+            <a href="/delete/Realtor/@county.Id">Ta bort Kommun</a>
+
         }
         else if (ObjectToShow is CategoryDTO category)
         {
             <h2>@category.Name</h2>
-            <img src="@category.IconUrl" width="200" />
+
+            <div>@((MarkupString)category.IconUrl)</div>
+
+
+            <a href="/delete/Realtor/@category.Id">Ta bort Kategori</a>
+
         }
     </div>
+}
+else
+{
+    <p>@error</p>
 }
 
 @code {
@@ -114,18 +137,28 @@
     [Parameter]
     public object? ObjectToShow { get; set; }
 
+    public string error;
+
     private async Task GetObject()
     {
-        if (ObjectType == "Realtor")
-            ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId);
-        else if (ObjectType == "SalesObject")
-            ObjectToShow = await salesService.Get(ObjectId);
-        else if (ObjectType == "Category")
-            ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
-        else if (ObjectType == "County")
-            ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
-        else if (ObjectType == "Agency")
-            ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
+        try
+        {
+            if (ObjectType == "Realtor")
+                ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId);
+            else if (ObjectType == "SalesObject")
+                ObjectToShow = await salesService.Get(ObjectId);
+            else if (ObjectType == "Category")
+                ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
+            else if (ObjectType == "County")
+                ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
+            else if (ObjectType == "Agency")
+                ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
+
+        }
+        catch (Exception ex)
+        {
+                error = "Tyvärr så finns inte detta id! Försök igen.";
+        }
     }
 
     protected override async Task OnInitializedAsync()

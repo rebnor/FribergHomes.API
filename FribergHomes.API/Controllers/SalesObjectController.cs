@@ -162,7 +162,15 @@ namespace FribergHomes.API.Controllers
                 {
                     return NoContent();
                 }
-                var salesObjectDTOs = DTOMapper.ToListSalesObjectDTO(salesObjects);
+                //var salesObjectDTOs = DTOMapper.ToListSalesObjectDTO(salesObjects);
+                List<SalesObjectDTO> salesObjectDTOs = new();
+
+                foreach (var salesObject in salesObjects)
+                {
+                    var salesObjectDTO = _mapper.Map<SalesObjectDTO>(salesObject);
+                    salesObjectDTOs.Add(salesObjectDTO);
+                }
+
                 return Ok(salesObjectDTOs);
             }
             catch (Exception ex)

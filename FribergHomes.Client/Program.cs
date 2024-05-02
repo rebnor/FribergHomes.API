@@ -24,6 +24,9 @@ namespace FribergHomes.Client
             builder.Services.AddTransient<ISalesObject, SalesObjectService>(); // Tobias 2024-04-25
             builder.Services.AddTransient<ICategory, CategoryService>(); // Rebecka 2024-04-26
 
+            builder.Services.AddBlazorBootstrap();
+
+
 
 
             await builder.Build().RunAsync();
