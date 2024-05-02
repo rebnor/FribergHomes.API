@@ -28,8 +28,17 @@ namespace FribergHomes.API.Data.Repositories
 
         public async Task DeleteRealtorAsync(Realtor realtor)
         {
+            // test reb 2024-04-30
+            realtor.Agency = null; 
+            var saleobjects = await _appDbCtx.SalesObjects.Where(s => s.Realtor.Id == realtor.Id).ToListAsync();
+            foreach (var so in saleobjects)
+            {
+                _ = so.Realtor == null;
+            }
+
             _appDbCtx.Remove(realtor);
             await _appDbCtx.SaveChangesAsync();
+
         }
 
         public async Task<List<Realtor>> GetAllRealtorsAsync()
@@ -46,7 +55,8 @@ namespace FribergHomes.API.Data.Repositories
 
         public async Task<Realtor> GetRealtorByIdAsync(int id)
         {
-            var realtor = await _appDbCtx.Realtors.Include(r=>r.Agency).FirstOrDefaultAsync(r => r.Id == id);
+            //var realtor = await _appDbCtx.Realtors.FirstOrDefaultAsync(r => r.Id == id);
+            var realtor = await _appDbCtx.Realtors.Include(r => r.Agency).FirstOrDefaultAsync(r => r.Id == id);
             return realtor;
         }
 

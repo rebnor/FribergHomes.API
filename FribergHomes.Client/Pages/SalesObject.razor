@@ -23,6 +23,7 @@
     <GetList ObjectType="SalesObject" TItem="SalesObjectDTO"></GetList>
 }
 </div>
+
 <hr />
 
 <h3>Sök bostad via Id:</h3>
@@ -32,13 +33,12 @@
 </form>
 @if (SalesObjectDto != null)
 {
-    <GetById ObjectId="@salesId" ObjectType="SalesObject" ObjectToShow="null" />
+    <GetById ObjectId="salesId" ObjectType="SalesObject" ObjectToShow="null" />
 }
 
 <hr />
 
 <Search></Search>
-
 
 
 @code {

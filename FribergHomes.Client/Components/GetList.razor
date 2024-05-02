@@ -14,7 +14,7 @@
 @if (ListToShow != null)
 {
     <div class="row text-center">
-
+        
         @foreach (var item in ListToShow)
         {
             <div class="col-md-4">
@@ -22,7 +22,7 @@
 
                     @if (item is RealtorDTO realtor)
                     {
-                        <h2>@realtor.FullName - @realtor.Agency</h2>
+                        <h2>@realtor.FullName - @realtor.AgencyName</h2>
                         <div class="pictures">
                             <img src="@realtor.Picture" width="300" />
                             <img src="@realtor.AgencyLogo" width="150" id="agencyLogo" />
@@ -32,8 +32,6 @@
                     }
                     else if (item is SalesObjectDTO salesObject)
                     {
-
-
                         <h3>@salesObject.Adress</h3>
                         foreach (var picture in salesObject.ImageLinks)
                         {
@@ -91,8 +89,10 @@
                     }
                     else if (item is CategoryDTO category)
                     {
+
                         <h2>@category.Name</h2>
-                        <img src="@category.IconUrl" width="200" />
+                        <div>@((MarkupString)category.IconUrl)</div>
+
                     }
                 </div>
             </div>
@@ -113,10 +113,11 @@
 
     private bool isFiltered = false;
 
+
     private async Task GetObjects()
     {
         if (ObjectType == "Realtor")
-            ListToShow = (List<TItem>)(object)await realtorService.GetAllRealtorsAsync();
+            ListToShow = (List<TItem>)(object)await realtorService.GetAllRealtorsAsync(); 
         else if (ObjectType == "SalesObject")
             ListToShow = (List<TItem>)(object)await salesService.GetAll();
         else if (ObjectType == "Category")

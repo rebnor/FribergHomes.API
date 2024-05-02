@@ -112,9 +112,10 @@ namespace FribergHomes.API
             // Added and configured CORS middleware  // Tobias 2024-04-23
             app.UseCors(policy =>
             {
-                policy.WithOrigins("https://localhost:7196", "http://localhost:5083", "https://localhost:7161/")
+                policy.WithOrigins("https://localhost:7196", "http://localhost:5083", "https://localhost:7161")
                 .AllowAnyHeader()
-                .WithHeaders(HeaderNames.ContentType);
+                .AllowAnyMethod(); // test reb 2024-04-30
+                //.WithHeaders(HeaderNames.ContentType);
             });
 
             app.UseHttpsRedirection();

@@ -104,9 +104,9 @@ code {
 
 
 .card {
-    min-width: 280px;
+/*    min-width: 280px;
     max-width: 300px;
-    max-height: 800px;
+    max-height: 800px;*/
     box-shadow: 5px 5px 15px black;
     color: black;
     /*text-shadow: 0.5px 0.5px 1px #21242C;*/
@@ -117,3 +117,9 @@ code {
         margin: auto;
         border: 2px solid black;
     }
+
+
+/** Google iconer**/
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+}
