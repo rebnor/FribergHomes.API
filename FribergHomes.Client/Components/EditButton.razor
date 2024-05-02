@@ -1,30 +1,70 @@
 ﻿@* Author: Tobias 2024-04-30 *@
 
-@typeparam TModel
+@typeparam TDto
 @inject NavigationManager navMan
 
-<button @onclick="@(() => EditObject(Dto))" class="btn btn-primary"> 
+@* Add authorization! *@
+
+
+
+<button @onclick="@(() => EditObject())" class="btn btn-primary"> 
     Edit 
 </button>
 
 
+
 @code {
-
     [Parameter]
-    public TModel? Dto { get; set; }
+    public TDto? Dto { get; set; }
 
-    [Parameter]
     public int Id { get; set; }
 
-    private void EditObject(TModel? dto)
+    private string? typeName;
+
+    private void EditObject()
     {
-        if (dto == null)
+        if (Dto == null)
         {
             return;
         }
 
-        var dtoType = typeof(TModel).Name;
+        var dtoType = Dto!.GetType().Name;
 
-        navMan.NavigateTo($"/edit/{dtoType}/{Id}");
+        switch (dtoType)
+        {
+            case "SalesObjectDTO":
+                typeName = "salesobject";
+                break;
+
+            case "RealtorDTO":
+                typeName = "realtor";
+                break;
+
+            case "AgencyDTO":
+                typeName = "agency";
+                break;
+
+            case "CategoryDTO":
+                typeName = "category";
+                break;
+
+            case "CountyDTO":
+                typeName = "county";
+                break;
+
+            default:
+                throw new Exception("Object type not known!");
+        }
+
+        var idProperty = Dto.GetType().GetProperty("Id");
+
+        if(idProperty == null)
+        {
+            throw new Exception("No Id property found!");
+        }
+
+        Id = (int)idProperty.GetValue(Dto)!;
+
+        navMan.NavigateTo($"/edit/{typeName}/{Id}");
     }
 }
