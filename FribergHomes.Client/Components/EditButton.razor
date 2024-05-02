@@ -1,21 +1,21 @@
 ﻿@* Author: Tobias 2024-04-30 *@
 
-@typeparam TDto
-@inject NavigationManager navMan
+@typeparam TObject
+@inject NavigationManager NavMan
 
 @* Add authorization! *@
 
 
 
 <button @onclick="@(() => EditObject())" class="btn btn-primary"> 
-    Edit 
+    Ändra 
 </button>
 
 
 
 @code {
     [Parameter]
-    public TDto? Dto { get; set; }
+    public TObject? TargetObject { get; set; }
 
     public int Id { get; set; }
 
@@ -23,48 +23,45 @@
 
     private void EditObject()
     {
-        if (Dto == null)
+        if (TargetObject == null)
         {
             return;
         }
 
-        var dtoType = Dto!.GetType().Name;
+        var dtoType = TargetObject!.GetType().Name.ToLower();
 
-        switch (dtoType)
-        {
-            case "SalesObjectDTO":
-                typeName = "salesobject";
-                break;
+        var typeName = dtoType[..^3];
 
-            case "RealtorDTO":
-                typeName = "realtor";
-                break;
+        // switch (dtoType)
+        // {
+        //     case "SalesObjectDTO":
+        //         typeName = "salesobject";
+        //         break;
 
-            case "AgencyDTO":
-                typeName = "agency";
-                break;
+        //     case "RealtorDTO":
+        //         typeName = "realtor";
+        //         break;
 
-            case "CategoryDTO":
-                typeName = "category";
-                break;
+        //     case "AgencyDTO":
+        //         typeName = "agency";
+        //         break;
 
-            case "CountyDTO":
-                typeName = "county";
-                break;
+        //     case "CategoryDTO":
+        //         typeName = "category";
+        //         break;
 
-            default:
-                throw new Exception("Object type not known!");
-        }
+        //     case "CountyDTO":
+        //         typeName = "county";
+        //         break;
 
-        var idProperty = Dto.GetType().GetProperty("Id");
+        //     default:
+        //         throw new Exception("Object type not known!");
+        // }
 
-        if(idProperty == null)
-        {
-            throw new Exception("No Id property found!");
-        }
+        var idProperty = TargetObject.GetType().GetProperty("Id");
 
-        Id = (int)idProperty.GetValue(Dto)!;
+        Id = (int)idProperty.GetValue(TargetObject)!;
 
-        navMan.NavigateTo($"/edit/{typeName}/{Id}");
+        NavMan.NavigateTo($"/edit/{typeName}/{Id}");
     }
 }
