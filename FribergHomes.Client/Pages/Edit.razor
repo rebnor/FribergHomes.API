@@ -1,4 +1,6 @@
-﻿@page "/edit/{dtotype}/{id}"
+﻿@* Author: Tobias 2024-05-02 *@
+
+@page "/edit/{objecttype}/{id:int}"
 
 @using FribergHomes.Client.Services.Interfaces
 
@@ -12,6 +14,196 @@
 
 
 
+@if (ObjectType == "salesobject")
+{
+    if (SalesObject == null)
+    {
+        <p>Laddar försäljningsobjekt...</p>
+    }
+    else
+    {
+        <span>Visa formulär för försäljningsobjekt med ID: @SalesObject!.Id </span>
+
+        <EditForm Model="SalesObject" OnValidSubmit="Submit" FormName="SalesObjectForm">
+            <DataAnnotationsValidator />
+            <div>
+                <label>
+                    Adress
+                    <InputText @bind-Value="SalesObject!.Adress" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Objektbeskrivning
+                    <InputText @bind-Value="SalesObject!.ObjectDescription" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Pris
+                    <InputNumber @bind-Value="SalesObject!.CurrentPrice" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Rum
+                    <InputNumber @bind-Value="SalesObject!.Rooms" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Boarea
+                    <InputNumber @bind-Value="SalesObject!.LivingArea" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Boarea
+                    <InputNumber @bind-Value="SalesObject!.LivingArea" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Biarea
+                    <InputNumber @bind-Value="SalesObject!.AncillaryArea" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Tomtarea
+                    <InputNumber @bind-Value="SalesObject!.PlotArea" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Driftkostnad
+                    <InputNumber @bind-Value="SalesObject!.YearlyCost" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Månadsavgift
+                    <InputNumber @bind-Value="SalesObject!.MonthlyFee" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Våning
+                    <InputNumber @bind-Value="SalesObject!.Level" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Hiss
+                    <InputSelect @bind-Value="SalesObject!.Lift">
+                        <option value="null">
+                            Hiss?
+                        </option>
+                        <option checked="@(SalesObject!.Lift == true)" value="true">
+                            Ja
+                        </option>
+                        <option checked="@(SalesObject!.Lift == false)" value="false">
+                            Nej
+                        </option>
+                    </InputSelect>
+                </label>
+            </div>
+            <div>
+                <label>
+                    Byggnationsår
+                    <InputNumber @bind-Value="SalesObject!.BuildYear" />
+                </label>
+            </div>
+
+
+
+
+
+        </EditForm>
+
+    }
+
+
+}
+
+@if (ObjectType == "realtor")
+{
+    if (Realtor == null)
+    {
+        <p>Laddar mäklare...</p>
+    }
+    else
+    {
+        <span>Visa formulär för mäklare med ID: @Realtor!.Id </span>
+
+        <EditForm Model="Realtor" OnValidSubmit="Submit" FormName="RealtorForm">
+            <DataAnnotationsValidator />
+
+
+
+        </EditForm>
+
+    }
+}
+
+@if (ObjectType == "agency")
+{
+    if (Agency == null)
+    {
+        <p>Laddar mäklarbyrå...</p>
+    }
+    else
+    {
+        <span>Visa formulär för mäklarbyrå med ID: @Agency!.Id </span>
+
+        <EditForm Model="Agency" OnValidSubmit="Submit" FormName="AgencyForm">
+            <DataAnnotationsValidator />
+
+
+        </EditForm>
+
+    }
+}
+
+@if (ObjectType == "category")
+{
+    if (County == null)
+    {
+        <p>Laddar kommun...</p>
+    }
+    else
+    {
+        <span>Visa formulär för kommun med ID: @County!.Id </span>
+
+        <EditForm Model="County" OnValidSubmit="Submit" FormName="CountyForm">
+            <DataAnnotationsValidator />
+
+
+
+        </EditForm>
+
+    }
+}
+
+@if (ObjectType == "county")
+{
+    if (County == null)
+    {
+        <p>Laddar kommun...</p>
+    }
+    else
+    {
+        <span>Visa formulär för kommun med ID: @County!.Id </span>
+
+        <EditForm Model="County" OnValidSubmit="Submit" FormName="CountyForm">
+            <DataAnnotationsValidator />
+
+
+
+        </EditForm>
+
+    }
+}
 
 
 
@@ -19,12 +211,56 @@
 
 @code {
 
-    [SupplyParameterFromQuery(Name = "dtotype")]
-    public string? DtoType { get; set; }
+    [Parameter]
+    public string? ObjectType { get; set; }
 
-    [SupplyParameterFromQuery(Name = "id")]
+    [Parameter]
     public int Id { get; set; }
 
+    public SalesObjectDTO? SalesObject { get; set; }
 
-    
+    public RealtorDTO? Realtor { get; set; }
+
+    public AgencyDTO? Agency { get; set; }
+
+    public CategoryDTO? Category { get; set; }
+
+    public CountyDTO? County { get; set; }
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        switch (ObjectType)
+        {
+            case "salesobject":
+
+                SalesObject = await SalesObjectService.Get(Id);
+                break;
+
+            case "realtor":
+
+                Realtor = await RealtorService.GetRealtorByIdAsync(Id);
+                break;
+
+            case "agency":
+
+                Agency = await AgencyService.GetAgencyByIdAsync(Id);
+                break;
+
+            case "category":
+
+                Category = await CategoryService.GetCategoryByIdAsync(Id);
+                break;
+
+            case "county":
+
+                County = await CountyService.GetCountyByIdAsync(Id);
+                break;
+        }
+    }
+
+    private void Submit()
+    {
+
+    }
 }
