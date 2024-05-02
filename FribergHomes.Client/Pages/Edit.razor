@@ -4,6 +4,7 @@
 
 @using FribergHomes.Client.Services.Interfaces
 
+@inject NavigationManager NavMan
 @inject ISalesObject SalesObjectService
 @inject IRealtor RealtorService
 @inject IAgencyService AgencyService
@@ -28,20 +29,26 @@
             <DataAnnotationsValidator />
             <div>
                 <label>
-                    Adress
-                    <InputText @bind-Value="SalesObject!.Adress" />
-                </label>
-            </div>
-            <div>
-                <label>
                     Objektbeskrivning
                     <InputText @bind-Value="SalesObject!.ObjectDescription" />
                 </label>
             </div>
             <div>
                 <label>
+                    Adress
+                    <InputText @bind-Value="SalesObject!.Adress" />
+                </label>
+            </div>
+            <div>
+                <label>
                     Pris
                     <InputNumber @bind-Value="SalesObject!.CurrentPrice" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Byggnationsår
+                    <InputNumber @bind-Value="SalesObject!.BuildYear" />
                 </label>
             </div>
             <div>
@@ -56,74 +63,74 @@
                     <InputNumber @bind-Value="SalesObject!.LivingArea" />
                 </label>
             </div>
-            <div>
-                <label>
-                    Boarea
-                    <InputNumber @bind-Value="SalesObject!.LivingArea" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Biarea
-                    <InputNumber @bind-Value="SalesObject!.AncillaryArea" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Tomtarea
-                    <InputNumber @bind-Value="SalesObject!.PlotArea" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Driftkostnad
-                    <InputNumber @bind-Value="SalesObject!.YearlyCost" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Månadsavgift
-                    <InputNumber @bind-Value="SalesObject!.MonthlyFee" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Våning
-                    <InputNumber @bind-Value="SalesObject!.Level" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Hiss
-                    <InputSelect @bind-Value="SalesObject!.Lift">
-                        <option value="null">
-                            Hiss?
-                        </option>
-                        <option checked="@(SalesObject!.Lift == true)" value="true">
-                            Ja
-                        </option>
-                        <option checked="@(SalesObject!.Lift == false)" value="false">
-                            Nej
-                        </option>
-                    </InputSelect>
-                </label>
-            </div>
-            <div>
-                <label>
-                    Byggnationsår
-                    <InputNumber @bind-Value="SalesObject!.BuildYear" />
-                </label>
-            </div>
 
+            @if (category == "House" || category == "TownHouse" || category == "VacationHome")
+            {
+                <div>
+                    <label>
+                        Biarea
+                        <InputNumber @bind-Value="SalesObject!.AncillaryArea" />
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        Tomtarea
+                        <InputNumber @bind-Value="SalesObject!.PlotArea" />
+                    </label>
+                </div>
 
+                @if (category == "House" || category == "VacationHome")
+                {
+                    <div>
+                        <label>
+                            Driftkostnad
+                            <InputNumber @bind-Value="SalesObject!.YearlyCost" />
+                        </label>
+                    </div>
+                }
+            }
 
+            @if (category == "TownHouse" || category == "Apartment")
+            {
+                <div>
+                    <label>
+                        Månadsavgift
+                        <InputNumber @bind-Value="SalesObject!.MonthlyFee" />
+                    </label>
+                </div>
 
+                @if (category == "Apartment")
+                {
+                    <div>
+                        <label>
+                            Våning
+                            <InputNumber @bind-Value="SalesObject!.Level" />
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Hiss
+                            <InputSelect @bind-Value="SalesObject!.Lift">
+                                <option value="null">
+                                    Hiss?
+                                </option>
+                                <option checked="@(SalesObject!.Lift == true)" value="true">
+                                    Ja
+                                </option>
+                                <option checked="@(SalesObject!.Lift == false)" value="false">
+                                    Nej
+                                </option>
+                            </InputSelect>
+                        </label>
+                    </div>
+                }
+            }
+            <div>
+                <button type="submit">Spara</button>
+            </div>
 
         </EditForm>
-
     }
-
-
 }
 
 @if (ObjectType == "realtor")
@@ -138,8 +145,39 @@
 
         <EditForm Model="Realtor" OnValidSubmit="Submit" FormName="RealtorForm">
             <DataAnnotationsValidator />
-
-
+            <div>
+                <label>
+                    Namn
+                    <InputText @bind-Value="Realtor!.FullName" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Email
+                    <InputText @bind-Value="Realtor!.Email" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Telefon
+                    <InputText @bind-Value="Realtor!.PhoneNumber" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Namn
+                    <InputText @bind-Value="Realtor!.FullName" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Profilbild
+                    <InputText @bind-Value="Realtor!.Picture" />
+                </label>
+            </div>
+            <div>
+                <button type="submit">Spara</button>
+            </div>
 
         </EditForm>
 
@@ -217,6 +255,8 @@
     [Parameter]
     public int Id { get; set; }
 
+    private string? category;
+
     public SalesObjectDTO? SalesObject { get; set; }
 
     public RealtorDTO? Realtor { get; set; }
@@ -235,6 +275,7 @@
             case "salesobject":
 
                 SalesObject = await SalesObjectService.Get(Id);
+                category = SalesObject.CategoryName;
                 break;
 
             case "realtor":
@@ -259,8 +300,34 @@
         }
     }
 
-    private void Submit()
+    private async void Submit()
     {
+        switch (ObjectType)
+        {
+            case "salesobject":
 
+                await SalesObjectService.Update(Id, SalesObject!);
+                break;
+
+            case "realtor":
+
+                Realtor = await RealtorService.GetRealtorByIdAsync(Id);
+                break;
+
+            case "agency":
+
+                Agency = await AgencyService.GetAgencyByIdAsync(Id);
+                break;
+
+            case "category":
+
+                Category = await CategoryService.GetCategoryByIdAsync(Id);
+                break;
+
+            case "county":
+
+                County = await CountyService.GetCountyByIdAsync(Id);
+                break;
+        }
     }
 }
