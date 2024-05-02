@@ -4,11 +4,36 @@
 @using FribergHomes.Client.Services.Interfaces
 @using FribergHomes.Client.Components
 @using System.Text.Json
+@using BlazorBootstrap
 @inject ICounty countyService
 
 <h3>Kommun</h3>
 
 <hr />
+
+<Search></Search>
+
+@* <h4>Search as you write</h4>
+
+<input type="text" value="@countyName" @oninput="@FilterDtos" placeholder="Sök efter kommun..." />
+@if(FilteredDto != null)
+{
+    <div class="dropdown">
+        <ul class="dropdown-list">
+            @foreach (var county in FilteredDto)
+            {
+                <li class="dropdown-item" @onclick="(e) => GetCounty(county.Name)" style="cursor: pointer">@county.Name</li>
+            }
+        </ul>
+    </div>
+}
+@if (CountyDto != null)
+{
+       <GetById ObjectId="@CountyDto.Id" ObjectType="County" /> 
+}
+
+<hr />
+
 
 <h4>Sök kommun via Id:</h4>
 <form @onsubmit="SubmitId">
@@ -18,20 +43,7 @@
 @if (countyId != 0)
 {
     <GetById ObjectId="@countyId" ObjectType="County" ObjectToShow="null" />
-}
-
-<h4>Sök kommun via namn:</h4>
-<form @onsubmit="SubmitName">
-    <input type="text" @bind="countyName" />
-    <button type="submit">Hämta kommun</button>
-</form>
-
-@if (countyName != "")
-{
-    <GetByName ObjectName="@countyName" ObjectType="County" ObjectToShow="null" />
-}
-
-
+} *@
 
 
 @code {
@@ -41,6 +53,21 @@
 
     private int countyId = 0;
     private string countyName = "";
+
+    private List<CountyDTO> FilteredDto;
+
+
+    private void FilterDtos(ChangeEventArgs args)
+    {
+        countyName = args.Value.ToString();
+        FilteredDto = CountiesDtos.Where(c => c.Name.ToLower().Contains(countyName.ToLower())).ToList();
+        StateHasChanged();
+    }
+    private async Task GetCounty(string name)
+    {
+        CountyDto = await countyService.GetCountyByNameAsync(name);
+        StateHasChanged();
+    }
 
     private async void SubmitId()
     {
@@ -53,21 +80,9 @@
         StateHasChanged();
     }
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     try
-    //     {
-    //         // CountyDto = await countyService.GetCountyByIdAsync(objectIdValue);
-    //         CountiesDtos = await countyService.GetAllCountiesAsync();
-    //         // CountyDto = await countyService.GetCountyByNameAsync(CountyDto.Name);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine(ex);
-    //     }
-
-
-    // }
-
-
+    protected override async Task OnInitializedAsync()
+    {
+        CountiesDtos = await countyService.GetAllCountiesAsync();
+        StateHasChanged();
+    }
 }

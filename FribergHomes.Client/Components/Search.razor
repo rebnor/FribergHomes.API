@@ -2,12 +2,25 @@
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
 @inject ISalesObject salesService
+@inject ICounty countyService
 
-<h4>Sök bostad via kommun:</h4>
-<form @onsubmit="SubmitName">
-    <input type="text" @bind="countyName" />
-    <button type="submit">Sök</button>
-</form>
+
+
+
+<h4>Search as you write</h4>
+
+<input type="text" value="@countyName" @oninput="@FilterDtos" placeholder="Sök efter kommun..." />
+@if (FilteredDto != null)
+{
+    <div class="dropdown">
+        <ul class="dropdown-list">
+            @foreach (var county in FilteredDto)
+            {
+                <li class="dropdown-item" @onclick="(e) => GetCountiesSalesObjects(county.Name)" style="cursor: pointer">@county.Name</li>
+            }
+        </ul>
+    </div>
+}
 @if (SaleObjectsDtos != null)
 {
     @if (SaleObjectsDtos.Count > 0)
@@ -23,13 +36,68 @@
     }
 }
 
+
+<hr />
+
+@* <h4>Sök bostad via kommun:</h4>
+<form @onsubmit="SubmitName">
+    <input type="text" @bind="countyName" />
+    <button type="submit">Sök</button>
+</form>
+
+@if (SaleObjectsDtos != null)
+{
+    @if (SaleObjectsDtos.Count > 0)
+    {
+        foreach (var salesObject in SaleObjectsDtos)
+        {
+            <GetById ObjectId="@salesObject.Id" ObjectType="SalesObject" ObjectToShow="null" />
+        }
+    }
+    else
+    {
+        <p>Inga annonser i denna kommun</p>
+    }
+}
+ *@
 @code {
     private List<SalesObjectDTO> SaleObjectsDtos;
     private string countyName;
+
+
+    private CountyDTO? CountyDto { get; set; }
+    private List<CountyDTO> CountiesDtos;
+    private List<CountyDTO> FilteredDto;
+
+    private void FilterDtos(ChangeEventArgs args)
+    {
+        countyName = args.Value.ToString();
+        FilteredDto = CountiesDtos.Where(c => c.Name.ToLower().Contains(countyName.ToLower())).ToList();
+        StateHasChanged();
+    }
+    private async Task GetCountiesSalesObjects(string name)
+    {
+        SaleObjectsDtos = await salesService.GetSalesByCounty(name);
+        FilteredDto = null;
+        StateHasChanged();
+    }
+
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        CountiesDtos = await countyService.GetAllCountiesAsync();
+        StateHasChanged();
+    }
+
+
 
     private async void SubmitName()
     {
         SaleObjectsDtos = await salesService.GetSalesByCounty(countyName);
         StateHasChanged();
     }
+
 }

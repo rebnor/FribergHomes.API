@@ -10,13 +10,24 @@
 <hr />
 
 <h3>Alla Mäklare:</h3>
-
+<div class="row">
+    <form @onsubmit="ShowAllRealtors">
+        <button type="submit">Hämta alla mäklare</button>
+    </form>
+    <form @onsubmit="HideAllRealtors">
+        <button type="submit">Göm Lista</button>
+    </form>
+    @if (RealtorDtoList != null)
+    {
+        <GetList ObjectType="Realtor" TItem="RealtorDTO"></GetList>
+    }
+</div>
 
 
 <h3>Sök mäklare via Id:</h3>
 <form @onsubmit="SubmitId">
     <input type="number" @bind="realtorId" />
-    <button type="submit">Hämta annons</button>
+    <button type="submit">Hämta mäklare</button>
 </form>
 @if (RealtorDto != null)
 {
@@ -25,9 +36,10 @@
 
 <h3>Sök mäklare via Byrå:</h3>
 <form @onsubmit="SubmitAgency">
-    <input type="text" @bind="agency" /> 
+    <input type="text" @bind="agency" />
     <button type="submit">Hämta mäklare från byrå</button>
 </form>
+
 @if (RealtorDtoList != null)
 {
     foreach (var realtor in RealtorDtoList)
@@ -35,6 +47,7 @@
         <GetById ObjectId="@realtor.Id" ObjectType="Realtor" ObjectToShow="null" />
     }
 }
+
 
 
 
@@ -55,8 +68,20 @@
     {
         RealtorDtoList = await realtorService.GetRealtorsByAgencyAsync(agency);
         StateHasChanged();
+
     }
 
+    private async void ShowAllRealtors()
+    {
+        RealtorDtoList = await realtorService.GetAllRealtorsAsync();
+        StateHasChanged();
+    }
+
+    private async void HideAllRealtors()
+    {
+        RealtorDtoList = null;
+        StateHasChanged();
+    }
 
 
 }

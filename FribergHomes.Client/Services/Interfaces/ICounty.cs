@@ -12,6 +12,7 @@ namespace FribergHomes.Client.Services.Interfaces
         Task<List<CountyDTO>> GetAllCountiesAsync(); 
         Task<CountyDTO> AddCountyAsync(CountyDTO county);
         Task<CountyDTO> UpdateCountyAsync(CountyDTO county);
-        Task DeleteCountyAsync(CountyDTO county);
+        //Task DeleteCountyAsync(CountyDTO county);
+        Task DeleteCountyAsync(int id);
     }
 }
