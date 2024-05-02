@@ -1,11 +1,12 @@
-﻿@* Author: Reb *@
+﻿ @* DeletePage for choosen object
+Author: Reb 2024-05-01 *@
 @page "/delete/{ObjectType}/{ObjectStringId}"
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
 @using FribergHomes.Client.Components
 @inject IRealtor realtorService
 @inject ICategory categoryService
-@inject ICounty countyService
+@* @inject ICounty countyService *@
 @inject IAgencyService agencyService
 @inject ISalesObject salesService
 @inject NavigationManager NavigationManager
@@ -42,10 +43,10 @@ else
                 <h2>@agency.Name - #@agency.Id</h2>
                 <img src="@agency.Logo" width="300" />
             }
-            else if (ObjectToShow is CountyDTO county)
+    @*         else if (ObjectToShow is CountyDTO county)
             {
                 <h2>@county.Name - #@county.Id</h2>
-            }
+            } *@
             else if (ObjectToShow is CategoryDTO category)
             {
                 <h2>@category.Name - @category.Id</h2>
@@ -84,8 +85,8 @@ else
             ObjectToShow = await salesService.Get(ObjectId);
         else if (ObjectType == "Category")
             ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
-        else if (ObjectType == "County")
-            ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
+        // else if (ObjectType == "County")
+        //     ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
         else if (ObjectType == "Agency")
             ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
     }
@@ -104,18 +105,16 @@ else
             await salesService.Delete(ObjectId);
         else if (ObjectType == "Category")
             await categoryService.DeleteCategoryAsync(ObjectId);
-        else if (ObjectType == "County")
-            await countyService.DeleteCountyAsync(ObjectId);
+        // else if (ObjectType == "County")
+        //     await countyService.DeleteCountyAsync(ObjectId);
         else if (ObjectType == "Agency")
             await agencyService.DeleteAgencyAsync(ObjectId);
 
-           
-        // NavigationManager.NavigateTo("/");
+
         isDeleted = true;
         StateHasChanged();
 
     }
-
 
     private async void NoCancel()
     {

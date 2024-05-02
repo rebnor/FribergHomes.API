@@ -13,6 +13,7 @@ namespace FribergHomes.API.Data.Repositories
      *           Changed GetSalesObjectsByCountyAsync parameter to int countyId (County county) //Tobias 2024-04-23
      * @ Upodate: Added GetCountyByNameAsync() method, because its needed with the DTO&Model-mapping / Reb 2024-05-25
      * @ Update: Added GetSalesObjectsByRealtorAsync method / Tobias 2024-04-29
+     * @ Update: Added GetSalesObjectsByCategoryAsync(int categoryId) / Reb 2024-05-02
      */
     public class SalesObjectRepository : ISalesObject
     {
@@ -109,7 +110,12 @@ namespace FribergHomes.API.Data.Repositories
 
         }
 
+        public async Task<List<SalesObject>> GetSalesObjectsByCategoryAsync(int categoryId)
+        {
+            var salesObjects = await _appDBctx.SalesObjects.Where(s => s.Category.Id == categoryId).ToListAsync();
+            return salesObjects;
 
+        }
 
     }
 }

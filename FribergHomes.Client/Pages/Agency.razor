@@ -1,19 +1,40 @@
-﻿@* Author: Sanna *@
+﻿@* Author: Sanna
+Update: Reb 2024-05-02
+*@
 @page "/agency"
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
+@using FribergHomes.Client.Components
 @inject IAgencyService agencyService
 
-<h3>Agency</h3>
-<ListComponentTest TItem="AgencyDTO" Items="agencies"/>
+<h3>Alla Mäklarbyåer:</h3>
 
+<div class="row">
+    <form @onsubmit="ShowAllAgencies">
+        <button type="submit">Hämta alla mäklarbyråer</button>
+    </form>
+    @if (Agencies != null)
+    {
+        <form @onsubmit="HideAllAgencies">
+            <button type="submit">Göm Lista</button>
+        </form>
+
+        <GetList ObjectType="Agency" TItem="AgencyDTO" />
+    }
+</div>
 
 @code {
-    private List<AgencyDTO> agencies;
+    private List<AgencyDTO> Agencies;
 
-
-    protected override async Task OnInitializedAsync()
+    private async void ShowAllAgencies()
     {
-        agencies = await agencyService.GetAllAgenciesAsync();
+        Agencies = await agencyService.GetAllAgenciesAsync();
+        StateHasChanged();
+    }
+
+    private async void HideAllAgencies()
+    {
+        Agencies = null;
+        StateHasChanged();
     }
 }

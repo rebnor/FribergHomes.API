@@ -1,0 +1,337 @@
+﻿@* InfoPage that shows info about choosen object
+* Author: Reb 2024-05-02
+*@
+@page "/info/{ObjectType}/{ObjectStringId}"
+@using FribergHomes.Client.DTOs
+@using FribergHomes.Client.Services.Interfaces
+@using FribergHomes.Client.Components
+@inject IRealtor realtorService
+@inject ICategory categoryService
+@inject ICounty countyService
+@inject IAgencyService agencyService
+@inject ISalesObject salesService
+@inject NavigationManager NavigationManager
+
+
+@if (ObjectToShow != null)
+{
+
+    @if (ObjectToShow is RealtorDTO realtor) @* Shows info of Realtor *@
+    {
+        // TODO: Lägg till länk till Agency / Reb 2024-05-02
+        <h2>@realtor.FullName - @realtor.AgencyName</h2>
+        <div class="pictures">
+            <img src="@realtor.Picture" width="150" />
+            <img src="@realtor.AgencyLogo" width="50" id="agencyLogo" />
+        </div>
+        <p>Email: @realtor.Email</p>
+        <p>Telefon: @realtor.PhoneNumber</p>
+
+        <Button Color="ButtonColor.Primary" @onclick="GetRealtorsSales">
+            Hämta annonser
+        </Button>
+
+        @if (RealtorsSales != null)
+        {
+            <Button Color="ButtonColor.Secondary" @onclick="HideRealtorsSales">
+                Göm annonser
+            </Button>
+
+            foreach (var salesObject in RealtorsSales)
+            {
+                <h3>@salesObject.Adress</h3>
+                foreach (var picture in salesObject.ImageLinks)
+                {
+                    <img src="@picture" width="200" />
+                }
+                <Button Color="ButtonColor.Info">
+                    <a href="/info/SalesObject/@salesObject.Id" @onclick="() => NavigateToSalesObject(salesObject.Id)">
+                        Kolla Annons
+                    </a>
+                </Button>
+            }
+
+        }
+    }
+    else if (ObjectToShow is SalesObjectDTO salesObject) @* Shows info of SalesObject *@
+    {
+        <h3>@salesObject.Adress</h3>
+        foreach (var picture in salesObject.ImageLinks)
+        {
+            <img src="@picture" width="500" />
+        }
+        if (salesObject.CurrentPrice > salesObject.ListingPrice)
+        {
+            <del>@salesObject.ListingPrice kr</del>
+            <p>@salesObject.CurrentPrice kr</p>
+        }
+        else
+        {
+            <p>@salesObject.CurrentPrice kr</p>
+        }
+        <p>@salesObject.CategoryName</p>
+        <div>@((MarkupString)@salesObject.CategoryLogoUrl)</div>
+        <p>Rum @salesObject.Rooms</p>
+        <p>Byggnadsår: @salesObject.BuildYear</p>
+        <p>Boarea: @salesObject.LivingArea m<sup>2</sup></p>
+        if (salesObject.AncillaryArea > 0)
+        {
+            <p>Biarea: @salesObject.AncillaryArea m<sup>2</sup></p>
+        }
+        if (salesObject.CategoryName == "Apartment")
+        {
+            <p>Våning: @salesObject.Level</p>
+            if (salesObject.Lift == true)
+            {
+                <p>Hiss: Ja</p>
+            }
+            else
+            {
+                <p>Hiss: Nej</p>
+            }
+        }
+        else
+        {
+            <p>Tomtarea: @salesObject.PlotArea m<sup>2</sup></p>
+        }
+        <p>Driftkostnad: @salesObject.YearlyCost kr</p>
+        <p>Månadsavgift: @salesObject.MonthlyFee kr</p>
+        <p>
+            Visningsdatum:
+            @foreach (var date in salesObject.ViewingDates)
+            {
+                date.ToString("YYYY-mm-dd");
+            }
+        </p>
+        <h4>Beskrivning:</h4>
+        <p>@salesObject.ObjectDescription</p>
+
+        <h3>Mäklare</h3>
+
+        <a href="/info/Realtor/@salesObject.RealtorId" @onclick="() => NavigateToRealtor(salesObject.RealtorId)">
+            @salesObject.RealtorName
+        </a>
+
+        <a href="/info/Agency/@salesObject.AgencyId" @onclick="() => NavigateToAgency(salesObject.AgencyId)">
+            @* <img src="@salesObject.AgencyLogoUrl" width="50" /> *@
+            @salesObject.AgencyName
+        </a>
+    }
+    else if (ObjectToShow is AgencyDTO agency) @* Shows info of Agency *@
+    {
+        <h2>@agency.Name</h2>
+        <img src="@agency.Logo" width="300" />
+        <p>@agency.Presentation</p>
+
+        <hr />
+
+        <h4>Anställda</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Namn</th>
+                    <th>Bild</th>
+                    <th>Email</th>
+                    <th>Telefon</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in AgencyRealtors)
+                {
+                    <tr>
+                        <td>@r.FullName</td>
+                        <td><img src="@r.Picture" width="100" /></td>
+                        <td>@r.Email</td>
+                        <td>@r.PhoneNumber</td>
+                        <td>
+                            <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
+                                Kolla Mäklare
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    }
+    else if (ObjectToShow is CountyDTO county) @* Shows info of County *@
+    {
+        // TODO: Fortsätt här, det funkar-ish / Reb 2024-05-02
+        @if (county.Name != null)
+        {
+            CountyName = county.Name;
+        }
+        <h1>@county.Name</h1>
+        <Button Color="ButtonColor.Info" @onclick="GetCountySales">
+            Hämta annonser
+        </Button>
+
+        @if (CountiesSalesObjects != null)
+        {
+            <Button Color="ButtonColor.Secondary" @onclick="HideCountySales">
+                Göm annonser
+            </Button>
+
+            foreach (var so in CountiesSalesObjects)
+            {
+                <h3>@so.Adress</h3>
+                foreach (var picture in so.ImageLinks)
+                {
+                    <img src="@picture" width="200" />
+                }
+                <Button Color="ButtonColor.Info">
+                    <a href="/info/SalesObject/@so.Id" class="custom-link">Kolla annons</a>
+                </Button>
+            }
+
+        }
+
+    }
+    else if (ObjectToShow is CategoryDTO category) @* Shows info of Category *@
+    {
+        // TODO: Fortsätt här / Reb 2024-05-02
+        @if (category.Id != null)
+        {
+            CategoryId = category.Id;
+        }
+        <h2>@category.Name</h2>
+
+        <div>@((MarkupString)category.IconUrl)</div>
+
+        <Button Color="ButtonColor.Danger" @onclick="GetCategorySales">
+            Hämta annonser
+        </Button>
+
+        @if (CountiesSalesObjects != null)
+        {
+            <Button Color="ButtonColor.Secondary" @onclick="HideCategorySales">
+                Göm annonser
+            </Button>
+
+            foreach (var so in CountiesSalesObjects)
+            {
+                <h3>@so.Adress</h3>
+                foreach (var picture in so.ImageLinks)
+                {
+                    <img src="@picture" width="200" />
+                }
+                <Button Color="ButtonColor.Info">
+                    <a href="/info/SalesObject/@so.Id" class="custom-link">Kolla annons</a>
+                </Button>
+            }
+
+        }
+    }
+
+}
+
+@code {
+    [Parameter]
+    public string? ObjectType { get; set; }
+
+    [Parameter]
+    public string ObjectStringId { get; set; }
+
+    public int ObjectId { get; set; }
+    public object? ObjectToShow { get; set; }
+
+    private List<SalesObjectDTO> RealtorsSales;
+    private List<RealtorDTO> AgencyRealtors;
+    private List<SalesObjectDTO> CountiesSalesObjects;
+    private List<SalesObjectDTO> CategorySalesObjects;
+
+    public string CountyName;
+    public int CategoryId;
+
+    public string error = "";
+
+    private async Task GetObjects()
+    {
+        if (ObjectType == "Realtor")
+            ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId);
+        else if (ObjectType == "SalesObject")
+            ObjectToShow = await salesService.Get(ObjectId);
+        else if (ObjectType == "Category")
+            ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
+        else if (ObjectType == "County")
+            ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
+        else if (ObjectType == "Agency")
+        {
+            ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
+            AgencyRealtors = await agencyService.GetRealtorsAtAgency(ObjectId);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ObjectId = Convert.ToInt16(ObjectStringId);
+        await GetObjects();
+    }
+
+    /* Get & Hide List of Realtors Salesobjects */
+    private async Task GetRealtorsSales()
+    {
+        RealtorsSales = await salesService.GetAllByRealtor(ObjectId);
+        StateHasChanged();
+    }
+    private async Task HideRealtorsSales()
+    {
+        RealtorsSales = null;
+        StateHasChanged();
+    }
+
+    /* Get & Hide List of County Salesobjects */
+    private async Task GetCountySales()
+    {
+        CountiesSalesObjects = await salesService.GetSalesByCounty(CountyName);
+        if (CountiesSalesObjects == null)
+        {
+            error = "Inga annonser i denna kommun.";
+        }
+        StateHasChanged();
+    }
+    private async Task HideCountySales()
+    {
+        CountiesSalesObjects = null;
+        StateHasChanged();
+    }
+
+    /* Get & Hide List of Category Salesobjects */
+    private async Task GetCategorySales()
+    {
+        CategorySalesObjects = await salesService.GetSalesByCategory(CategoryId);
+        StateHasChanged();
+    }
+    private async Task HideCategorySales()
+    {
+        CountiesSalesObjects = null;
+        StateHasChanged();
+    }
+
+    /* Re-Navigates to InfoPage of choosen Object */
+    private async void NavigateToRealtor(int realtorId)
+    {
+        ObjectType = "Realtor";
+        ObjectId = realtorId;
+        ObjectToShow = await realtorService.GetRealtorByIdAsync(realtorId);
+        RealtorsSales = null;
+        StateHasChanged();
+    }
+    private async void NavigateToAgency(int agencyId)
+    {
+        ObjectType = "Agency";
+        ObjectId = agencyId;
+        ObjectToShow = await agencyService.GetAgencyByIdAsync(agencyId);
+        AgencyRealtors = await agencyService.GetRealtorsAtAgency(agencyId);
+        StateHasChanged();
+    }
+    private async void NavigateToSalesObject(int salesId)
+    {
+        ObjectType = "SalesObject";
+        ObjectId = salesId;
+        ObjectToShow = await salesService.Get(salesId);
+        StateHasChanged();
+    }
+
+}

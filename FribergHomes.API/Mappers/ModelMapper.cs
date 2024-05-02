@@ -34,7 +34,7 @@ namespace FribergHomes.API.Mappers
         //            Logo = "dublett",
         //            Presentation = "dublett"
         //        }
-        //        // TODO: se över
+        //      
         //    };
         //    realtor.SalesObjects = ModelMapper.DtoListToSalesObjectList(realtorDto.SalesObjects, realtor);
 
@@ -99,7 +99,7 @@ namespace FribergHomes.API.Mappers
                 
         //    };
 
-        //    // TODO: Realtor...?
+        //    
 
 
         //    return salesObject;
