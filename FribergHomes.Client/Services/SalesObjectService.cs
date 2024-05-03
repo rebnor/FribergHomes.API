@@ -25,6 +25,7 @@ namespace FribergHomes.Client.Services
 
         /// <summary>
         /// GET request for a specific SalesObject in the database.
+        /// Throws exception if HTTP status code is not in the 200-range or if object cannot be found/return is null.
         /// </summary>
         /// <param name="id">SalesObjectDTO Id</param>
         /// <returns>A SalesObjectDTO object.</returns>
@@ -54,9 +55,7 @@ namespace FribergHomes.Client.Services
         }
 
 
-
-
-        /***Test**/
+        /***Test Rebecka**/
         public async Task<List<SalesObjectDTO>> GetSalesByCounty(string name)
         {
             var response = await _client.GetAsync($"api/salesobject/county-name/{name}");
@@ -70,16 +69,9 @@ namespace FribergHomes.Client.Services
         }
 
 
-
-
-
-
-
-
-
-
         /// <summary>
         /// GET method that retrieves all SalesObjects from the database.
+        /// Throws exception if HTTP status code is not in the 200-range.
         /// </summary>
         /// <returns>A List&lt;SalesObjectDTO&gt;</returns>
         /// <exception cref="HttpRequestException"></exception>
@@ -97,8 +89,10 @@ namespace FribergHomes.Client.Services
             return salesObjects ?? new List<SalesObjectDTO>();
         }
 
+
         /// <summary>
         /// GET method that retrieves all SalesObjects with specific county id from the database.
+        /// Throws exception if HTTP status code is not in the 200-range.
         /// </summary>
         /// <param name="int id"></param>
         /// <returns>A List&lt;SalesObjectDTO&gt;</returns>
@@ -119,6 +113,7 @@ namespace FribergHomes.Client.Services
 
         /// <summary>
         /// GET method that retrieves all SalesObjects with specific realtor id from the database.
+        /// Throws exception if HTTP status code is not in the 200-range.
         /// </summary>
         /// <param name="int id"></param>
         /// <returns>A List&lt;SalesObjectDTO&gt;</returns>
@@ -138,20 +133,26 @@ namespace FribergHomes.Client.Services
         }
 
         /// <summary>
-        /// PUT method that updates a specific SalesObject in the database.
+        /// PUT method that updates a specific SalesObject in the database and, if successful, returns the updated object.
+        /// Throws exception if HTTP status code is not in the 200-range.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="salesObject"></param>
         /// <exception cref="HttpRequestException"></exception>
-        public async Task Update(int id, SalesObjectDTO salesObject)
+        public async Task<SalesObjectDTO> Update(int id, SalesObjectDTO salesObject)
         {
             var response = await _client.PutAsJsonAsync($"/api/salesobject/{id}", salesObject);
 
             response.EnsureSuccessStatusCode();
+
+            var updatedSalesObject = await response.Content.ReadFromJsonAsync<SalesObjectDTO>();
+
+            return updatedSalesObject!;
         }
 
         /// <summary>
         /// POST method that creates a new SalesObject in the database.
+        /// Throws exception if HTTP status code is not in the 200-range or problem occurs during deserialization of returned object.
         /// </summary>
         /// <param name="salesObject"></param>
         /// <returns>The saved SalesObjectDTO object.</returns>
@@ -178,6 +179,7 @@ namespace FribergHomes.Client.Services
 
         /// <summary>
         /// DELETE method that deletes a SalesObject in the database.
+        /// Throws exception if HTTP status code is not in the 200-range.
         /// </summary>
         /// <param name="id"></param>
         /// <exception cref="HttpRequestException"></exception>
