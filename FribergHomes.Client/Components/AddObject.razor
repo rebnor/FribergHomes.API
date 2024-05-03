@@ -33,7 +33,7 @@
 }
 else
 {
-    @if (newObject is CategoryDTO category)
+    @if(newObject is CategoryDTO category)
     {
         <form @onsubmit="AddNewObject">
             <input type="hidden" @bind="category.Id" />
@@ -42,7 +42,7 @@ else
             <button type="submit">Lägg till kategori</button>
         </form>
     }
-    else if (newObject is AgencyDTO agency)
+    else if(newObject is AgencyDTO agency)
     {
         <form @onsubmit="AddNewObject">
             <input type="hidden" @bind="agency.Id" />
@@ -52,10 +52,9 @@ else
             <button type="submit">Lägg till mäklarbyrå</button>
         </form>
     }
-    else if (newObject is RealtorDTO realtor)
+    else if(newObject is RealtorDTO realtor)
     {
         <form @onsubmit="AddNewObject">
-   @*          <input type="hidden" @bind="realtor.Id" /> *@
             Namn: <input type="text" @bind="realtor.FullName" />
             Email: <input type="email" @bind="realtor.Email" />
             Telefonnummer: <input type="text" @bind="realtor.PhoneNumber" />
@@ -72,6 +71,41 @@ else
 
         </form>
     }
+    else if(newObject is SalesObjectDTO salesObject)
+    {
+        <form @onsubmit="AddNewObject">
+
+            Kategori: 
+            <select @bind="selectedCategoryId">
+                <option value="">Välj en kategori</option>
+                @foreach (var c in categoryList)
+                {
+                    <option value="@c.Id">@c.Name</option>
+                }
+            </select>
+            
+            
+            Adress:
+            Antal rum: 
+            Boarea:
+            Beskrivning:
+            
+           
+            Biarea:
+            Tomtarea:
+            Driftkostnad: 
+            Månadsavgift: 
+            Våning:
+            Hiss: 
+            Pris: 
+           
+            Kommun: 
+            Byggnadsår:
+            Mäklare: (tar med mäklarbyrå)
+            <button type="submit">Lägg till</button>
+
+        </form>
+    }
 }
 @if (errorMessage != "")
 {
@@ -85,14 +119,10 @@ else
     private object newObject { get; set; }
     private string errorMessage = "";
     private bool isAdded = false;
-
-
-
     private int selectedAgencyId;
+    private int selectedCategoryId; 
     private List<AgencyDTO> agencyList = new List<AgencyDTO>();
-
-
-
+    private List<CategoryDTO> categoryList = new List<CategoryDTO>();
 
 
     protected override async Task OnInitializedAsync()
@@ -110,14 +140,17 @@ else
             agencyList = await agencyService.GetAllAgenciesAsync();
             newObject = new RealtorDTO();
         }
-
+        else if (ObjectType == "salesObject")
+        {
+            categoryList = await categoryService.GetAllCategoriesAsync();
+            newObject = new SalesObjectDTO();
+        }
     }
 
     private async void AddNewObject()
     {
         try
         {
-
             if (ObjectType == "category")
             {
                 await categoryService.AddCategoryAsync((CategoryDTO)newObject);
@@ -138,7 +171,6 @@ else
                     // await realtorService.AddRealtorAsync((RealtorDTO)newObject);   
                     await realtorService.AddRealtorAsync(realtor);                   
                 }
-
             }
             isAdded = true;
             StateHasChanged();

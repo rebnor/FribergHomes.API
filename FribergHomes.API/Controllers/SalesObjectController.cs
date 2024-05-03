@@ -172,8 +172,8 @@ namespace FribergHomes.API.Controllers
                 foreach (var salesObject in salesObjects)
                 {
                     var salesObjectDTO = _mapper.Map<SalesObjectDTO>(salesObject);
-                    salesObjectDTOs.Add(salesObjectDTO);
-
+                    salesObjectDTOs.Add(salesObjectDTO);                    
+                }
                 return Ok(salesObjectDTOs);
             }
             catch (Exception ex)
