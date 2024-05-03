@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
-using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.DTOs;
 using FribergHomes.API.Models;
 
 namespace FribergHomes.API.Mappers
 {
-    public class SalesObjectProfile : Profile
+    // Author: Tobias 2024-05-03
+
+    public class MappingProfile : Profile
     {
-        public SalesObjectProfile()
+        public MappingProfile() 
         {
+            // SalesObject -> SalesObjectDTO
             CreateMap<SalesObject, SalesObjectDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => src.CreationDate))
@@ -43,6 +45,7 @@ namespace FribergHomes.API.Mappers
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category!.Name))
                 .ForMember(dest => dest.CategoryLogoUrl, opt => opt.MapFrom(src => src.Category!.IconUrl));
 
+            // SalesObjectDTO -> SalesObject
             CreateMap<SalesObjectDTO, SalesObject>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => src.CreationDate))
@@ -67,6 +70,40 @@ namespace FribergHomes.API.Mappers
                 .ForMember(dest => dest.Realtor, opt => opt.MapFrom<SORealtorResolver>())
                 .ForMember(dest => dest.County, opt => opt.MapFrom<SOCountyResolver>())
                 .ForMember(dest => dest.Category, opt => opt.MapFrom<SOCategoryResolver>());
+
+            // Realtor -> RealtorDTO
+            CreateMap<Realtor, RealtorDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.Picture, opt => opt.MapFrom(src => src.Picture))
+                .ForMember(dest => dest.AgencyId, opt => opt.MapFrom(src => src.Agency!.Id))
+                .ForMember(dest => dest.AgencyName, opt => opt.MapFrom(src => src.Agency!.Name))
+                .ForMember(dest => dest.AgencyLogo, opt => opt.MapFrom(src => src.Agency!.Logo));
+
+            // RealtorDTO -> Realtor
+            CreateMap<RealtorDTO, Realtor>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom<RealtorFullNameResolver>())
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom<RealtorFullNameResolver>())
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.Picture, opt => opt.MapFrom(src => src.Picture))
+                .ForMember(dest => dest.Agency, opt => opt.MapFrom<RealtorAgencyResolver>());
+
+            // Agency <-> AgencyDTO
+            CreateMap<Agency, AgencyDTO>()
+                .ReverseMap();
+
+            // County <-> CountyDTO
+            CreateMap<County, CountyDTO>()
+                .ReverseMap();
+
+            // Category <-> CategoryDTO
+            CreateMap<Category, CategoryDTO>()
+                .ReverseMap();
+
         }
 
     }
