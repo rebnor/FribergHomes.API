@@ -18,8 +18,10 @@
 
     @if (ObjectToShow is RealtorDTO realtor) @* Shows info of Realtor *@
     {
-        // TODO: Lägg till länk till Agency / Reb 2024-05-02
-        <h2>@realtor.FullName - @realtor.AgencyName</h2>
+        <h2>
+            @realtor.FullName -
+            <a href="/info/Agency/@realtor.AgencyId" @onclick="() => NavigateToAgency(realtor.AgencyId)">@realtor.AgencyName</a>
+        </h2>
         <div class="pictures">
             <img src="@realtor.Picture" width="150" />
             <img src="@realtor.AgencyLogo" width="50" id="agencyLogo" />
@@ -157,40 +159,49 @@
     }
     else if (ObjectToShow is CountyDTO county) @* Shows info of County *@
     {
-        // TODO: Fortsätt här, det funkar-ish / Reb 2024-05-02
         @if (county.Name != null)
         {
             CountyName = county.Name;
         }
         <h1>@county.Name</h1>
+
         <Button Color="ButtonColor.Info" @onclick="GetCountySales">
             Hämta annonser
         </Button>
 
         @if (CountiesSalesObjects != null)
         {
-            <Button Color="ButtonColor.Secondary" @onclick="HideCountySales">
-                Göm annonser
-            </Button>
-
-            foreach (var so in CountiesSalesObjects)
+            if (CountiesSalesObjects.Count > 0)
             {
-                <h3>@so.Adress</h3>
-                foreach (var picture in so.ImageLinks)
-                {
-                    <img src="@picture" width="200" />
-                }
-                <Button Color="ButtonColor.Info">
-                    <a href="/info/SalesObject/@so.Id" class="custom-link">Kolla annons</a>
+                <Button Color="ButtonColor.Secondary" @onclick="HideCountySales">
+                    Göm annonser
                 </Button>
-            }
 
+                foreach (var so in CountiesSalesObjects)
+                {
+                    <h3>@so.Adress</h3>
+                    foreach (var picture in so.ImageLinks)
+                    {
+                        <img src="@picture" width="200" />
+                    }
+
+                    <Button Color="ButtonColor.Info">
+                        <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)" class="custom-link">Kolla annons</a>
+                    </Button>
+                }
+            }
+            else
+            {
+                <p>@error</p>
+
+            }
         }
 
+
     }
-    else if (ObjectToShow is CategoryDTO category) @* Shows info of Category *@
+    else if (ObjectToShow is CategoryDTO category)
+    @* Shows info of Category *@
     {
-        // TODO: Fortsätt här / Reb 2024-05-02
         @if (category.Id != null)
         {
             CategoryId = category.Id;
@@ -199,26 +210,34 @@
 
         <div>@((MarkupString)category.IconUrl)</div>
 
-        <Button Color="ButtonColor.Danger" @onclick="GetCategorySales">
+        <Button Color="ButtonColor.Info" @onclick="GetCategorySales">
             Hämta annonser
         </Button>
 
-        @if (CountiesSalesObjects != null)
+        @if (CategorySalesObjects != null)
         {
-            <Button Color="ButtonColor.Secondary" @onclick="HideCategorySales">
-                Göm annonser
-            </Button>
-
-            foreach (var so in CountiesSalesObjects)
+            if (CategorySalesObjects.Count > 0)
             {
-                <h3>@so.Adress</h3>
-                foreach (var picture in so.ImageLinks)
-                {
-                    <img src="@picture" width="200" />
-                }
-                <Button Color="ButtonColor.Info">
-                    <a href="/info/SalesObject/@so.Id" class="custom-link">Kolla annons</a>
+                <Button Color="ButtonColor.Secondary" @onclick="HideCategorySales">
+                    Göm annonser
                 </Button>
+
+                foreach (var so in CategorySalesObjects)
+                {
+                    <h3>@so.Adress</h3>
+                    foreach (var picture in so.ImageLinks)
+                    {
+                        <img src="@picture" width="200" />
+                    }
+                    <Button Color="ButtonColor.Info">
+                        <a href="/info/SalesObject/@so.Id" class="custom-link">Kolla annons</a>
+                    </Button>
+                }
+            }
+            else
+            {
+                <p>@error</p>
+
             }
 
         }
@@ -285,7 +304,8 @@
     private async Task GetCountySales()
     {
         CountiesSalesObjects = await salesService.GetSalesByCounty(CountyName);
-        if (CountiesSalesObjects == null)
+        StateHasChanged();
+        if (CountiesSalesObjects.Count <= 0)
         {
             error = "Inga annonser i denna kommun.";
         }
@@ -302,10 +322,15 @@
     {
         CategorySalesObjects = await salesService.GetSalesByCategory(CategoryId);
         StateHasChanged();
+        if (CategorySalesObjects.Count <= 0)
+        {
+            error = "Inga annonser i denna kommun.";
+        }
+        StateHasChanged();
     }
     private async Task HideCategorySales()
     {
-        CountiesSalesObjects = null;
+        CategorySalesObjects = null;
         StateHasChanged();
     }
 
