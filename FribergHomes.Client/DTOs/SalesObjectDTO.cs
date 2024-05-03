@@ -35,7 +35,7 @@ namespace FribergHomes.Client.DTOs
 
         [DisplayName("Biarea")]
         [Range(0,1000, ErrorMessage = "Biarea får ej överstiga 1000m2")]
-        public double AncillaryArea { get; set; }
+        public double? AncillaryArea { get; set; }
 
         [DisplayName("Tomtarea")]
         [Range(0,1000000, ErrorMessage = "Tomtarea får ej överstiga 1000000m2")]
