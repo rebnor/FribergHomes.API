@@ -23,7 +23,8 @@
     }
     else
     {
-        <span>Visa formulär för försäljningsobjekt med ID: @SalesObject!.Id </span>
+        <h3>Ändra försäljningsobjekt</h3>
+        <h4>Visa formulär för försäljningsobjekt med ID: @SalesObject!.Id </h4>
 
         <EditForm Model="SalesObject" OnValidSubmit="Submit" FormName="SalesObjectForm">
             <DataAnnotationsValidator />
@@ -196,7 +197,27 @@
 
         <EditForm Model="Agency" OnValidSubmit="Submit" FormName="AgencyForm">
             <DataAnnotationsValidator />
-
+            <div>
+                <label>
+                    Namn
+                    <InputText @bind-Value="Agency!.Name" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Presentation
+                    <InputText @bind-Value="Agency!.Presentation" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Logo
+                    <InputText @bind-Value="Agency!.Logo" />
+                </label>
+            </div>
+            <div>
+                <button type="submit">Spara</button>
+            </div>
 
         </EditForm>
 
@@ -215,8 +236,21 @@
 
         <EditForm Model="County" OnValidSubmit="Submit" FormName="CountyForm">
             <DataAnnotationsValidator />
-
-
+            <div>
+                <label>
+                    Namn
+                    <InputText @bind-Value="Category!.Name" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Ikon
+                    <InputText @bind-Value="Category!.IconUrl" />
+                </label>
+            </div>
+            <div>
+                <button type="submit">Spara</button>
+            </div>
 
         </EditForm>
 
@@ -235,8 +269,15 @@
 
         <EditForm Model="County" OnValidSubmit="Submit" FormName="CountyForm">
             <DataAnnotationsValidator />
-
-
+            <div>
+                <label>
+                    Namn
+                    <InputText @bind-Value="Category!.Name" />
+                </label>
+            </div>
+            <div>
+                <button type="submit">Spara</button>
+            </div>
 
         </EditForm>
 
@@ -311,22 +352,22 @@
 
             case "realtor":
 
-                Realtor = await RealtorService.GetRealtorByIdAsync(Id);
+                Realtor = await RealtorService.UpdateRealtorAsync(Realtor!);
                 break;
 
             case "agency":
 
-                Agency = await AgencyService.GetAgencyByIdAsync(Id);
+                Agency = await AgencyService.UpdateAgencyAsync(Id, Agency!);
                 break;
 
             case "category":
 
-                Category = await CategoryService.GetCategoryByIdAsync(Id);
+                Category = await CategoryService.UpdateCategoryAsync(Category!);
                 break;
 
             case "county":
 
-                County = await CountyService.GetCountyByIdAsync(Id);
+                County = await CountyService.UpdateCountyAsync(County!);
                 break;
         }
     }
