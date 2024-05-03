@@ -1,0 +1,39 @@
+﻿@* Author: Tobias 2024-04-30 *@
+
+@typeparam TObject
+@inject NavigationManager NavMan
+
+@* Add authorization! *@
+
+
+
+<button @onclick="@(() => EditObject())" class="btn btn-primary"> 
+    Ändra 
+</button>
+
+
+
+@code {
+    [Parameter]
+    public TObject? TargetObject { get; set; }
+
+    public int Id { get; set; }
+
+    private string? typeName;
+
+    private void EditObject()
+    {
+        if (TargetObject == null)
+        {
+            return;
+        }
+
+        var dtoType = TargetObject!.GetType().Name.ToLower();
+        var typeName = dtoType[..^3];
+
+        var idProperty = TargetObject.GetType().GetProperty("Id");
+        Id = (int)idProperty!.GetValue(TargetObject)!;
+
+        NavMan.NavigateTo($"/edit/{typeName}/{Id}");
+    }
+}

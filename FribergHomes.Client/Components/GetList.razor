@@ -20,7 +20,7 @@
 
         @foreach (var item in ListToShow)
         {
-
+      
             @if (item is RealtorDTO realtor)
             {
                 <GetById ObjectType="Realtor" ObjectId="realtor.Id" />
@@ -41,7 +41,8 @@
             {
                 <GetById ObjectType="Category" ObjectId="category.Id" />
             }
-
+      
+          <EditButton TargetObject="item" />
         }
     </div>
 }
