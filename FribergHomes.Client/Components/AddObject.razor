@@ -55,22 +55,11 @@ else
     else if (newObject is RealtorDTO realtor)
     {
         <form @onsubmit="AddNewObject">
-            <input type="hidden" @bind="realtor.Id" /> 
+   @*          <input type="hidden" @bind="realtor.Id" /> *@
             Namn: <input type="text" @bind="realtor.FullName" />
             Email: <input type="email" @bind="realtor.Email" />
             Telefonnummer: <input type="text" @bind="realtor.PhoneNumber" />
             Bild: <input type="text" @bind="realtor.Picture" />
-
-            @*
-    Mäklarbyrå:
-    <select @bind="realtor.AgencyId">
-    <option value="">Välj en mäklarbyrå</option>
-    @foreach (var a in agencyList)
-    {
-    <option value="@a.Id">@a.Name</option>
-    }
-    </select>
-    <button type="submit">Lägg till mäklare</button>      *@
             Mäklarbyrå:
             <select @bind="selectedAgencyId">
                 <option value="">Välj en mäklarbyrå</option>
@@ -101,7 +90,7 @@ else
 
     private int selectedAgencyId;
     private List<AgencyDTO> agencyList = new List<AgencyDTO>();
-    private RealtorDTO? realtor = new RealtorDTO();
+
 
 
 
@@ -137,19 +126,20 @@ else
             {
                 await agencyService.AddAgencyAsync((AgencyDTO)newObject);
             }
-            else if (ObjectType == "realtor")
+            else if (newObject is RealtorDTO realtor)
             {
+                // realtor = (RealtorDTO)newObject;
                 var selectedAgency = await agencyService.GetAgencyByIdAsync(selectedAgencyId);
-                if(selectedAgency != null)
+                if (selectedAgency != null)
                 {
                     realtor.AgencyId = selectedAgency.Id;
                     realtor.AgencyName = selectedAgency.Name;
-                realtor.AgencyLogo = selectedAgency.Logo;
-                await realtorService.AddRealtorAsync((RealtorDTO)newObject);
+                    realtor.AgencyLogo = selectedAgency.Logo;
+                    // await realtorService.AddRealtorAsync((RealtorDTO)newObject);   
+                    await realtorService.AddRealtorAsync(realtor);                   
                 }
-                
-            }
 
+            }
             isAdded = true;
             StateHasChanged();
             NavigationManager.NavigateTo("/");
