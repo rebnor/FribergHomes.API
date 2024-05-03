@@ -7,6 +7,7 @@ namespace FribergHomes.Client.Services.Interfaces
      * Author: Tobias 2024-04-24
      * 
      * Update: Added GetAllByRealtor method. Changed name of GetAll(countId) to GetAllByCounty / Tobias 2024-04-29
+     * Update: Updated Update method to return Task<SalesObjectDTO> / Tobias 2024-05-03
      */
 
     public interface ISalesObject
@@ -22,7 +23,7 @@ namespace FribergHomes.Client.Services.Interfaces
 
         Task<SalesObjectDTO> Create(SalesObjectDTO salesObject);
 
-        Task Update(int id, SalesObjectDTO salesObject);
+        Task<SalesObjectDTO> Update(int id, SalesObjectDTO salesObject);
 
         Task Delete(int id);
 
