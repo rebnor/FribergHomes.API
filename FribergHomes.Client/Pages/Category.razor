@@ -1,0 +1,90 @@
+﻿@* Author: Reb 2024-05-01 *@
+@page "/category"
+@using FribergHomes.Client.DTOs
+@using FribergHomes.Client.Services.Interfaces
+@using FribergHomes.Client.Components
+@inject ICategory categoryService
+
+<h1>Kategorier</h1>
+
+<hr />
+
+<h3>Alla Kategorier:</h3>
+
+<div class="row">
+
+    <form @onsubmit="ShowAllCategories">
+        <button type="submit">Hämta alla kategorier</button>
+    </form>
+
+    @if (CategoryDtoList != null)
+    {
+        <form @onsubmit="HideAllCategories">
+            <button type="submit">Göm Lista</button>
+        </form>
+
+        <GetList ObjectType="Category" TItem="CategoryDTO"></GetList>
+    }
+
+</div>
+
+<hr />
+
+<h3>Sök kategori via Id:</h3>
+<form @onsubmit="SubmitId">
+    <input type="number" @bind="categoryId" />
+    <button type="submit">Hämta kategori</button>
+</form>
+@if (CategoryDto != null)
+{
+    <GetById ObjectId="@categoryId" ObjectType="Category" ObjectToShow="null" />
+}
+
+<hr />
+
+@* <h3>Sök bostäder via Kategori:</h3>
+<form @onsubmit="SubmitCategory">
+    <input type="text" @bind="category" />
+    <button type="submit">Hämta bostäder i denna Kategori</button>
+</form>
+@if (CategoryDtoList != null)
+{
+    foreach (var category in CategoryDtoList)
+    {
+        <GetById ObjectId="@category.Id" ObjectType="Category" ObjectToShow="null" />
+    }
+} *@
+
+
+@code {
+    private CategoryDTO CategoryDto { get; set; }
+    private List<CategoryDTO> CategoryDtoList;
+
+    private int categoryId;
+    private string category;
+
+    private async void SubmitId()
+    {
+        CategoryDto = await categoryService.GetCategoryByIdAsync(categoryId);
+        StateHasChanged();
+    }
+
+    // private async void SubmitCategory()
+    // {
+    //     CategoryDtoList = await categoryService.;
+    //     StateHasChanged();
+    // }
+
+    private async void ShowAllCategories()
+    {
+        CategoryDtoList = await categoryService.GetAllCategoriesAsync();
+        StateHasChanged();
+    }
+
+    private async void HideAllCategories()
+    {
+        CategoryDtoList = null;
+        StateHasChanged();
+    }
+
+}

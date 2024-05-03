@@ -1,0 +1,123 @@
+﻿ @* DeletePage for choosen object
+Author: Reb 2024-05-01 *@
+@page "/delete/{ObjectType}/{ObjectStringId}"
+@using FribergHomes.Client.DTOs
+@using FribergHomes.Client.Services.Interfaces
+@using FribergHomes.Client.Components
+@inject IRealtor realtorService
+@inject ICategory categoryService
+@* @inject ICounty countyService *@
+@inject IAgencyService agencyService
+@inject ISalesObject salesService
+@inject NavigationManager NavigationManager
+
+
+@if (isDeleted)
+{
+    <div class="alert alert-success">
+        <h2>Borttagning Lyckades!</h2>
+    </div>
+}
+else
+{
+    if (ObjectToShow != null)
+    {
+        <h2 class="text-danger">Är du säker på att du vill radera detta objekt?</h2>
+
+        <div class="card shadow">
+            @if (ObjectToShow is RealtorDTO realtor)
+            {
+                <h3>@realtor.FullName - #@realtor.Id</h3>
+            }
+            else if (ObjectToShow is SalesObjectDTO salesObject)
+            {
+                <h3>@salesObject.CategoryName - @salesObject.Id</h3>
+                <h3>@salesObject.Adress</h3>
+                foreach (var picture in salesObject.ImageLinks)
+                {
+                    <img src="@picture" width="100" />
+                }
+            }
+            else if (ObjectToShow is AgencyDTO agency)
+            {
+                <h2>@agency.Name - #@agency.Id</h2>
+                <img src="@agency.Logo" width="300" />
+            }
+    @*         else if (ObjectToShow is CountyDTO county)
+            {
+                <h2>@county.Name - #@county.Id</h2>
+            } *@
+            else if (ObjectToShow is CategoryDTO category)
+            {
+                <h2>@category.Name - @category.Id</h2>
+                <div>@((MarkupString)category.IconUrl)</div>
+
+            }
+        </div>
+
+        <form @onsubmit="YesDelete">
+            <button class="btn-primary" type="submit">Ja, ta bort!</button>
+        </form>
+
+        <form @onsubmit="NoCancel">
+            <button class="btn-danger" type="submit">Nej, avbryt!</button>
+        </form>
+    }
+}
+
+@code {
+
+    [Parameter]
+    public string? ObjectType { get; set; }
+
+    [Parameter]
+    public string ObjectStringId { get; set; }
+
+    public int ObjectId { get; set; }
+    public object? ObjectToShow { get; set; }
+    public bool isDeleted = false;
+
+    private async Task GetObject()
+    {
+        if (ObjectType == "Realtor")
+            ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId);
+        else if (ObjectType == "SalesObject")
+            ObjectToShow = await salesService.Get(ObjectId);
+        else if (ObjectType == "Category")
+            ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
+        // else if (ObjectType == "County")
+        //     ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
+        else if (ObjectType == "Agency")
+            ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ObjectId = Convert.ToInt16(ObjectStringId);
+        await GetObject();
+    }
+
+    private async void YesDelete()
+    {
+        if (ObjectType == "Realtor")
+            await realtorService.DeleteRealtorAsync(ObjectId);
+        else if (ObjectType == "SalesObject") 
+            await salesService.Delete(ObjectId);
+        else if (ObjectType == "Category")
+            await categoryService.DeleteCategoryAsync(ObjectId);
+        // else if (ObjectType == "County")
+        //     await countyService.DeleteCountyAsync(ObjectId);
+        else if (ObjectType == "Agency")
+            await agencyService.DeleteAgencyAsync(ObjectId);
+
+
+        isDeleted = true;
+        StateHasChanged();
+
+    }
+
+    private async void NoCancel()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

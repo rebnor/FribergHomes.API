@@ -1,4 +1,4 @@
-﻿@* Author: Reb *@
+﻿@* Author: Reb 2024-04-30 *@
 @page "/salesObject"
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
@@ -9,20 +9,22 @@
 
 <hr />
 
-
-<h3>Alla hus:</h3>
+<h3>Alla annonser:</h3>
 <div class="row">
-<form @onsubmit="ShowAllSaleObjects">
-    <button type="submit">Hämta alla annonser</button>
-</form>
-<form @onsubmit="HideAllSaleObjects">
-    <button type="submit">Göm Lista</button>
-</form>
-@if (ListSalesDtos != null)
-{
-    <GetList ObjectType="SalesObject" TItem="SalesObjectDTO"></GetList>
-}
+    <form @onsubmit="ShowAllSaleObjects">
+        <button type="submit">Hämta alla annonser</button>
+    </form>
+
+    @if (ListSalesDtos != null)
+    {
+        <form @onsubmit="HideAllSaleObjects">
+            <button type="submit">Göm Lista</button>
+        </form>
+
+        <GetList ObjectType="SalesObject" TItem="SalesObjectDTO"></GetList>
+    }
 </div>
+
 <hr />
 
 <h3>Sök bostad via Id:</h3>
@@ -32,7 +34,7 @@
 </form>
 @if (SalesObjectDto != null)
 {
-    <GetById ObjectId="@salesId" ObjectType="SalesObject" ObjectToShow="null" />
+    <GetById ObjectId="salesId" ObjectType="SalesObject" />
 }
 
 <hr />
@@ -41,10 +43,8 @@
 
 
 
+@code {
 
-@code {  
-  
-  
     private SalesObjectDTO SalesObjectDto { get; set; }
     private List<SalesObjectDTO> ListSalesDtos;
 

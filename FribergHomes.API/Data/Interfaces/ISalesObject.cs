@@ -7,6 +7,7 @@ namespace FribergHomes.API.Data.Interfaces
      * @ Update: Changed GetSalesObjectsByCountyAsync parameter to int id (County county). //Tobias 2024-04-23 
      * @ Update: Added a GetCountyByNameAsync method because its needed in ModelMapper / Reb 2024-05-25
      * @ Update: Added GetSalesObjectsByRealtor / Tobias 2024-04-29
+     * @ Update: Added GetSalesObjectsByCategoryAsync(int categoryId) / Reb 2024-05-02
      */
     public interface ISalesObject
     {
@@ -25,6 +26,8 @@ namespace FribergHomes.API.Data.Interfaces
         // Needed / Reb
         Task<List<SalesObject>> GetSalesObjectsByCountyNameAsync(string name);
         Task<List<SalesObject>> GetRealtorsSalesObjectsAsync(int realtorId);
+        Task<List<SalesObject>> GetSalesObjectsByCategoryAsync(int categoryId);
+
 
     }
 }

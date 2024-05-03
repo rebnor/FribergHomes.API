@@ -27,6 +27,7 @@ namespace FribergHomes.API.Controllers
 
     @ Updates: Implemented AutoMapper (injection of IMapper). Revised POST-method.
                Added GetSalesObjectsByRealtor GET-end point / Tobias 2024-04-28.
+    @ Update: Added GetSalesObjectsByCategory(int id) / Reb 2024-05-02
     */
     [Route("api/[controller]")]
     [ApiController]
@@ -162,13 +163,17 @@ namespace FribergHomes.API.Controllers
                 {
                     return NoContent();
                 }
+
+
+                //var salesObjectDTOs = DTOMapper.ToListSalesObjectDTO(salesObjects);
+
                 List<SalesObjectDTO> salesObjectDTOs = new();
 
                 foreach (var salesObject in salesObjects)
                 {
                     var salesObjectDTO = _mapper.Map<SalesObjectDTO>(salesObject);
                     salesObjectDTOs.Add(salesObjectDTO);
-                }
+
                 return Ok(salesObjectDTOs);
             }
             catch (Exception ex)
@@ -177,7 +182,32 @@ namespace FribergHomes.API.Controllers
             }
         }
 
+        [HttpGet("category/{id}")]
+        public async Task<ActionResult<List<SalesObjectDTO>>> GetSalesObjectsByCategory(int id)
+        {
+            try
+            {
+                var salesObjects = await _salesRepo.GetSalesObjectsByCategoryAsync(id);
+                if (salesObjects == null)
+                {
+                    return NoContent();
+                }
+                //var salesObjectDTOs = DTOMapper.ToListSalesObjectDTO(salesObjects);
+                List<SalesObjectDTO> salesObjectDTOs = new();
 
+                foreach (var salesObject in salesObjects)
+                {
+                    var salesObjectDTO = _mapper.Map<SalesObjectDTO>(salesObject);
+                    salesObjectDTOs.Add(salesObjectDTO);
+                }
+
+                return Ok(salesObjectDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Något gick fel vid hämtning av försäljningsobjekt! Felmeddelande: {ex.Message}");
+            }
+        }
 
 
 

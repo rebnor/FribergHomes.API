@@ -3,6 +3,7 @@
 namespace FribergHomes.Client.Services.Interfaces
 {
     // Author: Sanna 2024-04-24
+    // Update: Added GetRealtorsAtAgency(int id) / Reb 2024-05-02
     public interface IAgencyService
     {
         Task<List<AgencyDTO>> GetAllAgenciesAsync();
@@ -12,6 +13,8 @@ namespace FribergHomes.Client.Services.Interfaces
         Task<AgencyDTO> UpdateAgencyAsync(int id, AgencyDTO agencyDto);
 
         Task DeleteAgencyAsync(int id);
+
+        Task<List<RealtorDTO>> GetRealtorsAtAgency(int id);
 
     }
 }

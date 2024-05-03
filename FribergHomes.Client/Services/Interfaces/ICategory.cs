@@ -11,7 +11,8 @@ namespace FribergHomes.Client.Services.Interfaces
         Task<List<CategoryDTO>> GetAllCategoriesAsync();
         Task<CategoryDTO> AddCategoryAsync(CategoryDTO category);
         Task<CategoryDTO> UpdateCategoryAsync(CategoryDTO category);
-        Task DeleteCategoryAsync(CategoryDTO category);
+        //Task DeleteCategoryAsync(CategoryDTO category);
+        Task DeleteCategoryAsync(int id);
 
     }
 }

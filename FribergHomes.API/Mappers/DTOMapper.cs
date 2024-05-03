@@ -50,7 +50,7 @@ namespace FribergHomes.API.Mappers
         //            Agency = realtor.Agency.Name,
         //            AgencyLogo = realtor.Agency.Logo,
         //            //SalesObjects = ToListSalesObjectDTO(realtor.SalesObjects) 
-        //            // TODO: se över då salesobject blir null. ska det bli det här och sen hämta dom vid GetRealtorById? 
+        //            
         //        };
         //        realtorsDtos.Add(realtorDto);
         //    }

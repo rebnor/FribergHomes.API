@@ -4,6 +4,7 @@ namespace FribergHomes.API.Data.Interfaces
 {
     /* Class for SalesObject which forms the base class for all real estate objects.
       * Author: Tobias 2024-04-15
+      * Update: Added GetRealtorsAtAgencyAsync(int id) / Reb 2024-05-02
       */
 
     public interface IAgency
@@ -18,6 +19,9 @@ namespace FribergHomes.API.Data.Interfaces
         Task<Agency> UpdateAgencyAsync(Agency agency);
 
         Task DeleteAgencyAsync(int id);
+
+        Task<List<Realtor>> GetRealtorsAtAgencyAsync(int id);
+
 
     }
 }

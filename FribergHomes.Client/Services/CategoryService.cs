@@ -41,10 +41,17 @@ namespace FribergHomes.Client.Services
             return await response.Content.ReadFromJsonAsync<CategoryDTO>();
         }
 
-        public async Task DeleteCategoryAsync(CategoryDTO category)
+        //public async Task DeleteCategoryAsync(CategoryDTO category)
+        //{
+        //    await _client.DeleteAsync($"api/category/{category.Id}");
+        //}
+        public async Task DeleteCategoryAsync(int id)
         {
-            await _client.DeleteAsync($"api/category/{category.Id}");
+            await _client.DeleteAsync($"api/category/{id}");
         }
+
+
+
 
     }
 }

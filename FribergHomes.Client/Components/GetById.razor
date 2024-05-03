@@ -1,6 +1,8 @@
 ﻿@* Gets Object by Id
 * Started this just to test
 * @ Author: Rebecka 2024-04-26
+* @ Update: All-around update on code/ Reb 30/4 - 1/5
+* @Update: Added so you click on button to come på infopage about choosen object / Reb 2024-05-02
 *@
 @using System.Text.Json
 @using System.Net.Http.Json
@@ -12,7 +14,6 @@
 @inject IAgencyService agencyService
 @inject ISalesObject salesService
 
-
 @if (ObjectToShow != null)
 {
     <div class="card shadow">
@@ -21,11 +22,18 @@
 
             <h2>@realtor.FullName - @realtor.AgencyName</h2>
             <div class="pictures">
-                <img src="@realtor.Picture" width="300" />
-                <img src="@realtor.AgencyLogo" width="150" id="agencyLogo" />
+                <img src="@realtor.Picture" width="100" />
             </div>
             <p>@realtor.Email</p>
             <p>@realtor.PhoneNumber</p>
+
+            <Button Color="ButtonColor.Info">
+                <a href="/info/Realtor/@realtor.Id" class="custom-link">Kolla info om Mäklare</a>
+            </Button>
+
+            <Button Color="ButtonColor.Danger">
+                <a href="/delete/Realtor/@realtor.Id" class="custom-link">Ta bort Realtor</a>
+            </Button>
 
         }
         else if (ObjectToShow is SalesObjectDTO salesObject)
@@ -33,7 +41,7 @@
             <h3>@salesObject.Adress</h3>
             foreach (var picture in salesObject.ImageLinks)
             {
-                <img src="@picture" width="500" />
+                <img src="@picture" width="100" />
             }
             if (salesObject.CurrentPrice > salesObject.ListingPrice)
             {
@@ -45,14 +53,9 @@
                 <p>@salesObject.CurrentPrice kr</p>
             }
             <p>@salesObject.CategoryName</p>
-            <img src="@salesObject.CategoryLogoUrl" width="50" />
+            <div>@((MarkupString)@salesObject.CategoryLogoUrl)</div>
             <p>Rum @salesObject.Rooms</p>
-            <p>Byggnadsår: @salesObject.BuildYear</p>
             <p>Boarea: @salesObject.LivingArea m<sup>2</sup></p>
-            if(salesObject.AncillaryArea > 0)
-            {
-            <p>Biarea: @salesObject.AncillaryArea m<sup>2</sup></p>
-            }
             if (salesObject.CategoryName == "Apartment")
             {
                 <p>Våning: @salesObject.Level</p>
@@ -69,38 +72,59 @@
             {
                 <p>Tomtarea: @salesObject.PlotArea m<sup>2</sup></p>
             }
-            <p>Driftkostnad: @salesObject.YearlyCost kr</p>
-            <p>Månadsavgift: @salesObject.MonthlyFee kr</p>
-            <p>
-                Visningsdatum:
-                @foreach (var date in salesObject.ViewingDates)
-                {
-                    date.ToString("YYYY-mm-dd");
-                }
-            </p>
-            <h4>Beskrivning:</h4>
-            <p>@salesObject.ObjectDescription</p>
             <h3>Mäklare</h3>
             <p>@salesObject.RealtorName - @salesObject.AgencyName</p>
-            <p>@salesObject.RealtorEmail</p>
-            <p>@salesObject.RealtorPhone</p>
-            <img src="@salesObject.AgencyLogoUrl" width="50" />
+
+            <Button Color="ButtonColor.Info">
+                <a href="/info/SalesObject/@salesObject.Id" class="custom-link">Kolla info</a>
+            </Button>
+
+            <Button Color="ButtonColor.Danger">
+                <a href="/delete/SalesObject/@salesObject.Id" class="custom-link">Ta bort Annons</a>
+            </Button>
         }
         else if (ObjectToShow is AgencyDTO agency)
         {
             <h2>@agency.Name</h2>
-            <img src="@agency.Logo" width="300" />
+            <img src="@agency.Logo" width="100" />
+
+            <Button Color="ButtonColor.Info">
+                <a href="/info/Agency/@agency.Id" class="custom-link">Kolla info om Mäklarbyrå</a>
+            </Button>
+
+            <Button Color="ButtonColor.Danger">
+                <a href="/delete/Agency/@agency.Id">Ta bort Mäklarbyrå</a>
+            </Button>
+
         }
         else if (ObjectToShow is CountyDTO county)
         {
             <h2>@county.Name</h2>
+
+            <Button Color="ButtonColor.Info">
+                <a href="/info/County/@county.Id" class="custom-link">Kolla info om Kommun</a>
+            </Button>
+
         }
         else if (ObjectToShow is CategoryDTO category)
         {
             <h2>@category.Name</h2>
-            <img src="@category.IconUrl" width="200" />
+
+            <div>@((MarkupString)category.IconUrl)</div>
+
+            <Button Color="ButtonColor.Info">
+                <a href="/info/Category/@category.Id" class="custom-link">Kolla info om Kategori</a>
+            </Button>
+
+            <Button Color="ButtonColor.Danger">
+                <a href="/delete/Category/@category.Id">Ta bort Kategori</a>
+            </Button>
         }
     </div>
+}
+else
+{
+    <p>@error</p>
 }
 
 @code {
@@ -111,26 +135,33 @@
     [Parameter]
     public int ObjectId { get; set; }
 
-    [Parameter]
     public object? ObjectToShow { get; set; }
+    public string error;
 
     private async Task GetObject()
     {
-        if (ObjectType == "Realtor")
-            ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId);
-        else if (ObjectType == "SalesObject")
-            ObjectToShow = await salesService.Get(ObjectId);
-        else if (ObjectType == "Category")
-            ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
-        else if (ObjectType == "County")
-            ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
-        else if (ObjectType == "Agency")
-            ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
+        try
+        {
+            if (ObjectType == "Realtor")
+                ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId);
+            else if (ObjectType == "SalesObject")
+                ObjectToShow = await salesService.Get(ObjectId);
+            else if (ObjectType == "Category")
+                ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
+            else if (ObjectType == "County")
+                ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
+            else if (ObjectType == "Agency")
+                ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
+
+        }
+        catch (Exception ex)
+        {
+            error = "Tyvärr så finns inte detta id! Försök igen.";
+        }
     }
 
     protected override async Task OnInitializedAsync()
     {
         await GetObject();
     }
-
 }
