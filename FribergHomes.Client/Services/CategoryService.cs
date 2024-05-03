@@ -49,5 +49,9 @@ namespace FribergHomes.Client.Services
         {
             await _client.DeleteAsync($"api/category/{id}");
         }
+
+
+
+
     }
 }
