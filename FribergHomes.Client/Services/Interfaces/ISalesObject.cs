@@ -7,6 +7,7 @@ namespace FribergHomes.Client.Services.Interfaces
      * Author: Tobias 2024-04-24
      * 
      * Update: Added GetAllByRealtor method. Changed name of GetAll(countId) to GetAllByCounty / Tobias 2024-04-29
+     * Update: Added GetSalesObjectsByCategory(int id) / Reb 2024-05-02
      * Update: Updated Update method to return Task<SalesObjectDTO> / Tobias 2024-05-03
      */
 
@@ -18,6 +19,10 @@ namespace FribergHomes.Client.Services.Interfaces
         Task<List<SalesObjectDTO>> GetAll();
 
         Task<List<SalesObjectDTO>> GetAllByCounty(int id);
+      
+        Task<List<SalesObjectDTO>> GetSalesByCounty(string name);  // Reb
+      
+        Task<List<SalesObjectDTO>> GetSalesByCategory(int id); // Reb
 
         Task<List<SalesObjectDTO>> GetAllByRealtor(int id);
 
@@ -26,12 +31,6 @@ namespace FribergHomes.Client.Services.Interfaces
         Task<SalesObjectDTO> Update(int id, SalesObjectDTO salesObject);
 
         Task Delete(int id);
-
-
-
-
-        Task<List<SalesObjectDTO>> GetSalesByCounty(string name);
-
 
     }
 }

@@ -11,6 +11,7 @@ namespace FribergHomes.Client.Services
      * Author: Tobias 2024-04-24
      * 
      * Update: Added GetAllByRealtor method. Changed name of GetAll(countId) to GetAllByCounty / Tobias 2024-04-29
+     * Update: Added GetSalesObjectsByCategory(int id) and GetSalesByCounty(string name) / Reb 2024-05-02
      */
 
     public class SalesObjectService : ISalesObject
@@ -59,6 +60,20 @@ namespace FribergHomes.Client.Services
         public async Task<List<SalesObjectDTO>> GetSalesByCounty(string name)
         {
             var response = await _client.GetAsync($"api/salesobject/county-name/{name}");
+            var salesObjects = await response.Content.ReadFromJsonAsync<List<SalesObjectDTO>>();
+            if (salesObjects == null)
+            {
+                return null;
+            }
+
+            return salesObjects;
+        }
+
+
+        /***Test Rebecka**/
+        public async Task<List<SalesObjectDTO>> GetSalesByCategory(int id)
+        {
+            var response = await _client.GetAsync($"api/salesobject/category/{id}");
             var salesObjects = await response.Content.ReadFromJsonAsync<List<SalesObjectDTO>>();
             if (salesObjects == null)
             {
