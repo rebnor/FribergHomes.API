@@ -3,6 +3,7 @@
 * @ Author: Rebecka 2024-04-26
 * @ Update: All-around update on code/ Reb 30/4 - 1/5
 * @Update: Added so you click on button to come på infopage about choosen object / Reb 2024-05-02
+* @Update: Implemented EditButton component where required. / Tobias 2024-05-03
 *@
 @using System.Text.Json
 @using System.Net.Http.Json
@@ -30,6 +31,8 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/Realtor/@realtor.Id" class="custom-link">Kolla info om Mäklare</a>
             </Button>
+
+            <EditButton TargetObject="realtor" /> // Tobias
 
             <Button Color="ButtonColor.Danger">
                 <a href="/delete/Realtor/@realtor.Id" class="custom-link">Ta bort Realtor</a>
@@ -79,6 +82,8 @@
                 <a href="/info/SalesObject/@salesObject.Id" class="custom-link">Kolla info</a>
             </Button>
 
+            <EditButton TargetObject="salesObject" /> // Tobias
+
             <Button Color="ButtonColor.Danger">
                 <a href="/delete/SalesObject/@salesObject.Id" class="custom-link">Ta bort Annons</a>
             </Button>
@@ -91,6 +96,8 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/Agency/@agency.Id" class="custom-link">Kolla info om Mäklarbyrå</a>
             </Button>
+
+            <EditButton TargetObject="agency" /> // Tobias
 
             <Button Color="ButtonColor.Danger">
                 <a href="/delete/Agency/@agency.Id">Ta bort Mäklarbyrå</a>
@@ -115,6 +122,8 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/Category/@category.Id" class="custom-link">Kolla info om Kategori</a>
             </Button>
+
+            <EditButton TargetObject="category" /> // Tobias
 
             <Button Color="ButtonColor.Danger">
                 <a href="/delete/Category/@category.Id">Ta bort Kategori</a>
