@@ -29,38 +29,10 @@
         }
 
         var dtoType = TargetObject!.GetType().Name.ToLower();
-
         var typeName = dtoType[..^3];
 
-        // switch (dtoType)
-        // {
-        //     case "SalesObjectDTO":
-        //         typeName = "salesobject";
-        //         break;
-
-        //     case "RealtorDTO":
-        //         typeName = "realtor";
-        //         break;
-
-        //     case "AgencyDTO":
-        //         typeName = "agency";
-        //         break;
-
-        //     case "CategoryDTO":
-        //         typeName = "category";
-        //         break;
-
-        //     case "CountyDTO":
-        //         typeName = "county";
-        //         break;
-
-        //     default:
-        //         throw new Exception("Object type not known!");
-        // }
-
         var idProperty = TargetObject.GetType().GetProperty("Id");
-
-        Id = (int)idProperty.GetValue(TargetObject)!;
+        Id = (int)idProperty!.GetValue(TargetObject)!;
 
         NavMan.NavigateTo($"/edit/{typeName}/{Id}");
     }
