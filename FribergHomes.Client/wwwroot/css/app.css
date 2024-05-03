@@ -125,7 +125,24 @@ code {
 }
 
 
+/* FÄRGER:
+    ljusast/vit grön: FAFDF2
+    ljuusgrön: F2FADC
+    ljusgrön: E9F6C6
+    grön: 9D9D79
+    mörkare grön: 303831
+    mörkast grön: 2A432B
+    beige: CFBA85
+*/
+
+
 .custom-link {
     text-decoration: none;
     color: white;
+}
+
+.custom-hover:hover {
+    background-color: #E9F6C6;
+    border: 1px solid #9D9D79;
+    padding: 0.5em;
 }

@@ -16,7 +16,7 @@ Update: Filter as you type / Reb 2024-05-01 *@
         <ul class="dropdown-list">
             @foreach (var county in FilteredDto)
             {
-                <li class="dropdown-item" @onclick="(e) => GetCountiesSalesObjects(county.Name)" style="cursor: pointer">@county.Name</li>
+                <li class="dropdown-item custom-hover" @onclick="(e) => GetCountiesSalesObjects(county.Name)" style="cursor: pointer">@county.Name</li>
             }
         </ul>
     </div>
