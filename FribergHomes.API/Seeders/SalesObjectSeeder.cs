@@ -9,6 +9,8 @@ namespace FribergHomes.API.Seeders
     /* Seeder class that checks if DB table SalesObjects contains any entries.
      * If not, creates new SalesObject objects and populates the DB table.
      * Author: Tobias 2024-04-19
+     * Update: Added more pictures / Rebecka 2024-05-03
+     * Update: SalesObject price will now be evened out / Tobias 2024-05-03
      */
     public class SalesObjectSeeder
     {
@@ -22,23 +24,6 @@ namespace FribergHomes.API.Seeders
         // <parameter> Amount of SalesObjects to generate.
         public async Task SeedSalesObjects(int objectAmount)
         {
-            //        string[] imgHouse =
-            //{
-            //            "https://www.a-hus.se/storage/4CBEE1AB262DB926EFE91C41ACBF0CB8D09D3B6B01D420DDF5018865C8AA0E48/579cece4bb5e47da88993b28b4484aae/jpg/media/512f835bc0194897ae17b63334635b67/Bj%C3%B6rk%C3%B6%20Klassisk1920x1920.jpg"
-            //            };
-            //        string[] imgApartment =
-            //            {
-            //            "https://meltwater-apps-production.s3.eu-west-1.amazonaws.com/uploads/images/582addd000e4eb2b7dd9df7f/blobid4_1614761878277.png"
-            //            };
-            //        string[] imgTownhouse =
-            //            {
-            //            "https://www.bonava.se/siteassets/projekt/altadalen/radhus-pionen-1180x500.jpg"
-            //            };
-            //        string[] imgVacationhome =
-            //            {
-            //            "https://www.stugaonline.se/thumb/586/1280x0/fellin2.jpg"
-            //            };
-
 
             #region pictures
 
@@ -275,6 +260,7 @@ namespace FribergHomes.API.Seeders
                     var viewingDates = new List<DateTime>() { DateTime.Now.AddDays(daysAhead) };
 
                     var price = Random.Shared.Next(1000000, 12000001);
+                    price -= price % 10000;
 
                     salesObjects.Add(new SalesObject()
                     {
