@@ -1,5 +1,6 @@
 ﻿@* InfoPage that shows info about choosen object
 * Author: Reb 2024-05-02
+* Update: Finishing the re-navigations / Reb 2024-05-03
 *@
 @page "/info/{ObjectType}/{ObjectStringId}"
 @using FribergHomes.Client.DTOs
@@ -230,7 +231,7 @@
                         <img src="@picture" width="200" />
                     }
                     <Button Color="ButtonColor.Info">
-                        <a href="/info/SalesObject/@so.Id" class="custom-link">Kolla annons</a>
+                        <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)" class="custom-link">Kolla annons</a>
                     </Button>
                 }
             }
