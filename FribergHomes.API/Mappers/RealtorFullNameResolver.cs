@@ -8,7 +8,7 @@ namespace FribergHomes.API.Mappers
     {
         public string Resolve(RealtorDTO src, Realtor dest, string fullName, ResolutionContext context)
         {
-            var names = fullName.Split(' ');
+            var names = src.FullName.Split(' ');
             dest.FirstName = names[0];
             dest.LastName = names[1];
 
