@@ -173,7 +173,7 @@ namespace FribergHomes.API.Controllers
                 {
                     var salesObjectDTO = _mapper.Map<SalesObjectDTO>(salesObject);
                     salesObjectDTOs.Add(salesObjectDTO);
-
+                }
                 return Ok(salesObjectDTOs);
             }
             catch (Exception ex)
