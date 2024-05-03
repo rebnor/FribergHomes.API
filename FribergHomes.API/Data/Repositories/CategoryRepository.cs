@@ -16,11 +16,17 @@ namespace FribergHomes.API.Data.Repositories
         {
             _appDBctx = appDBctx;
         }
-        public async Task<Category> AddCategoryAsync(Category category)
+        //public async Task<Category> AddCategoryAsync(Category category)
+        //{
+        //    await _appDBctx.AddAsync(category);
+        //    await _appDBctx.SaveChangesAsync();
+        //    return category;
+
+        //}
+        public async Task AddCategoryAsync(Category category)
         {
             await _appDBctx.AddAsync(category);
-            await _appDBctx.SaveChangesAsync();
-            return category;
+            await _appDBctx.SaveChangesAsync();        
 
         }
 

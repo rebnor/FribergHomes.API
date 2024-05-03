@@ -1,4 +1,4 @@
-﻿@* Author: Rebecka
+@* Author: Rebecka
   Update: Cleaned up code so we use GetById-component for all / Reb 2024-05-02
 *@
 @using System.Text.Json
@@ -19,8 +19,7 @@
     <div class="row text-center">
 
         @foreach (var item in ListToShow)
-        {
-      
+        {      
             @if (item is RealtorDTO realtor)
             {
                 <GetById ObjectType="Realtor" ObjectId="realtor.Id" />
