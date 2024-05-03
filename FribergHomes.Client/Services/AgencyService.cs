@@ -7,6 +7,7 @@ using System.Runtime.Intrinsics.X86;
 namespace FribergHomes.Client.Services
 {
     // Author: Sanna 2024-04-25
+    // Update: Added GetRealtorsAtAgency(int id) Reb 2024-05-02
     public class AgencyService : IAgencyService
     {
         private readonly HttpClient _client;
@@ -50,6 +51,11 @@ namespace FribergHomes.Client.Services
             {
                 throw new Exception("Ett oväntat fel uppstod.");
             }
+        }
+
+        public async Task<List<RealtorDTO>> GetRealtorsAtAgency(int id)
+        { 
+            return await _client.GetFromJsonAsync<List<RealtorDTO>>($"api/agency/realtors/{id}");
         }
 
         public async Task<AgencyDTO> AddAgencyAsync(AgencyDTO agencyDto)

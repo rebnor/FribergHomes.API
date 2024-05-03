@@ -1,4 +1,4 @@
-﻿@* Author: Reb *@
+﻿@* Author: Reb 2024-05-01 *@
 @page "/category"
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
@@ -12,16 +12,20 @@
 <h3>Alla Kategorier:</h3>
 
 <div class="row">
+
     <form @onsubmit="ShowAllCategories">
         <button type="submit">Hämta alla kategorier</button>
     </form>
-    <form @onsubmit="HideAllCategories">
-        <button type="submit">Göm Lista</button>
-    </form>
+
     @if (CategoryDtoList != null)
     {
+        <form @onsubmit="HideAllCategories">
+            <button type="submit">Göm Lista</button>
+        </form>
+
         <GetList ObjectType="Category" TItem="CategoryDTO"></GetList>
     }
+
 </div>
 
 <hr />

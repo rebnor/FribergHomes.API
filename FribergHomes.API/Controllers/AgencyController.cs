@@ -18,6 +18,7 @@ namespace FribergHomes.API.Controllers
     //Author: Sanna 2024-04-16
     //@ Updates: Added error handling / Sanna 2024-04-19 
     //@ Updates: GET methods now returns DTOs instead of models / Sanna 2024-04-24
+    //@ Update: Added GetRealtorsAtAgency(int id) / Reb 2024-05-02
 
     [Route("api/[controller]")]
     [ApiController]
@@ -80,6 +81,36 @@ namespace FribergHomes.API.Controllers
                 return StatusCode(500, _generalFaultMessage);
             }
         }
+
+
+        /* GET all realtors at agency */
+        [HttpGet("realtors/{id}")]
+        public async Task<ActionResult<List<RealtorDTO>>> GetRealtorsAtAgency(int id)
+        {
+            try
+            {
+                var agency = await _agencyRepository.GetAgencyByIdAsync(id);
+                if (agency == null)
+                {
+                    return NotFound($"Det existerar ingen mäklarbyrå med ID {id}.");
+                }
+
+                List<RealtorDTO> realtorsDtos = new List<RealtorDTO>();
+                var realtors = await _agencyRepository.GetRealtorsAtAgencyAsync(id);
+                foreach (var realtor in realtors)
+                { 
+                    var realtorDto = _mapper.Map<RealtorDTO>(realtor);
+                    realtorsDtos.Add(realtorDto);
+                }
+                return Ok(realtorsDtos);
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, _generalFaultMessage);
+            }
+        }
+
 
         // PUT: api/Agency/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754       

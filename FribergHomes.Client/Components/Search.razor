@@ -1,13 +1,13 @@
-﻿@* Author: Reb *@
+﻿@* Search
+* Searching for County -> to get county's salesobjects
+Author: Reb  2024-04-30 
+Update: Filter as you type / Reb 2024-05-01 *@
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
 @inject ISalesObject salesService
 @inject ICounty countyService
 
-
-
-
-<h4>Search as you write</h4>
+<h4>Sök efter annonser i kommun</h4>
 
 <input type="text" value="@countyName" @oninput="@FilterDtos" placeholder="Sök efter kommun..." />
 @if (FilteredDto != null)
@@ -27,7 +27,7 @@
     {
         foreach (var salesObject in SaleObjectsDtos)
         {
-            <GetById ObjectId="@salesObject.Id" ObjectType="SalesObject" ObjectToShow="null" />
+            <GetById ObjectId="@salesObject.Id" ObjectType="SalesObject" />
         }
     }
     else
@@ -36,36 +36,10 @@
     }
 }
 
-
-<hr />
-
-@* <h4>Sök bostad via kommun:</h4>
-<form @onsubmit="SubmitName">
-    <input type="text" @bind="countyName" />
-    <button type="submit">Sök</button>
-</form>
-
-@if (SaleObjectsDtos != null)
-{
-    @if (SaleObjectsDtos.Count > 0)
-    {
-        foreach (var salesObject in SaleObjectsDtos)
-        {
-            <GetById ObjectId="@salesObject.Id" ObjectType="SalesObject" ObjectToShow="null" />
-        }
-    }
-    else
-    {
-        <p>Inga annonser i denna kommun</p>
-    }
-}
- *@
 @code {
     private List<SalesObjectDTO> SaleObjectsDtos;
     private string countyName;
 
-
-    private CountyDTO? CountyDto { get; set; }
     private List<CountyDTO> CountiesDtos;
     private List<CountyDTO> FilteredDto;
 
@@ -82,22 +56,9 @@
         StateHasChanged();
     }
 
-
-
-
-
     protected override async Task OnInitializedAsync()
     {
         CountiesDtos = await countyService.GetAllCountiesAsync();
         StateHasChanged();
     }
-
-
-
-    private async void SubmitName()
-    {
-        SaleObjectsDtos = await salesService.GetSalesByCounty(countyName);
-        StateHasChanged();
-    }
-
 }
