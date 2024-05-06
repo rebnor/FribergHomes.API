@@ -1,6 +1,7 @@
 ﻿@* Author: Sanna
    Co-author: Rebecka
 *@
+
 @page "/add"
 @using FribergHomes.Client.Services.Interfaces
 @using FribergHomes.Client.DTOs
@@ -70,45 +71,30 @@ else
                 }
             </select>
 
-            @* Lägenhet *@
-            @if (selectedCategoryId == 1)
-            {
-                <p>lägenhet</p>
-
-            }
-
-            @* Hus *@
-            @if (selectedCategoryId == 2)
-            {
-                <p>hus</p>
-            }
-
-            @* Radhus *@
-            @if (selectedCategoryId == 3)
-            {
-                <p>radhus></p>
-            }
-
-            @* Semesterboende *@
-            @if (selectedCategoryId == 4)
-            {
-                <p>semesterboende</p>
-            }
-
             Adress: <input type="text" @bind="((SalesObjectDTO)salesObject).Adress" />
             Antal rum: <input type="number" @bind="((SalesObjectDTO)salesObject).Rooms" />
             Boarea: <input type="number" @bind="((SalesObjectDTO)salesObject).LivingArea" />
             Beskrivning: <input type="text" @bind="((SalesObjectDTO)salesObject).ObjectDescription" />
             Byggnadsår: <input type="number" @bind="((SalesObjectDTO)salesObject).BuildYear" />
-
-
-            Biarea: <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
-            Tomtarea: <input type="number" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
-            Driftkostnad: <input type="number" @bind="((SalesObjectDTO)salesObject).YearlyCost" />
-            Månadsavgift: <input type="number" @bind="((SalesObjectDTO)salesObject).MonthlyFee" />
-            Våning: <input type="number" @bind="((SalesObjectDTO)salesObject).Level" />
-            Hiss: <input type="checkbox" @bind="((SalesObjectDTO)salesObject).Lift" />
-              @*  Pris: <input type="number" @bind="((SalesObjectDTO)salesObject).ListingPrice" /> *@
+            Mäklarbyrå:
+            <select @bind="selectedAgencyId">
+                <option value="">Välj mäklarbyrå</option>
+                @foreach (var a in agencyList)
+                {
+                    <option value="@a.Id">@a.Name</option>
+                }
+            </select>
+            <Button Color="ButtonColor.Primary" @onclick="GetRealtorByAgency">
+                Hämta mäklare
+            </Button>
+            Mäklare:
+            <select @bind="selectedRealtorId">
+                <option value="">Välj mäklare</option>
+                @foreach (var r in realtorList)
+                {
+                    <option value="@r.Id">@r.FullName</option>
+                }
+            </select>
 
             Kommun:
             <select @bind="selectedCountyId">
@@ -118,35 +104,47 @@ else
                     <option value="@c.Id">@c.Name</option>
                 }
             </select>
-
-            Mäklarbyrå:
-            <select @bind="selectedAgencyId">
-                <option value="">Välj mäklarbyrå</option>
-                @foreach (var a in agencyList)
-                {
-                    <option value="@a.Id">@a.Name</option>
-                }
-            </select>
-
-            <Button Color="ButtonColor.Primary" @onclick="GetRealtorByAgency">
-                Hämta mäklare
-            </Button>
+                        @* Pris: <input type="number" @bind="((SalesObjectDTO)salesObject).ListingPrice" /> *@
+            Pris: <input type="number" @bind="((SalesObjectDTO)salesObject).CurrentPrice" />
 
 
-            Mäklare:
-            <select @bind="selectedRealtorId">
-                <option value="">Välj mäklare</option>
-                @foreach (var r in realtorList)
-                {
-                    <option value="@r.Id">@r.FullName</option>
-                }
-            </select>
-            <button type="submit">Lägg till</button>
-
+            @* Lägenhet *@
+            @if (selectedCategoryId == 1)
+            {
+                <p>Våning:</p>
+                <input type="number" @bind="((SalesObjectDTO)salesObject).Level" />
+                <p>Hiss:</p>
+                <input type="checkbox" @bind="((SalesObjectDTO)salesObject).Lift" />
+                <p>Månadsavgift:</p>
+                <input type="number" @bind="((SalesObjectDTO)salesObject).MonthlyFee" />
             }
 
-        </form>
+            @* Hus *@
+            @if (selectedCategoryId == 2)
+            {
+                <p>Biarea:</p>
+                <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
+                <p>Driftkostnad:</p>
+                <input type="number" @bind="((SalesObjectDTO)salesObject).YearlyCost" />
+            }
 
+            @* Radhus *@
+            @if (selectedCategoryId == 3)
+            {
+                <p>Månadsavgift:</p>
+                <input type="number" @bind="((SalesObjectDTO)salesObject).MonthlyFee" />
+                <p>Biarea:</p>
+                <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
+            }
+
+            @* Semesterboende *@
+            @if (selectedCategoryId == 4)
+            {
+                <p>Biarea:</p>
+                <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
+            }
+            <button type="submit">Lägg till</button>
+        </form>        
     }
 }
 @if (errorMessage != "")
@@ -164,7 +162,6 @@ else
     private int selectedCategoryId;
     private int selectedCountyId;
     private int selectedRealtorId;
-    // private string selectedAgencyName;
     private List<AgencyDTO> agencyList = new List<AgencyDTO>();
     private List<RealtorDTO> realtorList = new List<RealtorDTO>();
     private List<CategoryDTO> categoryList = new List<CategoryDTO>();
@@ -191,7 +188,6 @@ else
             categoryList = await categoryService.GetAllCategoriesAsync();
             countyList = await countyService.GetAllCountiesAsync();
             agencyList = await agencyService.GetAllAgenciesAsync();
-
             newObject = new SalesObjectDTO();
         }
     }
@@ -231,29 +227,14 @@ else
                     return;
                 }
 
-                // TEEEEEEEEEEST
-                // var selectedCategory = await categoryService.GetCategoryByIdAsync(selectedCategoryId);
-                // if (selectedCategory != null)
-                // {
-                //     salesObject.CategoryId = selectedCategory.Id;
-                // }
-
-                // var selectedCounty = await countyService.GetCountyByIdAsync(selectedCountyId);
-                // if (selectedCounty != null)
-                // {
-                //     salesObject.CountyId = selectedCounty.Id;
-                // }
-                // SLUUT TEST!! :))))
-
                 salesObject.CategoryId = selectedCategoryId;
                 salesObject.CountyId = selectedCountyId;
                 salesObject.AgencyId = selectedAgencyId;
                 salesObject.RealtorId = selectedRealtorId;
-
+               
 
                 await salesService.Create(salesObject);
             }
-
             isAdded = true;
             StateHasChanged();
             NavigationManager.NavigateTo("/");
