@@ -54,5 +54,6 @@ namespace FribergHomes.Client.Services
         {
             return await _client.GetFromJsonAsync<List<RealtorDTO>>($"api/realtor/by-agency/{agencyName}");
         }
+
     }
 }
