@@ -11,6 +11,7 @@ namespace FribergHomes.API.Seeders
      * Author: Tobias 2024-04-19
      * Update: Added more pictures / Rebecka 2024-05-03
      * Update: SalesObject price will now be evened out / Tobias 2024-05-03
+
      */
     public class SalesObjectSeeder
     {

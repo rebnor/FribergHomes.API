@@ -9,19 +9,26 @@
 @using BlazorBootstrap
 @inject ICounty countyService
 
-<h3>Kommun</h3>
+<h3>Kommuner</h3>
 
 <hr />
 
 <div class="row">
-    <form @onsubmit="ShowAllCounties">
-        <button type="submit">Hämta alla Kommuner</button>
-    </form>
+
+    <Button Color="ButtonColor.Info"
+    @onclick="ShowAllCounties">
+        Hämta alla kommuner <Icon Name="IconName.CaretDown" />
+    </Button>
+
     @if (CountiesDtos != null)
     {
-        <form @onsubmit="HideAllCounties">
+        <Button Color="ButtonColor.Secondary" @onclick="HideAllCounties">
+            Göm Lista<Icon Name="IconName.CaretUp" />
+        </Button>
+
+@*         <form @onsubmit="HideAllCounties">
             <button type="submit">Göm Lista</button>
-        </form>
+        </form> *@
 
         <GetList ObjectType="County" TItem="CountyDTO"></GetList>
     }
