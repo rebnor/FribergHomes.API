@@ -9,6 +9,7 @@ namespace FribergHomes.API.Seeders
     /* Seeder class that checks if DB table SalesObjects contains any entries.
      * If not, creates new SalesObject objects and populates the DB table.
      * Author: Tobias 2024-04-19
+     * Update: Added more pictures to different salesobject / Reb 2024-05-03
      */
     public class SalesObjectSeeder
     {

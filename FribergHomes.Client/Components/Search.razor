@@ -1,40 +1,45 @@
 ﻿@* Search
 * Searching for County -> to get county's salesobjects
-Author: Reb  2024-04-30 
+Author: Reb  2024-04-30
 Update: Filter as you type / Reb 2024-05-01 *@
+
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
 @inject ISalesObject salesService
 @inject ICounty countyService
 
-<h4>Sök efter annonser i kommun</h4>
+<div class="search">
+    <h4>Sök efter annonser i kommun</h4>
 
-<input type="text" value="@countyName" @oninput="@FilterDtos" placeholder="Sök efter kommun..." />
-@if (FilteredDto != null)
-{
-    <div class="dropdown">
-        <ul class="dropdown-list">
-            @foreach (var county in FilteredDto)
-            {
-                <li class="dropdown-item custom-hover" @onclick="(e) => GetCountiesSalesObjects(county.Name)" style="cursor: pointer">@county.Name</li>
-            }
-        </ul>
-    </div>
-}
-@if (SaleObjectsDtos != null)
-{
-    @if (SaleObjectsDtos.Count > 0)
+    <input type="text" value="@countyName" @oninput="@FilterDtos" placeholder="Sök efter kommun..." />
+    @if (FilteredDto != null)
     {
-        foreach (var salesObject in SaleObjectsDtos)
+        <div class="dropdown">
+            <ul class="dropdown-list">
+                @foreach (var county in FilteredDto)
+                {
+                    <li class="dropdown-item custom-hover" @onclick="(e) => GetCountiesSalesObjects(county.Name)" style="cursor: pointer">@county.Name</li>
+                }
+            </ul>
+        </div>
+    }
+    @if (SaleObjectsDtos != null)
+    {
+        @if (SaleObjectsDtos.Count > 0)
         {
-            <GetById ObjectId="@salesObject.Id" ObjectType="SalesObject" />
+            <div class="county-list">
+                @foreach (var salesObject in SaleObjectsDtos)
+                {
+                    <GetById ObjectId="@salesObject.Id" ObjectType="SalesObject" />
+                }
+            </div>
+        }
+        else
+        {
+            <p>Inga annonser i denna kommun</p>
         }
     }
-    else
-    {
-        <p>Inga annonser i denna kommun</p>
-    }
-}
+</div>
 
 @code {
     private List<SalesObjectDTO> SaleObjectsDtos;
@@ -48,6 +53,12 @@ Update: Filter as you type / Reb 2024-05-01 *@
         countyName = args.Value.ToString();
         FilteredDto = CountiesDtos.Where(c => c.Name.ToLower().Contains(countyName.ToLower())).ToList();
         StateHasChanged();
+        if (countyName == "")
+        { 
+            FilteredDto = null;
+            StateHasChanged();
+        }
+
     }
     private async Task GetCountiesSalesObjects(string name)
     {
