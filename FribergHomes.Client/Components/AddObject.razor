@@ -76,6 +76,7 @@ else
             Boarea: <input type="number" @bind="((SalesObjectDTO)salesObject).LivingArea" />
             Beskrivning: <input type="text" @bind="((SalesObjectDTO)salesObject).ObjectDescription" />
             Byggnadsår: <input type="number" @bind="((SalesObjectDTO)salesObject).BuildYear" />
+            @*      Bilder: <input type="text" @bind="((SalesObjectDTO)salesObject).ImageLinks" /> *@
             Mäklarbyrå:
             <select @bind="selectedAgencyId">
                 <option value="">Välj mäklarbyrå</option>
@@ -104,7 +105,7 @@ else
                     <option value="@c.Id">@c.Name</option>
                 }
             </select>
-                        @* Pris: <input type="number" @bind="((SalesObjectDTO)salesObject).ListingPrice" /> *@
+         @*     Pris: <input type="number" @bind="((SalesObjectDTO)salesObject).ListingPrice" /> *@
             Pris: <input type="number" @bind="((SalesObjectDTO)salesObject).CurrentPrice" />
 
 
@@ -144,7 +145,7 @@ else
                 <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
             }
             <button type="submit">Lägg till</button>
-        </form>        
+        </form>
     }
 }
 @if (errorMessage != "")
@@ -188,7 +189,10 @@ else
             categoryList = await categoryService.GetAllCategoriesAsync();
             countyList = await countyService.GetAllCountiesAsync();
             agencyList = await agencyService.GetAllAgenciesAsync();
-            newObject = new SalesObjectDTO();
+            newObject = new SalesObjectDTO()
+                {
+                    ImageLinks = new List<string>()
+                };
         }
     }
 
@@ -231,7 +235,7 @@ else
                 salesObject.CountyId = selectedCountyId;
                 salesObject.AgencyId = selectedAgencyId;
                 salesObject.RealtorId = selectedRealtorId;
-               
+
 
                 await salesService.Create(salesObject);
             }
