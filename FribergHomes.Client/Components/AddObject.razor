@@ -103,6 +103,14 @@ else
             Beskrivning: <input type="text" @bind="((SalesObjectDTO)salesObject).ObjectDescription" />
             Pris: <input type="number" @bind="((SalesObjectDTO)salesObject).CurrentPrice" />
             <input type="hidden" @bind="((SalesObjectDTO)salesObject).ListingPrice" />
+            @*  <input type="text" @bind="((SalesObjectDTO)salesObject).ImageLinks" /> *@
+
+
+          @*   <Button Color="ButtonColor.Primary" @onclick="AddImageLinks">
+                Lägg till bilder
+            </Button> *@
+            Bildlänkar: <input type="text" @bind="imageLinksInput" @oninput="AddImageLinks" multiple/> 
+         
 
             @* Lägenhet *@
             @if (selectedCategoryId == 1)
@@ -162,7 +170,12 @@ else
     private List<RealtorDTO> realtorList = new List<RealtorDTO>();
     private List<CategoryDTO> categoryList = new List<CategoryDTO>();
     private List<CountyDTO> countyList = new List<CountyDTO>();
-    private bool isListingPriceSet = false; 
+    private bool isListingPriceSet = false;
+
+
+
+    private string? imageLinksInput;
+  
 
 
     protected override async Task OnInitializedAsync()
@@ -235,13 +248,13 @@ else
                 salesObject.CategoryId = selectedCategoryId;
                 salesObject.CountyId = selectedCountyId;
                 salesObject.AgencyId = selectedAgencyId;
-                salesObject.RealtorId = selectedRealtorId;
+                salesObject.RealtorId = selectedRealtorId;              
 
                 //Method to set ListingPrice to same value as CurrentPrice
                 if (!isListingPriceSet && ((SalesObjectDTO)salesObject).CurrentPrice != 0)
                 {
                     ((SalesObjectDTO)salesObject).ListingPrice = ((SalesObjectDTO)salesObject).CurrentPrice;
-                    isListingPriceSet = true; 
+                    isListingPriceSet = true;
                 }
                 await salesService.Create(salesObject);
             }
@@ -261,4 +274,29 @@ else
         realtorList = await agencyService.GetRealtorsAtAgency(selectedAgencyId);
         StateHasChanged();
     }
+
+    private async Task AddImageLinks()
+    {
+        if (newObject is SalesObjectDTO salesObject && !string.IsNullOrWhiteSpace(imageLinksInput))
+        {
+            // var imageLinks = imageLinksInput.Split(new[] { ",", "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            // salesObject.ImageLinks.AddRange(imageLinks);
+
+
+
+            var delimiters = new string[] { ",", ";", "\r\n", "\r", "\n" };
+            var imageLinks = imageLinksInput.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+            salesObject.ImageLinks.AddRange(imageLinks);
+
+
+
+
+            // Clear the input after adding
+            // imageLinksInput = "";
+
+            // // Optionally, you can update the database with the new image links here if needed
+            // await salesService.Update(salesObject);
+        }
+    }
+
 }
