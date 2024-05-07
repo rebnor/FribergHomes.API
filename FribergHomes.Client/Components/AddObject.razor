@@ -55,7 +55,6 @@ else
                 }
             </select>
             <button type="submit">Lägg till mäklare</button>
-
         </form>
     }
     else if (newObject is SalesObjectDTO salesObject)
@@ -70,13 +69,14 @@ else
                     <option value="@c.Id">@c.Name</option>
                 }
             </select>
-
-            Adress: <input type="text" @bind="((SalesObjectDTO)salesObject).Adress" />
-            Antal rum: <input type="number" @bind="((SalesObjectDTO)salesObject).Rooms" />
-            Boarea: <input type="number" @bind="((SalesObjectDTO)salesObject).LivingArea" />
-            Beskrivning: <input type="text" @bind="((SalesObjectDTO)salesObject).ObjectDescription" />
-            Byggnadsår: <input type="number" @bind="((SalesObjectDTO)salesObject).BuildYear" />
-            @*      Bilder: <input type="text" @bind="((SalesObjectDTO)salesObject).ImageLinks" /> *@
+            Kommun:
+            <select @bind="selectedCountyId">
+                <option value="">Välj kommun</option>
+                @foreach (var c in countyList)
+                {
+                    <option value="@c.Id">@c.Name</option>
+                }
+            </select>
             Mäklarbyrå:
             <select @bind="selectedAgencyId">
                 <option value="">Välj mäklarbyrå</option>
@@ -96,18 +96,13 @@ else
                     <option value="@r.Id">@r.FullName</option>
                 }
             </select>
-
-            Kommun:
-            <select @bind="selectedCountyId">
-                <option value="">Välj kommun</option>
-                @foreach (var c in countyList)
-                {
-                    <option value="@c.Id">@c.Name</option>
-                }
-            </select>
-         @*     Pris: <input type="number" @bind="((SalesObjectDTO)salesObject).ListingPrice" /> *@
+            Adress: <input type="text" @bind="((SalesObjectDTO)salesObject).Adress" />
+            Boarea: <input type="number" @bind="((SalesObjectDTO)salesObject).LivingArea" />
+            Antal rum: <input type="number" @bind="((SalesObjectDTO)salesObject).Rooms" />
+            Byggnadsår: <input type="number" @bind="((SalesObjectDTO)salesObject).BuildYear" />
+            Beskrivning: <input type="text" @bind="((SalesObjectDTO)salesObject).ObjectDescription" />
             Pris: <input type="number" @bind="((SalesObjectDTO)salesObject).CurrentPrice" />
-
+            <input type="hidden" @bind="((SalesObjectDTO)salesObject).ListingPrice" />
 
             @* Lägenhet *@
             @if (selectedCategoryId == 1)
@@ -167,6 +162,7 @@ else
     private List<RealtorDTO> realtorList = new List<RealtorDTO>();
     private List<CategoryDTO> categoryList = new List<CategoryDTO>();
     private List<CountyDTO> countyList = new List<CountyDTO>();
+    private bool isListingPriceSet = false; 
 
 
     protected override async Task OnInitializedAsync()
@@ -193,6 +189,12 @@ else
                 {
                     ImageLinks = new List<string>()
                 };
+            // var salesObject = new SalesObjectDTO()
+            //     {
+            //         ImageLinks = new List<string>()
+            //     };
+            // salesObject.ListingPrice = salesObject.CurrentPrice;
+            // newObject = salesObject;
         }
     }
 
@@ -230,13 +232,17 @@ else
                     errorMessage = "Alla fält blev inte korrekt ifyllda.";
                     return;
                 }
-
                 salesObject.CategoryId = selectedCategoryId;
                 salesObject.CountyId = selectedCountyId;
                 salesObject.AgencyId = selectedAgencyId;
                 salesObject.RealtorId = selectedRealtorId;
 
-
+                //Method to set ListingPrice to same value as CurrentPrice
+                if (!isListingPriceSet && ((SalesObjectDTO)salesObject).CurrentPrice != 0)
+                {
+                    ((SalesObjectDTO)salesObject).ListingPrice = ((SalesObjectDTO)salesObject).CurrentPrice;
+                    isListingPriceSet = true; 
+                }
                 await salesService.Create(salesObject);
             }
             isAdded = true;
