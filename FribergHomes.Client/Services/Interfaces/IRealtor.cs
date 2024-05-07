@@ -14,6 +14,7 @@ namespace FribergHomes.Client.Services.Interfaces
         Task<RealtorDTO> AddRealtorAsync(RealtorDTO realtor);
         Task<RealtorDTO> UpdateRealtorAsync(RealtorDTO realtor);
         Task DeleteRealtorAsync(int id);
+       
 
     }
 }

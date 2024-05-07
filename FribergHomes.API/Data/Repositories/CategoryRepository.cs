@@ -16,6 +16,7 @@ namespace FribergHomes.API.Data.Repositories
         {
             _appDBctx = appDBctx;
         }
+
         //public async Task<Category> AddCategoryAsync(Category category)
         //{
         //    await _appDBctx.AddAsync(category);
@@ -27,7 +28,6 @@ namespace FribergHomes.API.Data.Repositories
         {
             await _appDBctx.AddAsync(category);
             await _appDBctx.SaveChangesAsync();        
-
         }
 
         public async Task DeleteCategoryAsync(Category category)

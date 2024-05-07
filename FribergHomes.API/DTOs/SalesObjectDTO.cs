@@ -56,7 +56,7 @@ namespace FribergHomes.API.DTOs
         [DisplayName("Hiss")]
         public bool? Lift { get; set; }
 
-        public int ListingPrice { get; init; }
+        public int ListingPrice { get; set; }
 
         [DisplayName("Pris")]
         [Range(0, 100000000, ErrorMessage = "Pris får ej överstiga 100,0000,000SEK")]

@@ -3,9 +3,9 @@
 @using FribergHomes.Client.Components
 @using FribergHomes.Client.Services.Interfaces
 @inject HttpClient HttpClient
-@inject ICategory categoryService
+@* @inject ICategory categoryService
 @inject IAgencyService agencyService
-@inject IRealtor realtorService
+@inject IRealtor realtorService *@
 
 <PageTitle>Weather</PageTitle>
 
@@ -38,6 +38,7 @@ else
 <AddObject ObjectType="category" />
 <AddObject ObjectType="agency"/>
 <AddObject ObjectType="realtor" />
+<AddObject ObjectType="salesObject"/>
 
 @* 
 <AllRealtors></AllRealtors> 
@@ -68,4 +69,4 @@ else
         public string Name { get; set; }
         public string IconUrl { get; set; }
     } *@
-}
+
