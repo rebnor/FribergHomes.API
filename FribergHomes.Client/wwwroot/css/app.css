@@ -1,5 +1,6 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #FAFDF2;
 }
 
 h1:focus {
@@ -103,29 +104,79 @@ code {
 }
 
 
-.card {
-/*    min-width: 280px;
-    max-width: 300px;
-    max-height: 800px;*/
-    box-shadow: 5px 5px 15px black;
-    color: black;
-    /*text-shadow: 0.5px 0.5px 1px #21242C;*/
-    /*background: linear-gradient(45deg, #F4F4FC, #2C597E, #16293C, #21242C,#16293C, #2C597E, #F4F4FC, #2C597E, #16293C);*/
-}
-
-    .card img {
-        margin: auto;
-        border: 2px solid black;
-    }
-
-
 /** Google iconer**/
 .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
 }
 
 
+/* FÄRGER:
+    ljusast/vit grön: FAFDF2
+    ljuusgrön: F2FADC
+    ljusgrön: E9F6C6
+    grön: 9D9D79
+    mörkare grön: 303831
+    mörkast grön: 2A432B
+    beige: CFBA85
+*/
+
+
 .custom-link {
     text-decoration: none;
     color: white;
+}
+
+.custom-hover:hover {
+    background-color: #E9F6C6;
+    border: 1px solid #9D9D79;
+    padding: 0.5em;
+}
+
+
+
+.loader img {
+
+    border-radius: 50%;
+}
+
+
+.nav-item:hover {
+    text-shadow: 0.5px 0.5px 2px #2A432B;
+}
+
+nav {
+    color: #9D9D79;
+    /*background-image: linear-gradient(0deg, #9D9D79 0%, white 30%);*/
+    box-shadow: 0px 0px 10px #303831;
+}
+.navbar-brand {
+    color: #2A432B;
+    text-shadow: 0px 0px 2px #9D9D79;
+}
+    .navbar-brand:hover {
+        color: #9D9D79;
+        text-shadow: 0px 0px 2px #2A432B;
+    }
+
+footer {
+    border-top: 1px solid black;
+    box-shadow: 0px 0px 10px #303831;
+}
+
+.content-custom {
+    background-color: rgba(233,246,198, 0.7);
+    width: 60%;
+    margin: auto;
+}
+
+main {
+    flex: 1;
+    background: url("../hemlangtanfriberg.png") no-repeat #FAFDF2;
+    background-position: center top;
+    height: 100vh;
+}
+
+.dropdown-list {
+    max-height: 50vh;
+    overflow: auto;
 }

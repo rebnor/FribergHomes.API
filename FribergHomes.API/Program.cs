@@ -58,12 +58,8 @@ namespace FribergHomes.API
             builder.Services.AddTransient<IRealtor, RealtorRepository>(); // Tobias
             builder.Services.AddTransient<ICategory, CategoryRepository>(); // Reb
 
-            builder.Services.AddAutoMapper  // Tobias
-                (typeof(SalesObjectProfile),
-                typeof(AgencyProfile),
-                typeof(RealtorProfile),
-                typeof(CategoryProfile)
-                ); 
+            builder.Services.AddAutoMapper(typeof(MappingProfile)); // Tobias
+                
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

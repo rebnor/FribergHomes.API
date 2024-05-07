@@ -1,5 +1,7 @@
 ﻿@* InfoPage that shows info about choosen object
 * Author: Reb 2024-05-02
+* Update: Finishing the re-navigations / Reb 2024-05-03
+* Update: Divided "Kommande visningar" and "Sold" - depending on viewingdates / Reb 2024-05-06
 *@
 @page "/info/{ObjectType}/{ObjectStringId}"
 @using FribergHomes.Client.DTOs
@@ -23,7 +25,7 @@
             <a href="/info/Agency/@realtor.AgencyId" @onclick="() => NavigateToAgency(realtor.AgencyId)">@realtor.AgencyName</a>
         </h2>
         <div class="pictures">
-            <img src="@realtor.Picture" width="150" />
+            <img src="@realtor.Picture" width="350" />
             <img src="@realtor.AgencyLogo" width="50" id="agencyLogo" />
         </div>
         <p>Email: @realtor.Email</p>
@@ -32,31 +34,75 @@
         <Button Color="ButtonColor.Primary" @onclick="GetRealtorsSales">
             Hämta annonser
         </Button>
-
+        @* <Badge Color="BadgeColor.Light">@RealtorsSales.Count</Badge> *@
         @if (RealtorsSales != null)
         {
             <Button Color="ButtonColor.Secondary" @onclick="HideRealtorsSales">
                 Göm annonser
             </Button>
 
+            <br />
+            <h2>Kommande visningar</h2>
+            <hr />
             foreach (var salesObject in RealtorsSales)
             {
-                <h3>@salesObject.Adress</h3>
-                foreach (var picture in salesObject.ImageLinks)
+                foreach (var vd in salesObject.ViewingDates)
                 {
-                    <img src="@picture" width="200" />
+                    <div class="m-2">
+                        @if (vd > DateTime.Now)
+                        {
+                            <h4>@salesObject.Adress</h4>
+                            foreach (var picture in salesObject.ImageLinks)
+                            {
+                                <img src="@picture" width="150" />
+                            }
+                            <strong>Visning: @vd.ToString("yyy-MM-dd")</strong>
+                            <Button Color="ButtonColor.Info">
+                                <a href="/info/SalesObject/@salesObject.Id" @onclick="() => NavigateToSalesObject(salesObject.Id)">
+                                    Kolla Annons
+                                </a>
+                            </Button>
+                        }
+                    </div>
                 }
-                <Button Color="ButtonColor.Info">
-                    <a href="/info/SalesObject/@salesObject.Id" @onclick="() => NavigateToSalesObject(salesObject.Id)">
-                        Kolla Annons
-                    </a>
-                </Button>
+
+
+
+            }
+
+            <h2>Sålda annonser</h2>
+            <hr />
+            foreach (var so in RealtorsSales)
+            {
+                foreach (var vdate in so.ViewingDates)
+                {
+                    @if (vdate < DateTime.Now)
+                    {
+                    <h4>@so.Adress</h4>
+                    foreach (var picture in so.ImageLinks)
+                    {
+                        <img src="@picture" width="150" />
+                    }
+                    <Button Color="ButtonColor.Info">
+                        <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)">
+                            Kolla Annons
+                        </a>
+                    </Button>
+                    }
+                }
             }
 
         }
     }
     else if (ObjectToShow is SalesObjectDTO salesObject) @* Shows info of SalesObject *@
     {
+        @foreach (var date in salesObject.ViewingDates)
+        {
+            if (date < DateTime.Now)
+            {
+                <Badge Color="BadgeColor.Danger">SÅLD</Badge>
+            }
+        }
         <h3>@salesObject.Adress</h3>
         foreach (var picture in salesObject.ImageLinks)
         {
@@ -96,13 +142,19 @@
         {
             <p>Tomtarea: @salesObject.PlotArea m<sup>2</sup></p>
         }
-        <p>Driftkostnad: @salesObject.YearlyCost kr</p>
-        <p>Månadsavgift: @salesObject.MonthlyFee kr</p>
+        if (salesObject.YearlyCost > 0)
+        {
+            <p>Driftkostnad: @salesObject.YearlyCost kr</p>
+        }
+        if (salesObject.MonthlyFee > 0)
+        {
+            <p>Månadsavgift: @salesObject.MonthlyFee kr</p>
+        }
         <p>
             Visningsdatum:
             @foreach (var date in salesObject.ViewingDates)
             {
-                date.ToString("YYYY-mm-dd");
+                @date.ToString("yyy-MM-dd");
             }
         </p>
         <h4>Beskrivning:</h4>
@@ -115,8 +167,8 @@
         </a>
 
         <a href="/info/Agency/@salesObject.AgencyId" @onclick="() => NavigateToAgency(salesObject.AgencyId)">
-            @* <img src="@salesObject.AgencyLogoUrl" width="50" /> *@
-            @salesObject.AgencyName
+            <img src="@salesObject.AgencyLogoUrl" width="50" />
+            @* @salesObject.AgencyName *@
         </a>
     }
     else if (ObjectToShow is AgencyDTO agency) @* Shows info of Agency *@
@@ -230,7 +282,7 @@
                         <img src="@picture" width="200" />
                     }
                     <Button Color="ButtonColor.Info">
-                        <a href="/info/SalesObject/@so.Id" class="custom-link">Kolla annons</a>
+                        <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)" class="custom-link">Kolla annons</a>
                     </Button>
                 }
             }
