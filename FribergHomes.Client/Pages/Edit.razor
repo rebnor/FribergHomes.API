@@ -13,362 +13,302 @@
 
 @* Add authorization! *@
 
+<div class="content-frame">
 
+    <div class="content-box">
 
-@if (ObjectType == "salesobject")
-{
-    if (SalesObject == null)
-    {
-        <p>Laddar försäljningsobjekt...</p>
-    }
-    else
-    {
-        <h3>Ändra försäljningsobjekt</h3>
-        <h4>Visa formulär för försäljningsobjekt med ID: @SalesObject!.Id </h4>
-
-        <EditForm Model="SalesObject" OnValidSubmit="Submit" FormName="SalesObjectForm">
-            <DataAnnotationsValidator />
-            <div>
-                <label>
-                    Objektbeskrivning
-                    <InputText @bind-Value="SalesObject!.ObjectDescription" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Adress
-                    <InputText @bind-Value="SalesObject!.Adress" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Pris
-                    <InputNumber @bind-Value="SalesObject!.CurrentPrice" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Byggnationsår
-                    <InputNumber @bind-Value="SalesObject!.BuildYear" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Rum
-                    <InputNumber @bind-Value="SalesObject!.Rooms" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Boarea
-                    <InputNumber @bind-Value="SalesObject!.LivingArea" />
-                </label>
-            </div>
-
-            @if (category == "House" || category == "TownHouse" || category == "VacationHome")
-            {
-                <div>
-                    <label>
-                        Biarea
-                        <InputNumber @bind-Value="SalesObject!.AncillaryArea" />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Tomtarea
-                        <InputNumber @bind-Value="SalesObject!.PlotArea" />
-                    </label>
-                </div>
-
-                @if (category == "House" || category == "VacationHome")
-                {
-                    <div>
-                        <label>
-                            Driftkostnad
-                            <InputNumber @bind-Value="SalesObject!.YearlyCost" />
-                        </label>
-                    </div>
-                }
-            }
-
-            @if (category == "TownHouse" || category == "Apartment")
-            {
-                <div>
-                    <label>
-                        Månadsavgift
-                        <InputNumber @bind-Value="SalesObject!.MonthlyFee" />
-                    </label>
-                </div>
-
-                @if (category == "Apartment")
-                {
-                    <div>
-                        <label>
-                            Våning
-                            <InputNumber @bind-Value="SalesObject!.Level" />
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            Hiss
-                            <InputSelect @bind-Value="SalesObject!.Lift">
-                                <option value="null">
-                                    Hiss?
-                                </option>
-                                <option checked="@(SalesObject!.Lift == true)" value="true">
-                                    Ja
-                                </option>
-                                <option checked="@(SalesObject!.Lift == false)" value="false">
-                                    Nej
-                                </option>
-                            </InputSelect>
-                        </label>
-                    </div>
-                }
-            }
-            <div>
-                <button type="submit">Spara</button>
-            </div>
-
-        </EditForm>
-    }
-}
-
-@if (ObjectType == "realtor")
-{
-    if (Realtor == null)
-    {
-        <p>Laddar mäklare...</p>
-    }
-    else
-    {
-        <span>Visa formulär för mäklare med ID: @Realtor!.Id </span>
-
-        <EditForm Model="Realtor" OnValidSubmit="Submit" FormName="RealtorForm">
-            <DataAnnotationsValidator />
-            <div>
-                <label>
-                    Namn
-                    <InputText @bind-Value="Realtor!.FullName" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Email
-                    <InputText @bind-Value="Realtor!.Email" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Telefon
-                    <InputText @bind-Value="Realtor!.PhoneNumber" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Namn
-                    <InputText @bind-Value="Realtor!.FullName" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Profilbild
-                    <InputText @bind-Value="Realtor!.Picture" />
-                </label>
-            </div>
-            <div>
-                <button type="submit">Spara</button>
-            </div>
-
-        </EditForm>
-
-    }
-}
-
-@if (ObjectType == "agency")
-{
-    if (Agency == null)
-    {
-        <p>Laddar mäklarbyrå...</p>
-    }
-    else
-    {
-        <span>Visa formulär för mäklarbyrå med ID: @Agency!.Id </span>
-
-        <EditForm Model="Agency" OnValidSubmit="Submit" FormName="AgencyForm">
-            <DataAnnotationsValidator />
-            <div>
-                <label>
-                    Namn
-                    <InputText @bind-Value="Agency!.Name" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Presentation
-                    <InputText @bind-Value="Agency!.Presentation" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Logo
-                    <InputText @bind-Value="Agency!.Logo" />
-                </label>
-            </div>
-            <div>
-                <button type="submit">Spara</button>
-            </div>
-
-        </EditForm>
-
-    }
-}
-
-@if (ObjectType == "category")
-{
-    if (County == null)
-    {
-        <p>Laddar kommun...</p>
-    }
-    else
-    {
-        <span>Visa formulär för kommun med ID: @County!.Id </span>
-
-        <EditForm Model="County" OnValidSubmit="Submit" FormName="CountyForm">
-            <DataAnnotationsValidator />
-            <div>
-                <label>
-                    Namn
-                    <InputText @bind-Value="Category!.Name" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Ikon
-                    <InputText @bind-Value="Category!.IconUrl" />
-                </label>
-            </div>
-            <div>
-                <button type="submit">Spara</button>
-            </div>
-
-        </EditForm>
-
-    }
-}
-
-@if (ObjectType == "county")
-{
-    if (County == null)
-    {
-        <p>Laddar kommun...</p>
-    }
-    else
-    {
-        <span>Visa formulär för kommun med ID: @County!.Id </span>
-
-        <EditForm Model="County" OnValidSubmit="Submit" FormName="CountyForm">
-            <DataAnnotationsValidator />
-            <div>
-                <label>
-                    Namn
-                    <InputText @bind-Value="Category!.Name" />
-                </label>
-            </div>
-            <div>
-                <button type="submit">Spara</button>
-            </div>
-
-        </EditForm>
-
-    }
-}
-
-
-
-
-
-@code {
-
-    [Parameter]
-    public string? ObjectType { get; set; }
-
-    [Parameter]
-    public int Id { get; set; }
-
-    private string? category;
-
-    public SalesObjectDTO? SalesObject { get; set; }
-
-    public RealtorDTO? Realtor { get; set; }
-
-    public AgencyDTO? Agency { get; set; }
-
-    public CategoryDTO? Category { get; set; }
-
-    public CountyDTO? County { get; set; }
-
-
-    protected override async Task OnParametersSetAsync()
-    {
-        switch (ObjectType)
+        @if (ObjectType == "salesobject")
         {
-            case "salesobject":
+            if (SalesObject == null)
+            {
+                <p>Laddar försäljningsobjekt...</p>
+            }
+            else
+            {
+                <h3>Ändra försäljningsobjekt</h3>
 
-                SalesObject = await SalesObjectService.Get(Id);
-                category = SalesObject.CategoryName;
-                break;
+                <span>Skapad: @SalesObject.CreationDate @SalesObject.CreatorName</span>
 
-            case "realtor":
+                @if (SalesObject.ChangeDate != null)
+                {
+                    <span class="info">Ändrad: @SalesObject.ChangeDate @SalesObject.ChangeName</span>
+                }
 
-                Realtor = await RealtorService.GetRealtorByIdAsync(Id);
-                break;
 
-            case "agency":
+                <EditForm Model="SalesObject" OnValidSubmit="Submit" FormName="SalesObjectForm">
+                    <DataAnnotationsValidator />
 
-                Agency = await AgencyService.GetAgencyByIdAsync(Id);
-                break;
+                    <div class="row">
+                        <div class="fixed-large">
+                            <label>
+                                Adress
+                                <InputText @bind-Value="SalesObject!.Adress" />
+                            </label>
+                        </div>
+                        <div class="fixed-medium">
+                            <label>
+                                Kommun
+                                <InputText @bind-Value="SalesObject!.CountyName" readonly />
+                            </label>
+                        </div>
+                    </div>
 
-            case "category":
+                    <div class="row">
+                        <div class="fixed-medium">
+                            <label>
+                                Pris
+                                <InputNumber @bind-Value="SalesObject!.CurrentPrice" />
+                            </label>
+                        </div>
+                        <div class="fixed-medium">
+                            @if (_category == "House" || _category == "VacationHome")
+                            {
+                                <label>
+                                    Driftkostnad (år)
+                                    <InputNumber @bind-Value="SalesObject!.YearlyCost" />
+                                </label>
+                            }
+                            @if (_category == "Apartment" || _category == "TownHouse")
+                            {
+                                <label>
+                                    Månadsavgift
+                                    <InputNumber @bind-Value="SalesObject!.MonthlyFee" />
+                                </label>
+                            }
+                        </div>
+                        <div class="fixed-small">
+                            <label>
+                                Byggnationsår
+                                <InputNumber @bind-Value="SalesObject!.BuildYear" />
+                            </label>
+                        </div>
+                    </div>
 
-                Category = await CategoryService.GetCategoryByIdAsync(Id);
-                break;
+                    <div class="row">
+                        <div class="fixed-digit">
+                            <label>
+                                Rum
+                                <InputNumber @bind-Value="SalesObject!.Rooms" />
+                            </label>
+                        </div>
+                        <div class="fixed-small">
+                            <label>
+                                Boarea
+                                <InputNumber @bind-Value="SalesObject!.LivingArea" />
+                            </label>
+                        </div>
 
-            case "county":
+                        @if (_category == "House" || _category == "TownHouse" || _category == "VacationHome")
+                        {
+                            <div class="fixed-small">
+                                <label>
+                                    Biarea
+                                    <InputNumber @bind-Value="SalesObject!.AncillaryArea" />
+                                </label>
+                            </div>
+                            <div class="fixed-small">
+                                <label>
+                                    Tomtarea
+                                    <InputNumber @bind-Value="SalesObject!.PlotArea" />
+                                </label>
+                            </div>
 
-                County = await CountyService.GetCountyByIdAsync(Id);
-                break;
+                        }
+
+                        @if (_category == "Apartment")
+                        {
+                            <div class="fixed-small">
+                                <label>
+                                    Våning
+                                    <InputNumber @bind-Value="SalesObject!.Level" />
+                                </label>
+                            </div>
+                            <div class="fixed-small">
+                                <label>
+                                    Hiss
+                                    <InputSelect @bind-Value="SalesObject!.Lift">
+                                        <option value="null">
+                                            Hiss?
+                                        </option>
+                                        <option checked="@(SalesObject!.Lift == true)" value="true">
+                                            Ja
+                                        </option>
+                                        <option checked="@(SalesObject!.Lift == false)" value="false">
+                                            Nej
+                                        </option>
+                                    </InputSelect>
+                                </label>
+                            </div>
+
+                        }
+
+                        <div class="row">
+                            <div class="input-text">
+                                <label>
+                                    Objektbeskrivning
+                                    <InputTextArea @bind-Value="SalesObject!.ObjectDescription" />
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="fixed-small">
+                        <button type="submit" class="btn btn-primary">Spara</button>
+                    </div>
+
+                </EditForm>
+            }
         }
-    }
 
-    private async void Submit()
-    {
-        switch (ObjectType)
+        @if (ObjectType == "realtor")
         {
-            case "salesobject":
+            if (Realtor == null)
+            {
+                <p>Laddar mäklare...</p>
+            }
+            else
+            {
+                <h3>Ändra mäklare</h3>
 
-                await SalesObjectService.Update(Id, SalesObject!);
-                break;
+                <EditForm Model="Realtor" OnValidSubmit="Submit" FormName="RealtorForm">
+                    <DataAnnotationsValidator />
 
-            case "realtor":
+                    <div class="row">
+                        <div class="fixed-medium">
+                            <label>
+                                Namn
+                                <InputText @bind-Value="Realtor!.FullName" />
+                            </label>
+                        </div>
+                        <div class="fixed-large">
+                            <label>
+                                Email
+                                <InputText @bind-Value="Realtor!.Email" />
+                            </label>
+                        </div>
+                    </div>
 
-                Realtor = await RealtorService.UpdateRealtorAsync(Realtor!);
-                break;
+                    <div class="row">
+                        <div class="fixed-medium">
+                            <label>
+                                Telefon
+                                <InputText @bind-Value="Realtor!.PhoneNumber" />
+                            </label>
+                        </div>
+                        <div class="fixed-large">
+                            <label>
+                                Profilbild
+                                <InputText @bind-Value="Realtor!.Picture" onchange="@(() => UpdatePreview())" />
+                            </label>
+                        </div>
+                    </div>
 
-            case "agency":
+                    <div class="mt">
+                        <span>Profile picture preview</span>
+                        <img src="@Realtor.Picture" width="250px" height="auto" />
+                    </div>
 
-                Agency = await AgencyService.UpdateAgencyAsync(Id, Agency!);
-                break;
+                    <div class="fixed-small">
+                        <button type="submit" class="btn btn-primary">Spara</button>
+                    </div>
 
-            case "category":
+                </EditForm>
 
-                Category = await CategoryService.UpdateCategoryAsync(Category!);
-                break;
 
-            case "county":
-
-                County = await CountyService.UpdateCountyAsync(County!);
-                break;
+            }
         }
-    }
-}
+
+        @if (ObjectType == "agency")
+        {
+            if (Agency == null)
+            {
+                <p>Laddar mäklarbyrå...</p>
+            }
+            else
+            {
+                <h3>Ändra mäklare</h3>
+
+                <EditForm Model="Agency" OnValidSubmit="Submit" FormName="AgencyForm">
+                    <DataAnnotationsValidator />
+                    <div class="mt">
+                        <label>
+                            Namn
+                            <InputText @bind-Value="Agency!.Name" />
+                        </label>
+                    </div>
+                    <div class="mt">
+                        <label>
+                            Presentation
+                            <InputTextArea @bind-Value="Agency!.Presentation" />
+                        </label>
+                    </div>
+                    <div class="mt">
+                        <label>
+                            Logo
+                            <InputText @bind-Value="Agency!.Logo" onchange="@(() => UpdatePreview())" />
+                        </label>
+                    </div>
+
+                    <div class="mt">
+                        <span>Logo preview</span>
+                        <img src="@Agency.Logo" width="250px" height="auto" />
+                    </div>
+
+                    <div class="fixed-small">
+                        <button type="submit" class="btn btn-primary">Spara</button>
+                    </div>
+
+                </EditForm>
+
+            }
+        }
+
+        @if (ObjectType == "category")
+        {
+            if (Category == null)
+            {
+                <p>Laddar kategori...</p>
+            }
+            else
+            {
+                <h3>Ändra kategori</h3>
+
+                <EditForm Model="Category" OnValidSubmit="Submit" FormName="CategoryForm">
+                    <DataAnnotationsValidator />
+                    <div class="mt">
+                        <label>
+                            Namn
+                            <InputText @bind-Value="Category!.Name" />
+                        </label>
+                    </div>
+
+                    <div class="mt">
+                        <label>
+                            Ikon
+                        @((MarkupString)Category.IconUrl)
+                        </label>
+                    </div>
+
+                    <span>Välj ikon:</span> 
+
+                    <div class="row icon-container">
+                        @foreach (var icon in _categoryIconNames!)
+                        {
+                            <div class="">
+                                @((MarkupString)icon)
+                            </div>
+                        }
+                    </div>
+
+                    <div class="fixed-small">
+                        <button type="submit" class="btn btn-primary">Spara</button>
+                    </div>
+
+                </EditForm>
+
+            }
+        }
+
+    </div>
+</div>
+
