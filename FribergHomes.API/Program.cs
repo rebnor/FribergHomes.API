@@ -7,11 +7,12 @@ using FribergHomes.API.Mappers;
 using FribergHomes.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Identity;
 
 namespace FribergHomes.API
 {
     public class Program
-    {      
+    {
 
         //public static void Main(string[] args)
         public static async Task Main(string[] args)
@@ -50,6 +51,10 @@ namespace FribergHomes.API
             builder.Services.AddDbContext<ApplicationDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("FribergHomesDB") ?? throw new InvalidOperationException("Connection string 'FribergHomesDB' not found.")));
 
+            // Identity
+            builder.Services.AddIdentityCore<Realtor>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDBContext>();
 
             // Repositories
             builder.Services.AddTransient<ICounty, CountyRepository>(); // Reb
@@ -59,13 +64,13 @@ namespace FribergHomes.API
             builder.Services.AddTransient<ICategory, CategoryRepository>(); // Reb
 
             builder.Services.AddAutoMapper(typeof(MappingProfile)); // Tobias
-                
+
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-          
+
             var app = builder.Build();
 
             // Seeders  / Reb 2024-04-17
@@ -97,7 +102,7 @@ namespace FribergHomes.API
                 await salesObjectSeeder.SeedSalesObjects(100);
             }
 
-          
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -115,6 +120,9 @@ namespace FribergHomes.API
             });
 
             app.UseHttpsRedirection();
+
+
+            //app.UseAuthentication(); // TODO: Konfigurera
 
             app.UseAuthorization();
 
