@@ -4,6 +4,7 @@ using FribergHomes.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace FribergHomes.API.Controllers
 {
@@ -58,5 +59,6 @@ namespace FribergHomes.API.Controllers
                 return Problem($"Något gick fel i {nameof(Register)}", statusCode: 500);
             }
         }
+
     }
 }

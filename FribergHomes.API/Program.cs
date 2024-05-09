@@ -55,6 +55,7 @@ namespace FribergHomes.API
             builder.Services.AddIdentityCore<Realtor>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDBContext>();
+            
 
             // Repositories
             builder.Services.AddTransient<ICounty, CountyRepository>(); // Reb

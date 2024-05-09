@@ -12,6 +12,7 @@ namespace FribergHomes.API.Data
      * @ Update: Using configuration to get connectionstring from appsettings.json / Rebecka 2024-04-16
      * @ Update:
      */
+
     public class ApplicationDBContext : IdentityDbContext<Realtor>
     {
        
@@ -41,12 +42,13 @@ namespace FribergHomes.API.Data
             base.OnModelCreating(builder);
 
             builder.Entity<IdentityRole>().HasData(
-                new IdentityRole
-                {
-                    Name = "User",
-                    NormalizedName = "USER",
-                    Id = "7a63e796-8d97-4545-be0e-68c814eb5f4d"
-                },
+
+                 new IdentityRole
+                 {
+                     Name = "Admin",
+                     NormalizedName = "ADMIN",
+                     Id = "dd543f41-7a25-4b52-a51d-4d7681bcfa87"
+                 },
 
                 new IdentityRole
                 {

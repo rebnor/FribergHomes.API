@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FribergHomes.API.Models
 {
-    //Author: Sanna 
-    //Update: Added attribute to List<SalesObject> to eliminate circular reference /Tobias 2024-05-26
+    // Author: Sanna 
+    
     public class Realtor : IdentityUser
     {
         [Key]
@@ -14,8 +14,10 @@ namespace FribergHomes.API.Models
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        [Required, EmailAddress]
-        public string Email { get; set; }
+
+        //[Required, EmailAddress]
+        //public string Email { get; set; }
+
         [Required, Display(Name = "Telefonnummer")]
         public string PhoneNumber { get; set; }
         
@@ -23,8 +25,6 @@ namespace FribergHomes.API.Models
         [Required, Display(Name = "Mäklarbyrå")]
         public Agency Agency { get; set; }
 
-        //[InverseProperty("Realtor")]
-        //public List<SalesObject>? SalesObjects { get; set; }
 
 
     }
