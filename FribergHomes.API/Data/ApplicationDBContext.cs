@@ -1,4 +1,5 @@
-﻿using FribergHomes.API.Models;
+﻿using FribergHomes.API.Constants;
+using FribergHomes.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -45,17 +46,17 @@ namespace FribergHomes.API.Data
 
                  new IdentityRole
                  {
-                     Name = "Admin",
-                     NormalizedName = "ADMIN",
+                     Name = ApiRoles.Admin,
+                     NormalizedName = ApiRoles.Admin.ToUpper(),
                      Id = "dd543f41-7a25-4b52-a51d-4d7681bcfa87"
                  },
 
                 new IdentityRole
                 {
-                    Name = "Realtor",
-                    NormalizedName = "REALTOR",
+                    Name = ApiRoles.Realtor,
+                    NormalizedName = ApiRoles.Realtor.ToUpper(),
                     Id = "e13e3b26-67e0-425a-b8ae-54ad6a1b1c09"
-                });
+                }); ;
 
 
         }

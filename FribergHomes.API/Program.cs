@@ -8,6 +8,9 @@ using FribergHomes.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace FribergHomes.API
 {
@@ -55,7 +58,20 @@ namespace FribergHomes.API
             builder.Services.AddIdentityCore<Realtor>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDBContext>();
-            
+
+            // Identity - Password and account requirements
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+            });
+
 
             // Repositories
             builder.Services.AddTransient<ICounty, CountyRepository>(); // Reb
@@ -64,13 +80,35 @@ namespace FribergHomes.API
             builder.Services.AddTransient<IRealtor, RealtorRepository>(); // Tobias
             builder.Services.AddTransient<ICategory, CategoryRepository>(); // Reb
 
+            // AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile)); // Tobias
 
-
             builder.Services.AddControllers();
+
+            // Swagger
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Authentication
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+                    ValidAudience = builder.Configuration["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
+                };
+            });
 
             var app = builder.Build();
 
@@ -116,15 +154,13 @@ namespace FribergHomes.API
             {
                 policy.WithOrigins("https://localhost:7196", "http://localhost:5083", "https://localhost:7161")
                 .AllowAnyHeader()
-                .AllowAnyMethod(); // test reb 2024-04-30
-                //.WithHeaders(HeaderNames.ContentType);
+                .AllowAnyMethod();
             });
 
             app.UseHttpsRedirection();
 
 
-            //app.UseAuthentication(); // TODO: Konfigurera
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

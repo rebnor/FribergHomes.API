@@ -19,6 +19,7 @@ namespace FribergHomes.API.Seeders
 
                 var agencies = await appDbCtx.Agencies.OrderBy(a => a.Id).ToListAsync();
                 await appDbCtx.AddRangeAsync(
+
                   new Realtor
                   {
                       FirstName = "Sanna",

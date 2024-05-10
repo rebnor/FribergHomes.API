@@ -66,7 +66,7 @@ namespace FribergHomes.API.Controllers
         // GET method that returns a Realtor object stored in the DB based on Id.
         // GET api/<RealtorController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RealtorDTO>> GetRealtor(int id)
+        public async Task<ActionResult<RealtorDTO>> GetRealtor(string id)
         {
             try
             {
@@ -225,7 +225,7 @@ namespace FribergHomes.API.Controllers
         // DELETE method that finds and deletes an existing Realtor object based on Id.
         // DELETE api/<RealtorController>/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteRealtor(int id)
+        public async Task<ActionResult> DeleteRealtor(string id)
         {
             try
             {

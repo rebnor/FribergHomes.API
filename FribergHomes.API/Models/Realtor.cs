@@ -8,8 +8,9 @@ namespace FribergHomes.API.Models
     
     public class Realtor : IdentityUser
     {
-        [Key]
-        public int Id { get; set; }
+        //[Key]
+        //public int Id { get; set; }
+
         [Required]
         public string FirstName { get; set; }
         [Required]
@@ -18,10 +19,11 @@ namespace FribergHomes.API.Models
         //[Required, EmailAddress]
         //public string Email { get; set; }
 
-        [Required, Display(Name = "Telefonnummer")]
-        public string PhoneNumber { get; set; }
+        //[Required, Display(Name = "Telefonnummer")]
+        //public string PhoneNumber { get; set; }
         
         public string? Picture { get; set; }        // Test
+
         [Required, Display(Name = "Mäklarbyrå")]
         public Agency Agency { get; set; }
 

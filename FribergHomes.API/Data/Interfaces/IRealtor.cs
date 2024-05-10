@@ -6,7 +6,7 @@ namespace FribergHomes.API.Data.Interfaces
     // Author: Sanna 
     public interface IRealtor
     {
-        Task<Realtor> GetRealtorByIdAsync(int id);
+        Task<Realtor> GetRealtorByIdAsync(string id);
         Task<List<Realtor>> GetAllRealtorsAsync();
         Task<List<Realtor>> GetRealtorsByAgencyAsync(Agency agency);
         Task<Realtor> AddRealtorAsync(Realtor realtor);
