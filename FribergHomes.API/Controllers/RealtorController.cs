@@ -5,6 +5,7 @@ using FribergHomes.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using FribergHomes.API.DTOs;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace FribergHomes.API.Controllers
@@ -27,11 +28,13 @@ namespace FribergHomes.API.Controllers
         private readonly string _generalFaultMessage = "Ett oväntat fel uppstod vid hanteringen av förfrågan!";
         private readonly IRealtor _realtorRepository;
         private readonly IMapper _mapper;
+        private readonly UserManager<Realtor> _userManager;
 
-        public RealtorController(IRealtor realtorRepository, IMapper mapper)
+        public RealtorController(IRealtor realtorRepository, IMapper mapper, UserManager<Realtor> userManager)
         {
             _realtorRepository = realtorRepository;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         // GET method that returns a list of all Realtor objects stored in the DB.
@@ -179,9 +182,16 @@ namespace FribergHomes.API.Controllers
                     return NotFound();
                 }
 
-                var realtor = _mapper.Map<Realtor>(realtorDto);
+                // Fungerande lösning. Kolla AutoMapper profil.
+                existingRealtor.FirstName = realtorDto.FullName.Split(' ')[0];
+                existingRealtor.LastName = realtorDto.FullName.Split(' ')[1];
+                existingRealtor.Email = realtorDto.Email;
+                existingRealtor.NormalizedEmail = realtorDto.Email.ToUpper();
+                existingRealtor.PhoneNumber = realtorDto.PhoneNumber;
 
-                var updatedRealtor = await _realtorRepository.UpdateRealtorAsync(realtor);
+                //var realtor = _mapper.Map<Realtor>(realtorDto);
+
+                var updatedRealtor = await _realtorRepository.UpdateRealtorAsync(existingRealtor);
                 return Ok(updatedRealtor);
             }
             catch (Exception)
