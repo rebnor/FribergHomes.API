@@ -161,12 +161,15 @@ nav {
 footer {
     border-top: 1px solid black;
     box-shadow: 0px 0px 10px #303831;
+    background-color: #FAFDF2;
 }
 
 .content-custom {
     background-color: rgba(233,246,198, 0.7);
-    width: 60%;
+    width: 80%;
     margin: auto;
+    /*height: 100vh;*/
+    overflow: auto;
 }
 
 main {
@@ -179,4 +182,16 @@ main {
 .dropdown-list {
     max-height: 50vh;
     overflow: auto;
+}
+.pictures {
+    margin: auto;
+}
+
+.list-custom {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
 }

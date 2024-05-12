@@ -14,27 +14,22 @@
 <hr />
 
 <div class="row">
-
-    <Button Color="ButtonColor.Info"
-    @onclick="ShowAllCounties">
-        Hämta alla kommuner <Icon Name="IconName.CaretDown" />
-    </Button>
-
+    <div class="justify-content-center col-2 mx-auto mt-2">
+        <Button Color="ButtonColor.Dark" Outline="true" @onclick="ShowAllCounties">
+            Hämta alla kommuner <Icon Name="IconName.CaretDown" />
+        </Button>
+    </div>
     @if (CountiesDtos != null)
     {
-        <Button Color="ButtonColor.Secondary" @onclick="HideAllCounties">
+        <Button Color="ButtonColor.Dark" @onclick="HideAllCounties">
             Göm Lista<Icon Name="IconName.CaretUp" />
         </Button>
-
-@*         <form @onsubmit="HideAllCounties">
-            <button type="submit">Göm Lista</button>
-        </form> *@
 
         <GetList ObjectType="County" TItem="CountyDTO"></GetList>
     }
 </div>
 
-<hr />
+@* <hr />
 
 <Search></Search>
 
@@ -48,7 +43,7 @@
 @if (countyId != 0)
 {
     <GetById ObjectId="@countyId" ObjectType="County" />
-}
+} *@
 
 
 @code {
