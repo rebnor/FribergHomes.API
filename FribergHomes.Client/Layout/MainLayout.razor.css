@@ -18,8 +18,10 @@ footer {
 
 .content-custom {
     background-color: rgba(233,246,198, 0.7);
-    width: 60%;
+    width: 80%;
     margin: auto;
+    /*height: 100vh;*/
+    overflow:auto;
 }
 
 /*

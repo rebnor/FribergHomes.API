@@ -17,284 +17,294 @@
 
 @if (ObjectToShow != null)
 {
-
-    @if (ObjectToShow is RealtorDTO realtor) @* Shows info of Realtor *@
-    {
-        <h2>
-            @realtor.FullName -
-            <a href="/info/Agency/@realtor.AgencyId" @onclick="() => NavigateToAgency(realtor.AgencyId)">@realtor.AgencyName</a>
-        </h2>
-        <div class="pictures">
-            <img src="@realtor.Picture" width="350" />
-            <img src="@realtor.AgencyLogo" width="50" id="agencyLogo" />
-        </div>
-        <p>Email: @realtor.Email</p>
-        <p>Telefon: @realtor.PhoneNumber</p>
-
-        <Button Color="ButtonColor.Primary" @onclick="GetRealtorsSales">
-            Hämta annonser
-        </Button>
-        @* <Badge Color="BadgeColor.Light">@RealtorsSales.Count</Badge> *@
-        @if (RealtorsSales != null)
+    <div class="text-center">
+        @if (ObjectToShow is RealtorDTO realtor) @* Shows info of Realtor *@
         {
-            <Button Color="ButtonColor.Secondary" @onclick="HideRealtorsSales">
-                Göm annonser
+            <h2>
+                @realtor.FullName -
+                <a href="/info/Agency/@realtor.AgencyId" @onclick="() => NavigateToAgency(realtor.AgencyId)">@realtor.AgencyName</a>
+            </h2>
+            <div class="pictures">
+                <img src="@realtor.Picture" width="350" />
+                <img src="@realtor.AgencyLogo" width="50" id="agencyLogo" />
+            </div>
+            <p>Email: @realtor.Email</p>
+            <p>Telefon: @realtor.PhoneNumber</p>
+
+            <Button Color="ButtonColor.Primary" @onclick="GetRealtorsSales">
+                Hämta annonser
             </Button>
 
-            <br />
-            <h2>Kommande visningar</h2>
-            <hr />
-            foreach (var salesObject in RealtorsSales)
+            @if (RealtorsSales != null)
             {
-                foreach (var vd in salesObject.ViewingDates)
+                <Button Color="ButtonColor.Secondary" @onclick="HideRealtorsSales">
+                    Göm annonser
+                </Button>
+
+                <br />
+
+                <h2>Kommande visningar</h2>
+                <hr />
+                @foreach (var salesObject in RealtorsSales)
                 {
-                    <div class="m-2">
-                        @if (vd > DateTime.Now)
-                        {
-                            <h4>@salesObject.Adress</h4>
-                            foreach (var picture in salesObject.ImageLinks)
+
+                    @foreach (var vd in salesObject.ViewingDates)
+                    {
+                        <div class="m-2 card col-4 align-items-center mx-auto p-3">
+
+                            @if (vd > DateTime.Now)
                             {
-                                <img src="@picture" width="150" />
+                                <h4>@salesObject.Adress</h4>
+                                foreach (var picture in salesObject.ImageLinks)
+                                {
+                                    <img src="@picture" width="150" />
+                                }
+                                <strong>Visning: @vd.ToString("yyy-MM-dd")</strong>
+                                <Button Color="ButtonColor.Info">
+                                    <a href="/info/SalesObject/@salesObject.Id" @onclick="() => NavigateToSalesObject(salesObject.Id)">
+                                        Kolla Annons
+                                    </a>
+                                </Button>
                             }
-                            <strong>Visning: @vd.ToString("yyy-MM-dd")</strong>
-                            <Button Color="ButtonColor.Info">
-                                <a href="/info/SalesObject/@salesObject.Id" @onclick="() => NavigateToSalesObject(salesObject.Id)">
-                                    Kolla Annons
-                                </a>
-                            </Button>
-                        }
-                    </div>
+                        </div>
+
+                    }
+
                 }
 
-
-
-            }
-
-            <h2>Sålda annonser</h2>
-            <hr />
-            foreach (var so in RealtorsSales)
-            {
-                foreach (var vdate in so.ViewingDates)
+                <h2>Sålda annonser</h2>
+                <hr />
+                foreach (var so in RealtorsSales)
                 {
-                    @if (vdate < DateTime.Now)
+                    foreach (var vdate in so.ViewingDates)
                     {
-                    <h4>@so.Adress</h4>
-                    foreach (var picture in so.ImageLinks)
-                    {
-                        <img src="@picture" width="150" />
-                    }
-                    <Button Color="ButtonColor.Info">
-                        <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)">
-                            Kolla Annons
-                        </a>
-                    </Button>
+                        @if (vdate < DateTime.Now)
+                        {
+
+                            <div class="m-2 card col-4 align-items-center mx-auto p-3">
+                                <Badge Color="BadgeColor.Danger">SÅLD</Badge>
+
+                                <h4>@so.Adress</h4>
+                                @foreach (var picture in so.ImageLinks)
+                                {
+                                    <img src="@picture" width="150" />
+                                }
+                                <Button Color="ButtonColor.Info">
+                                    <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)">
+                                        Kolla Annons
+                                    </a>
+                                </Button>
+                            </div>
+                        }
                     }
                 }
-            }
 
-        }
-    }
-    else if (ObjectToShow is SalesObjectDTO salesObject) @* Shows info of SalesObject *@
-    {
-        @foreach (var date in salesObject.ViewingDates)
-        {
-            if (date < DateTime.Now)
-            {
-                <Badge Color="BadgeColor.Danger">SÅLD</Badge>
             }
         }
-        <h3>@salesObject.Adress</h3>
-        foreach (var picture in salesObject.ImageLinks)
+        else if (ObjectToShow is SalesObjectDTO salesObject) @* Shows info of SalesObject *@
         {
-            <img src="@picture" width="500" />
-        }
-        if (salesObject.CurrentPrice > salesObject.ListingPrice)
-        {
-            <del>@salesObject.ListingPrice kr</del>
-            <p>@salesObject.CurrentPrice kr</p>
-        }
-        else
-        {
-            <p>@salesObject.CurrentPrice kr</p>
-        }
-        <p>@salesObject.CategoryName</p>
-        <div>@((MarkupString)@salesObject.CategoryLogoUrl)</div>
-        <p>Rum @salesObject.Rooms</p>
-        <p>Byggnadsår: @salesObject.BuildYear</p>
-        <p>Boarea: @salesObject.LivingArea m<sup>2</sup></p>
-        if (salesObject.AncillaryArea > 0)
-        {
-            <p>Biarea: @salesObject.AncillaryArea m<sup>2</sup></p>
-        }
-        if (salesObject.CategoryName == "Apartment")
-        {
-            <p>Våning: @salesObject.Level</p>
-            if (salesObject.Lift == true)
-            {
-                <p>Hiss: Ja</p>
-            }
-            else
-            {
-                <p>Hiss: Nej</p>
-            }
-        }
-        else
-        {
-            <p>Tomtarea: @salesObject.PlotArea m<sup>2</sup></p>
-        }
-        if (salesObject.YearlyCost > 0)
-        {
-            <p>Driftkostnad: @salesObject.YearlyCost kr</p>
-        }
-        if (salesObject.MonthlyFee > 0)
-        {
-            <p>Månadsavgift: @salesObject.MonthlyFee kr</p>
-        }
-        <p>
-            Visningsdatum:
             @foreach (var date in salesObject.ViewingDates)
             {
-                @date.ToString("yyy-MM-dd");
-            }
-        </p>
-        <h4>Beskrivning:</h4>
-        <p>@salesObject.ObjectDescription</p>
-
-        <h3>Mäklare</h3>
-
-        <a href="/info/Realtor/@salesObject.RealtorId" @onclick="() => NavigateToRealtor(salesObject.RealtorId)">
-            @salesObject.RealtorName
-        </a>
-
-        <a href="/info/Agency/@salesObject.AgencyId" @onclick="() => NavigateToAgency(salesObject.AgencyId)">
-            <img src="@salesObject.AgencyLogoUrl" width="50" />
-            @* @salesObject.AgencyName *@
-        </a>
-    }
-    else if (ObjectToShow is AgencyDTO agency) @* Shows info of Agency *@
-    {
-        <h2>@agency.Name</h2>
-        <img src="@agency.Logo" width="300" />
-        <p>@agency.Presentation</p>
-
-        <hr />
-
-        <h4>Anställda</h4>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Namn</th>
-                    <th>Bild</th>
-                    <th>Email</th>
-                    <th>Telefon</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var r in AgencyRealtors)
+                if (date < DateTime.Now)
                 {
+                    <Badge Color="BadgeColor.Danger">SÅLD</Badge>
+                }
+            }
+            <h3>@salesObject.Adress</h3>
+            <small>@salesObject.CountyName</small>
+            <br />
+            foreach (var picture in salesObject.ImageLinks)
+            {
+                <img src="@picture" width="500" />
+            }
+            if (salesObject.CurrentPrice > salesObject.ListingPrice)
+            {
+                <del>@salesObject.ListingPrice kr</del>
+                <p>@salesObject.CurrentPrice kr</p>
+            }
+            else
+            {
+                <p>@salesObject.CurrentPrice kr</p>
+            }
+            <p>@salesObject.CategoryName</p>
+            <div>@((MarkupString)@salesObject.CategoryLogoUrl)</div>
+            <p>Rum @salesObject.Rooms</p>
+            <p>Byggnadsår: @salesObject.BuildYear</p>
+            <p>Boarea: @salesObject.LivingArea m<sup>2</sup></p>
+            if (salesObject.AncillaryArea > 0)
+            {
+                <p>Biarea: @salesObject.AncillaryArea m<sup>2</sup></p>
+            }
+            if (salesObject.CategoryName == "Apartment")
+            {
+                <p>Våning: @salesObject.Level</p>
+                if (salesObject.Lift == true)
+                {
+                    <p>Hiss: Ja</p>
+                }
+                else
+                {
+                    <p>Hiss: Nej</p>
+                }
+            }
+            else
+            {
+                <p>Tomtarea: @salesObject.PlotArea m<sup>2</sup></p>
+            }
+            if (salesObject.YearlyCost > 0)
+            {
+                <p>Driftkostnad: @salesObject.YearlyCost kr</p>
+            }
+            if (salesObject.MonthlyFee > 0)
+            {
+                <p>Månadsavgift: @salesObject.MonthlyFee kr</p>
+            }
+            <p>
+                Visningsdatum:
+                @foreach (var date in salesObject.ViewingDates)
+                {
+                    @date.ToString("yyy-MM-dd")
+                    ;
+                }
+            </p>
+            <h4>Beskrivning:</h4>
+            <p>@salesObject.ObjectDescription</p>
+
+            <h3>Mäklare</h3>
+
+            <a href="/info/Realtor/@salesObject.RealtorId" @onclick="() => NavigateToRealtor(salesObject.RealtorId)">
+                @salesObject.RealtorName
+            </a>
+
+            <a href="/info/Agency/@salesObject.AgencyId" @onclick="() => NavigateToAgency(salesObject.AgencyId)">
+                <img src="@salesObject.AgencyLogoUrl" width="50" />
+                @* @salesObject.AgencyName *@
+            </a>
+        }
+        else if (ObjectToShow is AgencyDTO agency) @* Shows info of Agency *@
+        {
+            <h2>@agency.Name</h2>
+            <img src="@agency.Logo" width="300" />
+            <p>@agency.Presentation</p>
+
+            <hr />
+
+            <h4>Anställda</h4>
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>@r.FullName</td>
-                        <td><img src="@r.Picture" width="100" /></td>
-                        <td>@r.Email</td>
-                        <td>@r.PhoneNumber</td>
-                        <td>
-                            <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
-                                Kolla Mäklare
-                            </a>
-                        </td>
+                        <th>Namn</th>
+                        <th>Bild</th>
+                        <th>Email</th>
+                        <th>Telefon</th>
+                        <th></th>
                     </tr>
-                }
-            </tbody>
-        </table>
-
-    }
-    else if (ObjectToShow is CountyDTO county) @* Shows info of County *@
-    {
-        @if (county.Name != null)
-        {
-            CountyName = county.Name;
-        }
-        <h1>@county.Name</h1>
-
-        <Button Color="ButtonColor.Info" @onclick="GetCountySales">
-            Hämta annonser
-        </Button>
-
-        @if (CountiesSalesObjects != null)
-        {
-            if (CountiesSalesObjects.Count > 0)
-            {
-                <Button Color="ButtonColor.Secondary" @onclick="HideCountySales">
-                    Göm annonser
-                </Button>
-
-                foreach (var so in CountiesSalesObjects)
-                {
-                    <h3>@so.Adress</h3>
-                    foreach (var picture in so.ImageLinks)
+                </thead>
+                <tbody>
+                    @foreach (var r in AgencyRealtors)
                     {
-                        <img src="@picture" width="200" />
+                        <tr>
+                            <td>@r.FullName</td>
+                            <td><img src="@r.Picture" width="100" /></td>
+                            <td>@r.Email</td>
+                            <td>@r.PhoneNumber</td>
+                            <td>
+                                <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
+                                    Kolla Mäklare
+                                </a>
+                            </td>
+                        </tr>
                     }
+                </tbody>
+            </table>
 
-                    <Button Color="ButtonColor.Info">
-                        <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)" class="custom-link">Kolla annons</a>
-                    </Button>
-                }
-            }
-            else
-            {
-                <p>@error</p>
-
-            }
         }
-
-
-    }
-    else if (ObjectToShow is CategoryDTO category)
-    @* Shows info of Category *@
-    {
-        @if (category.Id != null)
+        else if (ObjectToShow is CountyDTO county) @* Shows info of County *@
         {
-            CategoryId = category.Id;
-        }
-        <h2>@category.Name</h2>
-
-        <div>@((MarkupString)category.IconUrl)</div>
-
-        <Button Color="ButtonColor.Info" @onclick="GetCategorySales">
-            Hämta annonser
-        </Button>
-
-        @if (CategorySalesObjects != null)
-        {
-            if (CategorySalesObjects.Count > 0)
+            @if (county.Name != null)
             {
-                <Button Color="ButtonColor.Secondary" @onclick="HideCategorySales">
-                    Göm annonser
-                </Button>
+                CountyName = county.Name;
+            }
+            <h1>@county.Name</h1>
 
-                foreach (var so in CategorySalesObjects)
+            <Button Color="ButtonColor.Info" @onclick="GetCountySales">
+                Hämta annonser
+            </Button>
+
+            @if (CountiesSalesObjects != null)
+            {
+                if (CountiesSalesObjects.Count > 0)
                 {
-                    <h3>@so.Adress</h3>
-                    foreach (var picture in so.ImageLinks)
-                    {
-                        <img src="@picture" width="200" />
-                    }
-                    <Button Color="ButtonColor.Info">
-                        <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)" class="custom-link">Kolla annons</a>
+                    <Button Color="ButtonColor.Secondary" @onclick="HideCountySales">
+                        Göm annonser
                     </Button>
+
+                    foreach (var so in CountiesSalesObjects)
+                    {
+                        <h3>@so.Adress</h3>
+                        foreach (var picture in so.ImageLinks)
+                        {
+                            <img src="@picture" width="200" />
+                        }
+
+                        <Button Color="ButtonColor.Info">
+                            <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)" class="custom-link">Kolla annons</a>
+                        </Button>
+                    }
+                }
+                else
+                {
+                    <p>@error</p>
+
                 }
             }
-            else
-            {
-                <p>@error</p>
 
-            }
 
         }
-    }
+        else if (ObjectToShow is CategoryDTO category)
+        @* Shows info of Category *@
+        {
+            @if (category.Id != null)
+            {
+                CategoryId = category.Id;
+            }
+            <h2>@category.Name</h2>
 
+            <div>@((MarkupString)category.IconUrl)</div>
+
+            <Button Color="ButtonColor.Info" @onclick="GetCategorySales">
+                Hämta annonser
+            </Button>
+
+            @if (CategorySalesObjects != null)
+            {
+                if (CategorySalesObjects.Count > 0)
+                {
+                    <Button Color="ButtonColor.Secondary" @onclick="HideCategorySales">
+                        Göm annonser
+                    </Button>
+
+                    foreach (var so in CategorySalesObjects)
+                    {
+                        <h3>@so.Adress</h3>
+                        foreach (var picture in so.ImageLinks)
+                        {
+                            <img src="@picture" width="200" />
+                        }
+                        <Button Color="ButtonColor.Info">
+                            <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)" class="custom-link">Kolla annons</a>
+                        </Button>
+                    }
+                }
+                else
+                {
+                    <p>@error</p>
+
+                }
+
+            }
+        }
+    </div>
 }
 
 @code {

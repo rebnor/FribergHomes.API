@@ -17,11 +17,11 @@
 
 @if (ObjectToShow != null)
 {
-    <div class="card shadow col-6 col-sm-3">
+    <div class="card shadow col-3 m-2 text-center align-items-center p-2">
         @if (ObjectToShow is RealtorDTO realtor)
         {
 
-            <h2>@realtor.FullName - @realtor.AgencyName</h2>
+            <h3>@realtor.FullName - @realtor.AgencyName</h3>
             <div class="pictures">
                 <img src="@realtor.Picture" width="100" />
             </div>
@@ -38,6 +38,7 @@
                 <a href="/delete/Realtor/@realtor.Id" class="custom-link">Ta bort Realtor</a>
             </Button>
 
+            <EditButton TargetObject="realtor" />
         }
         else if (ObjectToShow is SalesObjectDTO salesObject)
         {
@@ -46,15 +47,20 @@
             {
                 <img src="@picture" width="100" />
             }
-            if (salesObject.CurrentPrice > salesObject.ListingPrice)
+            // TODO: Se över Listing/Current price utskriften / Reb
+            if (salesObject.ListingPrice != 0)
             {
-                <del>@salesObject.ListingPrice kr</del>
-                <p>@salesObject.CurrentPrice kr</p>
+                if (salesObject.CurrentPrice > salesObject.ListingPrice)
+                {
+                    <del>@salesObject.ListingPrice kr</del>
+                    <p>@salesObject.CurrentPrice kr</p>
+                }
             }
             else
             {
                 <p>@salesObject.CurrentPrice kr</p>
             }
+
             <p>@salesObject.CategoryName</p>
             <div>@((MarkupString)@salesObject.CategoryLogoUrl)</div>
             <p>Rum @salesObject.Rooms</p>
@@ -87,6 +93,8 @@
             <Button Color="ButtonColor.Danger">
                 <a href="/delete/SalesObject/@salesObject.Id" class="custom-link">Ta bort Annons</a>
             </Button>
+            <EditButton TargetObject="salesObject" />
+
         }
         else if (ObjectToShow is AgencyDTO agency)
         {
@@ -103,6 +111,8 @@
                 <a href="/delete/Agency/@agency.Id">Ta bort Mäklarbyrå</a>
             </Button>
 
+            <EditButton TargetObject="agency" />
+
         }
         else if (ObjectToShow is CountyDTO county)
         {
@@ -111,6 +121,8 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/County/@county.Id" class="custom-link">Kolla info om Kommun</a>
             </Button>
+
+            @* <EditButton TargetObject="county" /> *@
 
         }
         else if (ObjectToShow is CategoryDTO category)
@@ -128,6 +140,9 @@
             <Button Color="ButtonColor.Danger">
                 <a href="/delete/Category/@category.Id">Ta bort Kategori</a>
             </Button>
+
+            <EditButton TargetObject="category" />
+
         }
     </div>
 }
