@@ -162,9 +162,9 @@
 
         <h3>Mäklare</h3>
 
-        <a href="/info/Realtor/@salesObject.RealtorId" @onclick="() => NavigateToRealtor(salesObject.RealtorId)">
+        @* <a href="/info/Realtor/@salesObject.RealtorId" @onclick="() => NavigateToRealtor(salesObject.RealtorId)">
             @salesObject.RealtorName
-        </a>
+        </a> *@
 
         <a href="/info/Agency/@salesObject.AgencyId" @onclick="() => NavigateToAgency(salesObject.AgencyId)">
             <img src="@salesObject.AgencyLogoUrl" width="50" />
@@ -199,9 +199,9 @@
                         <td>@r.Email</td>
                         <td>@r.PhoneNumber</td>
                         <td>
-                            <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
+                            @* <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
                                 Kolla Mäklare
-                            </a>
+                            </a> *@
                         </td>
                     </tr>
                 }
