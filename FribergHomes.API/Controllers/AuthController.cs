@@ -2,6 +2,7 @@
 using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.DTOs;
 using FribergHomes.API.Models;
+using FribergHomes.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,38 +19,26 @@ namespace FribergHomes.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<Realtor> _userManager;
-        private readonly IAgency _agencyRepo;
-        private readonly IRealtor _realtorRepo;
-        private readonly IConfiguration _config;
 
-        public AuthController(UserManager<Realtor> userManager, IAgency agencyRepo, IRealtor realtorRepo, IConfiguration config)
+        private readonly IAuthService _authService;
+
+        public AuthController(IAuthService authService)
         {
-            _userManager = userManager;
-            _agencyRepo = agencyRepo;
-            _realtorRepo = realtorRepo;
-            _config = config;
+            _authService = authService;
         }
 
+        /// <summary>
+        /// AuthController API endpoint for creating and assigning roles to new realtors
+        /// </summary>
+        /// <param name="realtorData"></param>
+        /// <returns>Http status code representing success/failed registration attempt.</returns>
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register(RegisterRealtorDTO realtorDto)
+        public async Task<IActionResult> Register(RegisterRealtorDTO realtorData)
         {
             try
             {
-                Realtor realtor = new()
-                {
-                    UserName = realtorDto.Email,
-                    Email = realtorDto.Email,
-                    FirstName = realtorDto.FirstName,
-                    LastName = realtorDto.LastName,
-                    PhoneNumber = realtorDto.PhoneNumber,
-                    EmailConfirmed = true,
-                    PhoneNumberConfirmed = true,
-                    Agency = await _agencyRepo.GetAgencyByIdAsync(realtorDto.AgencyId)
-                };
-
-                var result = await _userManager.CreateAsync(realtor, realtorDto.Password);
+                var result = await _authService.Register(realtorData);
 
                 if (!result.Succeeded)
                 {
@@ -60,7 +49,6 @@ namespace FribergHomes.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await _userManager.AddToRoleAsync(realtor, ApiRoles.Admin);
                 return Accepted();
 
             }
@@ -70,32 +58,23 @@ namespace FribergHomes.API.Controllers
             }
         }
 
+        /// <summary>
+        /// AuthController API endpoint for realtor login.
+        /// </summary>
+        /// <param name="credentials"></param>
+        /// <returns>If login attempt is successful, AuthResponseDTO containing realtor data and token string.</returns>
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult<AuthResponseDTO>> Login(LoginRealtorDTO realtorDto)
+        public async Task<ActionResult<AuthResponseDTO>> Login(LoginRealtorDTO credentials)
         {
-            // Testa email
-            // Verifiera password
-            //var realtor = _realtorRepo.GetRealtor
-
             try
             {
-                var realtor = await _userManager.FindByEmailAsync(realtorDto.Email);
-                var passwordValid = await _userManager.CheckPasswordAsync(realtor, realtorDto.Password);
+                var response = await _authService.Login(credentials);
                 
-                if (realtor == null || passwordValid == false )
+                if (!response.ValidCredentials)
                 {
-                    return Unauthorized(realtorDto);
+                    return Unauthorized("Felaktiga inloggningsuppgifter!");
                 }
-
-                string tokenString = await GenerateToken(realtor);
-
-                var response = new AuthResponseDTO
-                {
-                    Email = realtorDto.Email,
-                    Token = tokenString,
-                    UserId = realtor.Id
-                };
 
                 return Accepted(response);
             }
@@ -103,36 +82,6 @@ namespace FribergHomes.API.Controllers
             {
                 return Problem($"Något gick fel vid inloggningsförsöket", statusCode: 500);
             }
-        }
-
-        private async Task<string> GenerateToken(Realtor realtor)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var roles = await _userManager.GetRolesAsync(realtor);
-            var roleClaims = roles.Select(x => new Claim(ClaimTypes.Role, x)).ToList();
-
-            var userClaims = await _userManager.GetClaimsAsync(realtor);
-
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, realtor.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, realtor.Email),
-                new Claim(CustomClaimTypes.Uid, realtor.Id)
-            }
-            .Union(roleClaims)
-            .Union(userClaims);
-
-            var token = new JwtSecurityToken(
-                issuer: _config["JwtSettings:Issuer"],
-                audience: _config["JwtSettings:audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToInt32(_config["JwtSettings:DurationInMinutes"]))
-                );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
     }
