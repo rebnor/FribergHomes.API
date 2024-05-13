@@ -162,7 +162,7 @@ else
     private int selectedAgencyId;
     private int selectedCategoryId;
     private int selectedCountyId;
-    private int selectedRealtorId;
+    private string selectedRealtorId;
     private List<AgencyDTO> agencyList = new List<AgencyDTO>();
     private List<RealtorDTO> realtorList = new List<RealtorDTO>();
     private List<CategoryDTO> categoryList = new List<CategoryDTO>();
@@ -230,7 +230,7 @@ else
             else if (newObject is SalesObjectDTO salesObject)
             {
                 if (string.IsNullOrEmpty(salesObject.Adress) || selectedCategoryId == 0 ||
-                selectedCountyId == 0 || selectedAgencyId == 0 || selectedRealtorId == 0)
+              selectedCountyId == 0 || selectedAgencyId == 0 || selectedRealtorId == 0)
                 {
                     errorMessage = "Alla fält blev inte korrekt ifyllda.";
                     return;

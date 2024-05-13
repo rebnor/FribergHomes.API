@@ -172,9 +172,9 @@
 
             <h3>Mäklare</h3>
 
-            <a href="/info/Realtor/@salesObject.RealtorId" @onclick="() => NavigateToRealtor(salesObject.RealtorId)">
-                @salesObject.RealtorName
-            </a>
+        @* <a href="/info/Realtor/@salesObject.RealtorId" @onclick="() => NavigateToRealtor(salesObject.RealtorId)">
+            @salesObject.RealtorName
+        </a> *@
 
             <a href="/info/Agency/@salesObject.AgencyId" @onclick="() => NavigateToAgency(salesObject.AgencyId)">
                 <img src="@salesObject.AgencyLogoUrl" width="50" />
@@ -189,34 +189,34 @@
 
             <hr />
 
-            <h4>Anställda</h4>
-            <table class="table">
-                <thead>
+        <h4>Anställda</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Namn</th>
+                    <th>Bild</th>
+                    <th>Email</th>
+                    <th>Telefon</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in AgencyRealtors)
+                {
                     <tr>
-                        <th>Namn</th>
-                        <th>Bild</th>
-                        <th>Email</th>
-                        <th>Telefon</th>
-                        <th></th>
+                        <td>@r.FullName</td>
+                        <td><img src="@r.Picture" width="100" /></td>
+                        <td>@r.Email</td>
+                        <td>@r.PhoneNumber</td>
+                        <td>
+                            @* <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
+                                Kolla Mäklare
+                            </a> *@
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var r in AgencyRealtors)
-                    {
-                        <tr>
-                            <td>@r.FullName</td>
-                            <td><img src="@r.Picture" width="100" /></td>
-                            <td>@r.Email</td>
-                            <td>@r.PhoneNumber</td>
-                            <td>
-                                <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
-                                    Kolla Mäklare
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                }
+            </tbody>
+        </table>
 
         }
         else if (ObjectToShow is CountyDTO county) @* Shows info of County *@

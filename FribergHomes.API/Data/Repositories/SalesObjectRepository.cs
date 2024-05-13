@@ -68,7 +68,7 @@ namespace FribergHomes.API.Data.Repositories
             return salesObjects;
         }
 
-        public async Task<List<SalesObject>> GetSalesObjectsByRealtorAsync(int id)
+        public async Task<List<SalesObject>> GetSalesObjectsByRealtorAsync(string id)          
         {
             var salesObjects = await _appDBctx.SalesObjects
                 .Where(s => s.Realtor.Id == id)
@@ -103,7 +103,7 @@ namespace FribergHomes.API.Data.Repositories
             return salesObject;
         }
 
-        public async Task<List<SalesObject>> GetRealtorsSalesObjectsAsync(int realtorId)
+        public async Task<List<SalesObject>> GetRealtorsSalesObjectsAsync(string realtorId)     //TODO: Ta bort dublett
         {
             var salesObjects = await _appDBctx.SalesObjects.Where(s=>s.Realtor.Id == realtorId).ToListAsync();
             return salesObjects;

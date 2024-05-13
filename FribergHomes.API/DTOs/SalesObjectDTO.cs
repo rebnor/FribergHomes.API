@@ -74,7 +74,7 @@ namespace FribergHomes.API.DTOs
         [DisplayName("Visningsdatum")]
         public List<DateTime> ViewingDates { get; set; } = [];
 
-        public int RealtorId { get; set; }
+        public string RealtorId { get; set; }
 
         [DisplayName("Mäklare")]
         public string RealtorName { get; set; } = string.Empty;
