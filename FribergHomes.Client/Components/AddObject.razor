@@ -230,7 +230,7 @@ else
             else if (newObject is SalesObjectDTO salesObject)
             {
                 if (string.IsNullOrEmpty(salesObject.Adress) || selectedCategoryId == 0 ||
-              selectedCountyId == 0 || selectedAgencyId == 0 || selectedRealtorId == 0)
+              selectedCountyId == 0 || selectedAgencyId == 0 || selectedRealtorId == null)
                 {
                     errorMessage = "Alla fält blev inte korrekt ifyllda.";
                     return;
