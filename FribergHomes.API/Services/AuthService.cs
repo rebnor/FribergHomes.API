@@ -3,6 +3,7 @@ using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.DTOs;
 using FribergHomes.API.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using NuGet.Common;
@@ -18,14 +19,13 @@ namespace FribergHomes.API.Services
     {
         private readonly IConfiguration _config;
         private readonly UserManager<Realtor> _userManager;
-        private readonly IRealtor _realtorRepo;
+        
         private readonly IAgency _agencyRepo;
 
-        public AuthService(IConfiguration config, UserManager<Realtor> userManager, IRealtor realtorRepo, IAgency agencyRepo)
+        public AuthService(IConfiguration config, UserManager<Realtor> userManager, IAgency agencyRepo)
         {
             _config = config;
             _userManager = userManager;
-            _realtorRepo = realtorRepo;
             _agencyRepo = agencyRepo;
         }
 
@@ -54,48 +54,28 @@ namespace FribergHomes.API.Services
 
         public async Task<IdentityResult> Register(RegisterRealtorDTO realtorData)
         {
-            
-            
-                //TODO: Uppdatera AutoMapper + resolver för Realtor, implementera sedan här! / Tobias
-                Realtor realtor = new()
-                {
-                    UserName = realtorData.Email,
-                    Email = realtorData.Email,
-                    FirstName = realtorData.FirstName,
-                    LastName = realtorData.LastName,
-                    PhoneNumber = realtorData.PhoneNumber,
-                    Agency = await _agencyRepo.GetAgencyByIdAsync(realtorData.AgencyId)
-                };
 
-                var result = await _userManager.CreateAsync(realtor, realtorData.Password);
+            //TODO: Uppdatera AutoMapper + resolver för Realtor, implementera sedan här! / Tobias
+            Realtor realtor = new()
+            {
+                UserName = realtorData.Email,
+                Email = realtorData.Email,
+                FirstName = realtorData.FirstName,
+                LastName = realtorData.LastName,
+                PhoneNumber = realtorData.PhoneNumber,
+                Agency = await _agencyRepo.GetAgencyByIdAsync(realtorData.AgencyId)
+            };
 
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(realtor, ApiRoles.Realtor);
-                }
+            var result = await _userManager.CreateAsync(realtor, realtorData.Password);
 
-                return result;
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(realtor, ApiRoles.Realtor);
+            }
 
-            
-            
+            return result;
 
         }
-
-        public async Task RenewToken(string token)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task ValidateToken(string token)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Realtor> GetRealtorFromToken(string token)
-        {
-            throw new NotImplementedException();
-        }
-
 
         private async Task<string> GenerateToken(Realtor realtor)
         {
@@ -126,5 +106,6 @@ namespace FribergHomes.API.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
     }
 }
