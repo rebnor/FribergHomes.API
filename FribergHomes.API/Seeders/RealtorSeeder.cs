@@ -1,4 +1,5 @@
-﻿using FribergHomes.API.Data;
+﻿using FribergHomes.API.Constants;
+using FribergHomes.API.Data;
 using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.Data.Repositories;
 using FribergHomes.API.Models;
@@ -30,9 +31,10 @@ namespace FribergHomes.API.Seeders
                       PhoneNumber = "070 111 11 11",
                       Picture = "https://media.istockphoto.com/id/536974271/sv/foto/dipsy-the-green-alien-teletubby-character.jpg?s=612x612&w=0&k=20&c=NnZMOULys48guc4nK0sfJ_mM4wzctrVov5ZzNWMenLU=",
                       Agency = agencies[0]
-                      
-                      //Add role
-                  }
+
+                      //Add role + admin
+                      //await _userManager.AddToRoleAsync(realtor, ApiRoles.Realtor);
+            }
                   , new Realtor
                   {
                       FirstName = "Rebecka",
