@@ -93,7 +93,7 @@ namespace FribergHomes.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Authentication
+            // Authentication / Tobias, Sanna, Rebecka
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -163,10 +163,8 @@ namespace FribergHomes.API
 
             app.UseHttpsRedirection();
 
-
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 
