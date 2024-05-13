@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using FribergHomes.API.Services;
 
 namespace FribergHomes.API
 {
@@ -54,12 +55,12 @@ namespace FribergHomes.API
             builder.Services.AddDbContext<ApplicationDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("FribergHomesDB") ?? throw new InvalidOperationException("Connection string 'FribergHomesDB' not found.")));
 
-            // Identity
+            // Identity / Tobias, Sanna, Rebecka
             builder.Services.AddIdentityCore<Realtor>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDBContext>();
 
-            // Identity - Password and account requirements
+            // Identity - Password and account requirements  / Tobias, Sanna, Rebecka
             builder.Services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = true;
@@ -79,6 +80,9 @@ namespace FribergHomes.API
             builder.Services.AddTransient<IAgency, AgencyRepository>(); // Sanna 
             builder.Services.AddTransient<IRealtor, RealtorRepository>(); // Tobias
             builder.Services.AddTransient<ICategory, CategoryRepository>(); // Reb
+
+            // AuthService
+            builder.Services.AddTransient<IAuthService, AuthService>(); // Tobias
 
             // AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile)); // Tobias
