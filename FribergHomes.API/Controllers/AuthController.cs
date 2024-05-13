@@ -60,7 +60,7 @@ namespace FribergHomes.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await _userManager.AddToRoleAsync(realtor, "Realtor");
+                await _userManager.AddToRoleAsync(realtor, ApiRoles.Admin);
                 return Accepted();
 
             }
