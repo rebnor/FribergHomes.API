@@ -1,8 +1,15 @@
-﻿@page "/login"
+﻿@* Author: Reb 2024-05-13 
+    Updated: Added LocalStorage and StateProvider / Reb 2024-05-14
+*@
+@page "/login"
+@using Blazored.LocalStorage
 @using FribergHomes.Client.Helper
+@using Microsoft.AspNetCore.Components.Authorization
 @inject TokenHandler tokenHandler
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
+@inject ILocalStorageService localStorage
+@inject AuthenticationStateProvider AuthStateProvider
 
 
 <div>
@@ -35,18 +42,32 @@
     </div>
 </div>
 @code {
+
     private string email;
     private string password;
     private string token;
     private string error;
 
+    private AuthResponseDTO authResponse;
+    private AuthenticationState authState;
+
+
     private async Task Login()
     {
         try
         {
-            token = await tokenHandler.GetToken(email, password); // hämtar token
-            tokenHandler.ConfigureHttpClientWithToken(httpClient, token);
-            NavigationManager.NavigateTo("/"); // testa för att se att de funkar
+            // token = await tokenHandler.GetToken(email, password); // hämtar token-string
+
+            authResponse = await tokenHandler.GetToken(email, password); // hämtar authResponse - innehåller UserId, email och Id
+
+            await localStorage.SetItemAsync("jwt", authResponse.Token); // lagrar token i localStorage som jwt
+            var jwt = await localStorage.GetItemAsync<string>("jwt"); // hämtar token som ligger i localStorage jwt
+
+            authState = await AuthStateProvider.GetAuthenticationStateAsync(); // kollar AuthState -> kollar den även Roller?
+            
+            tokenHandler.ConfigureHttpClientWithToken(httpClient, jwt); // Lägger token/jwt i Bearer/Header
+
+            NavigationManager.NavigateTo("/"); // navigeras till Index - test för att se att de funkar
         }
         catch (Exception ex)
         {

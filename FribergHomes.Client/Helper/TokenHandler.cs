@@ -1,7 +1,9 @@
 ﻿using FribergHomes.Client.DTOs;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-/* @ Author: Reb 2024-05-13 */
+using System.Security.Claims;
+/* @ Author: Reb 2024-05-13
+ * @ Update: GetToken skickar hela AuthResponse ist för endast token-sträng / Reb 2024-05-14*/
 namespace FribergHomes.Client.Helper
 {
     public class TokenHandler
@@ -13,7 +15,8 @@ namespace FribergHomes.Client.Helper
             _httpClient = httpClient;
         }
 
-        public async Task<string> GetToken(string email, string password)
+        //public async Task<string> GetToken(string email, string password)
+        public async Task<AuthResponseDTO> GetToken(string email, string password)
         {
             var response = await _httpClient.PostAsJsonAsync("api/auth/login", new
             {
@@ -24,7 +27,11 @@ namespace FribergHomes.Client.Helper
             if (response.IsSuccessStatusCode)
             {
                 var authResponse = await response.Content.ReadFromJsonAsync<AuthResponseDTO>();
-                return authResponse.Token;
+
+                //var userId = authResponse.UserId;
+                //var token = authResponse.Token;
+
+                return authResponse;
             }
 
             throw new Exception("Fel användarnamn och/eller lösenord. Försök igen!");
@@ -38,8 +45,6 @@ namespace FribergHomes.Client.Helper
 
                 var authResponse = await response.Content.ReadFromJsonAsync<AuthResponseDTO>();
                 return authResponse.Token;
-                //var token = await response.Content.ReadAsStringAsync();
-                //return token;
             }
             catch (Exception ex)
             {

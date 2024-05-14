@@ -1,6 +1,8 @@
+using Blazored.LocalStorage;
 using FribergHomes.Client.Helper;
 using FribergHomes.Client.Services;
 using FribergHomes.Client.Services.Interfaces;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -25,11 +27,14 @@ namespace FribergHomes.Client
             builder.Services.AddTransient<ISalesObject, SalesObjectService>(); // Tobias 2024-04-25
             builder.Services.AddTransient<ICategory, CategoryService>(); // Rebecka 2024-04-26
 
-            builder.Services.AddTransient<TokenHandler>(); // Rebecka 2024-05-13
+            builder.Services.AddScoped<TokenHandler>(); // Rebecka 2024-05-13
+            builder.Services.AddScoped<AuthenticationStateProvider>();
 
             builder.Services.AddBlazorBootstrap();
 
-
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddCascadingAuthenticationState();
+            builder.Services.AddBlazoredLocalStorage();
 
 
             await builder.Build().RunAsync();
