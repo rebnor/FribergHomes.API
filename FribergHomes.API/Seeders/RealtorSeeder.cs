@@ -301,13 +301,15 @@ namespace FribergHomes.API.Seeders
 {
     public class RealtorSeeder
     {
-        private readonly UserManager<Realtor> _userManager;
+        private UserManager<Realtor> _userManager;
+        private  RoleManager<IdentityRole> _roleManager;
 
         // Author: Sanna   
         // Update: Added some realtors / Reb 2024-05-03
-        public RealtorSeeder(UserManager<Realtor> userManager)
+        public RealtorSeeder(UserManager<Realtor> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
         }
         public async Task SeedRealtors(ApplicationDBContext appDbCtx)
         {
@@ -571,17 +573,24 @@ namespace FribergHomes.API.Seeders
                    }
                 };
 
+                await appDbCtx.AddRangeAsync(realtors);
                 //first save the list of realtors 
                 await appDbCtx.SaveChangesAsync();
 
                 foreach (var realtor in realtors)
+                {    
+                    
+                if (!await _roleManager.RoleExistsAsync(ApiRoles.Realtor))
                 {
-                    var result = await _userManager.CreateAsync(realtor, "Hej123!"/*realtor.PasswordHash*/);
+                    await _roleManager.CreateAsync(new IdentityRole(ApiRoles.Realtor));
+                }
+
+
+                    var result = await _userManager.CreateAsync(realtor);
                     if (result.Succeeded)
                     {
                         await _userManager.AddToRoleAsync(realtor, ApiRoles.Realtor);
                     }
-
                 }
 
                 //then save again after the roles are added 
