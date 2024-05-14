@@ -1,8 +1,8 @@
 ﻿@page "/register"
-@using FribergHomes.Client.Helper
+@using FribergHomes.Client.Authentications
 @using FribergHomes.Client.Services.Interfaces
 @inject IAgencyService agencyService
-@inject TokenHandler tokenHandler
+@inject AuthService tokenHandler
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 
@@ -17,7 +17,7 @@
     <div class="row justify-content-center pb-3 pt-4">
         <div class="col-md-4">
             <section>
-                <form method="post" @onsubmit="Register">
+                <form method="post" @onsubmit="RegisterRealtor">
                     <div class="form-floating mb-3">
                         <input @bind="firstName" class="form-control" autocomplete="Firstname" aria-required="true" placeholder="Sven" />
                         <label class="form-label">Förnamn</label>
@@ -39,13 +39,13 @@
                         <span class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input @bind="password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                        <input @bind="password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Lösenord" />
                         <label class="form-label">Lösenord</label>
                         <span class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3">
-                        <input @bind="confirmPassword" class="form-control" aria-required="true" placeholder="password" />
-                        <label>Confirm Password</label>
+                        <input @bind="confirmPassword" class="form-control" aria-required="true" placeholder="Lösenord" />
+                        <label>Bekräfta lösenord</label>
                         <span class="text-danger"></span>
                     </div>
                     @if(Agencies != null)
@@ -89,7 +89,7 @@
         StateHasChanged();
     }
 
-    private async Task Register()
+    private async Task RegisterRealtor()
     {
         if (password == confirmPassword)
         {
@@ -105,7 +105,7 @@
                         AgencyId = agencyId
                     };
 
-                token = await tokenHandler.RegisterAndGenerateToken(newRealtor); // Registrerar ny användare och lägger in token + role
+                token = await tokenHandler.Register(newRealtor); // Registrerar ny användare och lägger in token + role
 
                 NavigationManager.NavigateTo("/"); // testa för att se att de funkar
             }
