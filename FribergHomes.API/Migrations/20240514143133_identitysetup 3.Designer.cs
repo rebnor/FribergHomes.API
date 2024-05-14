@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FribergHomes.API.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240513092152_Identity setup 2")]
-    partial class Identitysetup2
+    [Migration("20240514143133_identitysetup 3")]
+    partial class identitysetup3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

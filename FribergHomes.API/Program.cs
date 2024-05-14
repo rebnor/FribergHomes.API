@@ -17,7 +17,7 @@ namespace FribergHomes.API
     public class Program
     {
         private static UserManager<Realtor> _userManager;
-        private static RoleManager<IdentityRole> _roleManager;
+        //private static RoleManager<IdentityRole> _roleManager;
 
         //public static void Main(string[] args)
         public static async Task Main(string[] args)
@@ -114,35 +114,6 @@ namespace FribergHomes.API
 
             var app = builder.Build();
 
-            // Seeders  / Reb 2024-04-17
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var dbContext = services.GetRequiredService<ApplicationDBContext>();
-
-                // Seed agenies /Rebecka 2024-04-17
-                var seedAgencies = new AgencySeeder();
-                await seedAgencies.SeedAgencies(dbContext);
-
-                // County seeder /Tobias 2024-04-18
-                var config = services.GetRequiredService<IConfiguration>();
-                var countySeeder = new CountySeeder(dbContext, config);
-                await countySeeder.SeedCounties();
-
-                //RealtorSeeder added by Sanna 2024-04-18
-                var seedRealtors = new RealtorSeeder(_userManager, _roleManager);
-                await seedRealtors.SeedRealtors(dbContext);
-
-                //CategorySeeder added by Sanna 2024-04-18
-                var seedCategories = new CategorySeeder();
-                await seedCategories.SeedCategories(dbContext);
-
-                // SalesObject seeder /Tobias 2024-04-19
-                //SeedSalesObject parameters: int objectAmount (amount of objects to generate and store to DB).
-                var salesObjectSeeder = new SalesObjectSeeder(dbContext);
-                await salesObjectSeeder.SeedSalesObjects(100);
-            }
-
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -164,6 +135,39 @@ namespace FribergHomes.API
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+
+            // Seeders  / Reb 2024-04-17
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var dbContext = services.GetRequiredService<ApplicationDBContext>();
+
+                //Realtor seeder / Sanna 
+                var userManager = services.GetRequiredService<UserManager<Realtor>>();
+                //_roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                RealtorSeeder realtorSeeder = new RealtorSeeder();
+                await realtorSeeder.SeedRealtors(dbContext, userManager);
+
+                // Seed agencies /Rebecka 2024-04-17
+                var seedAgencies = new AgencySeeder();
+                await seedAgencies.SeedAgencies(dbContext);
+
+                // County seeder /Tobias 2024-04-18
+                var config = services.GetRequiredService<IConfiguration>();
+                var countySeeder = new CountySeeder(dbContext, config);
+                await countySeeder.SeedCounties();
+
+                //CategorySeeder added by Sanna 2024-04-18
+                var seedCategories = new CategorySeeder();
+                await seedCategories.SeedCategories(dbContext);
+
+                // SalesObject seeder /Tobias 2024-04-19
+                //SeedSalesObject parameters: int objectAmount (amount of objects to generate and store to DB).
+                var salesObjectSeeder = new SalesObjectSeeder(dbContext);
+                await salesObjectSeeder.SeedSalesObjects(100, userManager);
+
+            }
 
 
             app.MapControllers();

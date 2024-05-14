@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FribergHomes.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Identitysetup2 : Migration
+    public partial class identitysetup3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

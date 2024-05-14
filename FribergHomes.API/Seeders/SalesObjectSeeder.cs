@@ -1,5 +1,6 @@
 ﻿using FribergHomes.API.Data;
 using FribergHomes.API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Metrics;
 using static System.Net.WebRequestMethods;
@@ -23,7 +24,7 @@ namespace FribergHomes.API.Seeders
         }
 
         // <parameter> Amount of SalesObjects to generate.
-        public async Task SeedSalesObjects(int objectAmount)
+        public async Task SeedSalesObjects(int objectAmount, UserManager<Realtor> userManager)
         {
 
             #region pictures
@@ -245,8 +246,9 @@ namespace FribergHomes.API.Seeders
             if (!_appDbContext.SalesObjects.Any())
             {
                 var categories = _appDbContext.Categories.ToList();
-                var realtors = _appDbContext.Realtors.ToList();
-                var counties = _appDbContext.Counties.ToList();
+                //var realtors = _appDbContext.Realtors.ToList();
+                var realtors = userManager.Users.ToList();
+                    var counties = _appDbContext.Counties.ToList();
 
                 var salesObjects = new List<SalesObject>();
 
