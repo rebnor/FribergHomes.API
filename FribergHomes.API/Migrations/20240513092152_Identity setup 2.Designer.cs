@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FribergHomes.API.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240509223107_IdentitySetup")]
-    partial class IdentitySetup
+    [Migration("20240513092152_Identity setup 2")]
+    partial class Identitysetup2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -136,7 +136,6 @@ namespace FribergHomes.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")

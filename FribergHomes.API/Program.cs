@@ -16,6 +16,7 @@ namespace FribergHomes.API
 {
     public class Program
     {
+        private static UserManager<Realtor> _userManager;
 
         //public static void Main(string[] args)
         public static async Task Main(string[] args)
@@ -128,7 +129,7 @@ namespace FribergHomes.API
                 await countySeeder.SeedCounties();
 
                 //RealtorSeeder added by Sanna 2024-04-18
-                var seedRealtors = new RealtorSeeder();
+                var seedRealtors = new RealtorSeeder(_userManager);
                 await seedRealtors.SeedRealtors(dbContext);
 
                 //CategorySeeder added by Sanna 2024-04-18
