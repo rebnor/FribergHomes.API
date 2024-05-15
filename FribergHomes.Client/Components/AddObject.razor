@@ -22,7 +22,7 @@ else
     @if (newObject is CategoryDTO category)
     {
         <h3>Lägg till kategori</h3>
-        <form @onsubmit="AddNewObject">       
+        <form @onsubmit="AddNewObject">
             Namn: <input type="text" @bind="category.Name" />
             Logga: <input type="text" @bind="category.IconUrl" />
             <button type="submit">Lägg till kategori</button>
@@ -31,7 +31,7 @@ else
     else if (newObject is AgencyDTO agency)
     {
         <h3>Lägg till mäklarbyrå</h3>
-        <form @onsubmit="AddNewObject">      
+        <form @onsubmit="AddNewObject">
             Mäklarbyrå: <input type="text" @bind="agency.Name" />
             Presentation: <input type="text" @bind="agency.Presentation" />
             Logga: <input type="text" @bind="agency.Logo" />
@@ -70,6 +70,16 @@ else
                     <option value="@c.Id">@c.Name</option>
                 }
             </select>
+            <Button @onclick="GetCategoryName">Välj kategori</Button>
+            @* EXPERIMENT :))  *@
+       @*      @foreach (var c in categoryList)
+            {
+                <button @onclick="() => SetSelectedCategory(category.CategoryId)">
+                    @category.CategoryName
+                </button>
+            } *@
+
+
             Kommun:
             <select @bind="selectedCountyId">
                 <option value="">Välj kommun</option>
@@ -104,13 +114,13 @@ else
             Byggnadsår: <input type="number" @bind="((SalesObjectDTO)salesObject).BuildYear" />
             Beskrivning: <input type="text" @bind="((SalesObjectDTO)salesObject).ObjectDescription" />
             Pris: <input type="number" @bind="((SalesObjectDTO)salesObject).CurrentPrice" />
-            <input type="hidden" @bind="((SalesObjectDTO)salesObject).ListingPrice" />         
+            <input type="hidden" @bind="((SalesObjectDTO)salesObject).ListingPrice" />
             Bildlänkar: <input type="text" @bind="imageLinksInput" @oninput="AddImageLinks" multiple />
 
 
-            @* Lägenhet *@
-            @if (selectedCategoryId == 22)
-     @*           @if(selectedCategoryName == "Apartment") *@
+            @* Lägenhet *@@* 
+            @if (selectedCategoryId == 22) *@
+                      @if(categoryName == "Lägenhet")
             {
                 <p>Våning:</p>
                 <input type="number" @bind="((SalesObjectDTO)salesObject).Level" />
@@ -121,7 +131,7 @@ else
             }
 
             @* Hus *@
-            @if (selectedCategoryId == 23)
+            @if (categoryName == "Hus")
             {
                 <p>Biarea:</p>
                 <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
@@ -130,7 +140,7 @@ else
             }
 
             @* Radhus *@
-            @if (selectedCategoryId == 24)
+            @if (categoryName == "Radhus")
             {
                 <p>Månadsavgift:</p>
                 <input type="number" @bind="((SalesObjectDTO)salesObject).MonthlyFee" />
@@ -139,7 +149,7 @@ else
             }
 
             @* Semesterboende *@
-            @if (selectedCategoryId == 25)
+            @if (categoryName == "Semesterhem")
             {
                 <p>Biarea:</p>
                 <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
@@ -171,7 +181,7 @@ else
     private string? imageLinksInput;
 
 
-    private string selectedCategoryName;
+    private string categoryName;
 
 
 
@@ -215,15 +225,13 @@ else
                 await agencyService.AddAgencyAsync((AgencyDTO)newObject);
             }
             else if (newObject is RealtorDTO realtor)
-            {
-                // realtor = (RealtorDTO)newObject;
+            {               
                 var selectedAgency = await agencyService.GetAgencyByIdAsync(selectedAgencyId);
                 if (selectedAgency != null)
                 {
                     realtor.AgencyId = selectedAgency.Id;
                     realtor.AgencyName = selectedAgency.Name;
-                    realtor.AgencyLogo = selectedAgency.Logo;
-                    // await realtorService.AddRealtorAsync((RealtorDTO)newObject);
+                    realtor.AgencyLogo = selectedAgency.Logo;               
                     await realtorService.AddRealtorAsync(realtor);
                 }
             }
@@ -235,7 +243,6 @@ else
                     errorMessage = "Alla fält blev inte korrekt ifyllda.";
                     return;
                 }
-
 
                 salesObject.CategoryId = selectedCategoryId;
                 salesObject.CountyId = selectedCountyId;
@@ -260,34 +267,20 @@ else
         }
     }
 
-    // private async Task HandleSelectedCategoryID(ChangeEventArgs e)
-    // {
+    private async Task GetCategoryName()
+    {     
+        var category = await categoryService.GetCategoryByIdAsync(selectedCategoryId);
+        if(category != null)
+        {
+            categoryName = category.Name;
+        }       
+    }
 
-    //     if (int.TryParse(e.Value.ToString(), out int categoryId))
-    //     {
-    //         var selectedCategory = categoryList.FirstOrDefault(c => c.Id == categoryId);
-    //         selectedCategoryName = selectedCategory.Name; 
-    //     }
-    //     // selectedCategoryId = (int)e.Value;
-    //     // var selectedCategory =  categoryList.FirstOrDefault(c => c.Id == selectedCategoryId);
-    //     // selectedCategoryName = selectedCategory?.Name ?? string.Empty;
 
-    //     // var categoryList = await categoryService.GetAllCategoriesAsync();
-    //     // foreach (var c in categoryList)
-    //     // {
-    //     //     if (c.Name == "apartment")
-    //     //     {
-    //     //         selectedCategoryName = "apartment";
-    //     //     }
-    //     // }
-    //     //
-    //     // var category = await categoryService.GetCategoryByIdAsync(selectedCategoryId);
-    //     // if(category != null)
-    //     // {
-    //     //     selectedCategoryName = category.Name.ToLower();
-    //     // }
-
-    // }
+    async Task OnSelectedCategoryIdChanged()
+    {
+        await GetCategoryName();
+    }
 
     private async Task GetRealtorByAgency()
     {
