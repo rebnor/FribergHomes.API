@@ -12,7 +12,6 @@ namespace FribergHomes.API.Seeders
      * Author: Tobias 2024-04-19
      * Update: Added more pictures / Rebecka 2024-05-03
      * Update: SalesObject price will now be evened out / Tobias 2024-05-03
-
      */
     public class SalesObjectSeeder
     {
@@ -26,7 +25,6 @@ namespace FribergHomes.API.Seeders
         // <parameter> Amount of SalesObjects to generate.
         public async Task SeedSalesObjects(int objectAmount, UserManager<Realtor> userManager)
         {
-
             #region pictures
 
             List<string[]> picStringsHouse = new List<string[]>();

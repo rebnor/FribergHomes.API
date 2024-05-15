@@ -16,8 +16,7 @@ namespace FribergHomes.API
 {
     public class Program
     {
-        private static UserManager<Realtor> _userManager;
-        //private static RoleManager<IdentityRole> _roleManager;
+        //private static UserManager<Realtor> _userManager;
 
         //public static void Main(string[] args)
         public static async Task Main(string[] args)
@@ -138,14 +137,15 @@ namespace FribergHomes.API
 
 
             // Seeders  / Reb 2024-04-17
+            // Added UserManager as a service, it's needed to seed Realtors and SalesObjects / Sanna 
+
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var dbContext = services.GetRequiredService<ApplicationDBContext>();
 
                 //Realtor seeder / Sanna 
-                var userManager = services.GetRequiredService<UserManager<Realtor>>();
-                //_roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = services.GetRequiredService<UserManager<Realtor>>();             
                 RealtorSeeder realtorSeeder = new RealtorSeeder();
                 await realtorSeeder.SeedRealtors(dbContext, userManager);
 
@@ -158,17 +158,16 @@ namespace FribergHomes.API
                 var countySeeder = new CountySeeder(dbContext, config);
                 await countySeeder.SeedCounties();
 
-                //CategorySeeder added by Sanna 2024-04-18
+                //CategorySeeder / Sanna 2024-04-18
                 var seedCategories = new CategorySeeder();
                 await seedCategories.SeedCategories(dbContext);
 
                 // SalesObject seeder /Tobias 2024-04-19
-                //SeedSalesObject parameters: int objectAmount (amount of objects to generate and store to DB).
+                //SeedSalesObject parameters: int objectAmount (amount of objects to generate and store to DB).                
                 var salesObjectSeeder = new SalesObjectSeeder(dbContext);
                 await salesObjectSeeder.SeedSalesObjects(100, userManager);
 
             }
-
 
             app.MapControllers();
 
