@@ -1,8 +1,9 @@
-﻿@* Author: Tobias 2024-05-02 *@
-
-@page "/edit/{objecttype}/{id:int}"
-
+﻿@using Microsoft.AspNetCore.Authorization
 @using FribergHomes.Client.Services.Interfaces
+
+@* Author: Tobias 2024-05-02 *@
+@page "/edit/{objecttype}/{id:int}"
+@attribute [Authorize(Roles = "Admin, Realtor")]
 
 @inject NavigationManager NavMan
 @inject ISalesObject SalesObjectService
@@ -11,7 +12,6 @@
 @inject ICounty CountyService
 @inject ICategory CategoryService
 
-@* Add authorization! *@
 
 <div class="content-frame">
 
