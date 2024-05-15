@@ -17,7 +17,15 @@ namespace FribergHomes.Client.Authentications
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
 
+
             var jwt = await _localStorage.GetItemAsync<string>("jwt"); // hämtar token som ligger i localStorage jwt
+
+            // Tobias
+            // Om jwt är tom eller null returneras ett AuthenticationState med tomt ClaimsPrinciple.
+            if (string.IsNullOrEmpty(jwt))
+            {
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())); 
+            }
 
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
 
