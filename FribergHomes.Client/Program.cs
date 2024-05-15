@@ -11,9 +11,6 @@ namespace FribergHomes.Client
 {
     public class Program
     {
-        /* Configured HttpClient base adress // Tobias 2024-04-23 
-        */
-
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -28,11 +25,12 @@ namespace FribergHomes.Client
             builder.Services.AddTransient<ISalesObject, SalesObjectService>(); // Tobias 2024-04-25
             builder.Services.AddTransient<ICategory, CategoryService>(); // Rebecka 2024-04-26
 
-            builder.Services.AddScoped<TokenHandler>(); // Rebecka 2024-05-13
+            builder.Services.AddScoped<AuthService>(); // Rebecka 2024-05-13
 
             builder.Services.AddAuthorizationCore();
-            builder.Services.AddScoped<AuthenticationStateProvider, ClientAuthStateProvider>();
-           
+            builder.Services.AddCascadingAuthenticationState();
+            builder.Services.AddScoped<AuthProvider>();
+            builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
             
             builder.Services.AddBlazorBootstrap();
 
