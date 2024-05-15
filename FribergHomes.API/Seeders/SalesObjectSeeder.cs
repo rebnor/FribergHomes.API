@@ -279,7 +279,7 @@ namespace FribergHomes.API.Seeders
 
                     switch (category.Name)
                     {
-                        case "Apartment":
+                        case "Lägenhet":
 
                             salesObjects[i].Rooms = Random.Shared.Next(1, 6);
                             salesObjects[i].LivingArea = Random.Shared.Next(30, 101);
@@ -291,7 +291,7 @@ namespace FribergHomes.API.Seeders
                             salesObjects[i].ImageLinks = picStringsApartment[Random.Shared.Next(0, picStringsApartment.Count)].ToList();
                             break;
 
-                        case "House":
+                        case "Hus":
 
                             salesObjects[i].Rooms = Random.Shared.Next(3, 9);
                             salesObjects[i].LivingArea = Random.Shared.Next(60, 201);
@@ -303,7 +303,7 @@ namespace FribergHomes.API.Seeders
                             salesObjects[i].ImageLinks = picStringsHouse[Random.Shared.Next(0, picStringsHouse.Count)].ToList();
                             break;
 
-                        case "TownHouse":
+                        case "Radhus":
 
                             salesObjects[i].Rooms = Random.Shared.Next(3, 6);
                             salesObjects[i].LivingArea = Random.Shared.Next(60, 131);
@@ -315,7 +315,7 @@ namespace FribergHomes.API.Seeders
                             salesObjects[i].ImageLinks = picStringsTown[Random.Shared.Next(0, picStringsTown.Count)].ToList();
                             break;
 
-                        case "VacationHome":
+                        case "Semesterhem":
 
                             salesObjects[i].Rooms = Random.Shared.Next(3, 6);
                             salesObjects[i].LivingArea = Random.Shared.Next(20, 111);
