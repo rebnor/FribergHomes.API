@@ -56,6 +56,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        realtorDto = await realtorService.GetRealtorByIdAsync(Id);
+        // realtorDto = await realtorService.GetRealtorByIdAsync(Id); // TODO: Tar in fel datatyp (int istället för string) /Tobias
     }
 }
