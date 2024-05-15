@@ -1,22 +1,12 @@
 ﻿<nav class="navbar navbar-expand-sm navbar-toggleable-sm mb-3 border-bottom">
     <div class="container-fluid">
 
-        <a class="navbar-brand home-logo" href=""><img src="../hemlangtanfriberg_mini.png" width="50" alt="Hemlängtan"/></a>
+        <a class="navbar-brand home-logo" href=""><img src="../hemlangtanfriberg_mini.png" width="50" alt="Hemlängtan" /></a>
         @* <a class="navbar-brand home-logo" href="">Hemlängtan</a> *@
 
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
 
-   @*              <li class="nav-item">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-                    </NavLink>
-                </li> *@
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="counter">
-                        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-                    </NavLink>
-                </li>
                 <li class="nav-item">
                     <NavLink class="nav-link" href="weather">
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
@@ -47,16 +37,31 @@
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Mäklarbyråer
                     </NavLink>
                 </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="login">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Logga In
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="register">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Registrera
-                    </NavLink>
-                </li>
+                @* <li class="nav-item">
+                <NavLink class="nav-link" href="register">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Registrera
+                </NavLink>
+                </li> *@
+
+                @* Tobias *@
+                <AuthorizeView Roles="Realtor, Admin">
+
+                    <NotAuthorized>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="login">
+                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Logga In
+                            </NavLink>
+                        </li>
+                    </NotAuthorized>
+
+                    <Authorized>
+
+                        @* RealtorMenu *@
+
+                    </Authorized>
+
+                </AuthorizeView>
+
             </ul>
         </div>
 

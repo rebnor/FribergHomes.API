@@ -149,6 +149,17 @@ nav {
     /*background-image: linear-gradient(0deg, #9D9D79 0%, white 30%);*/
     box-shadow: 0px 0px 10px #303831;
 }
+
+ /*Tobias*/
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #FAFCF1;
+    z-index: 100;
+    overflow: hidden;
+}
+
 .navbar-brand {
     color: #2A432B;
     text-shadow: 0px 0px 2px #9D9D79;
@@ -161,6 +172,8 @@ nav {
 footer {
     border-top: 1px solid black;
     box-shadow: 0px 0px 10px #303831;
+    background-color: #FAFCF1; /*Tobias*/
+    z-index: 100;              /*Tobias*/
 }
 
 .content-custom {
@@ -170,6 +183,7 @@ footer {
 }
 
 main {
+    margin-top: 90px;
     flex: 1;
     background: url("../hemlangtanfriberg.png") no-repeat #FAFDF2;
     background-position: center top;
@@ -180,3 +194,5 @@ main {
     max-height: 50vh;
     overflow: auto;
 }
+
+
