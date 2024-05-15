@@ -1,4 +1,6 @@
-﻿@* Author: Reb 2024-04-30 *@
+﻿@* Author: Reb 2024-04-30
+Update: Reb 2024-05-15
+*@
 @page "/salesObject"
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
@@ -11,15 +13,22 @@
 
 <h3>Alla annonser:</h3>
 <div class="row">
-    <form @onsubmit="ShowAllSaleObjects">
+@*     <form @onsubmit="ShowAllSaleObjects">
         <button type="submit">Hämta alla annonser</button>
     </form>
+ *@
+    <Button Color="ButtonColor.Primary" @onclick="ShowAllSaleObjects">
+        Visa alla annonser i Hela Sverige
+    </Button>
 
     @if (ListSalesDtos != null)
     {
-        <form @onsubmit="HideAllSaleObjects">
+@*         <form @onsubmit="HideAllSaleObjects">
             <button type="submit">Göm Lista</button>
-        </form>
+        </form> *@
+        <Button Color="ButtonColor.Secondary" @onclick="HideAllSaleObjects">
+            Göm lista
+        </Button>
 
         <GetList ObjectType="SalesObject" TItem="SalesObjectDTO"></GetList>
     }
@@ -27,21 +36,7 @@
 
 <hr />
 
-<h3>Sök bostad via Id:</h3>
-<form @onsubmit="SubmitId">
-    <input type="number" @bind="salesId" />
-    <button type="submit">Hämta annons</button>
-</form>
-@if (SalesObjectDto != null)
-{
-    <GetById ObjectId="salesId" ObjectType="SalesObject" />
-}
-
-<hr />
-
 <Search></Search>
-
-
 
 @code {
 
@@ -50,12 +45,6 @@
 
     private int salesId;
     private string salesCounty;
-
-    private async void SubmitId()
-    {
-        SalesObjectDto = await salesService.Get(salesId);
-        StateHasChanged();
-    }
 
     private async void ShowAllSaleObjects()
     {

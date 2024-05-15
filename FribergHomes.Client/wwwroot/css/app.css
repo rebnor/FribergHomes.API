@@ -104,7 +104,7 @@ code {
 }
 
 
-/** Google iconer**/
+/** Google iconer / Reb **/
 .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
 }
@@ -195,4 +195,17 @@ main {
     overflow: auto;
 }
 
+.logout {
+    position: absolute;
+    right: 20px;
+    color: darkred;
+}
+    .logout:hover {
+        text-shadow: 0px 0px 2px darkred;
+    }
 
+.profile {
+    position: absolute;
+    right: 90px;
+    
+}

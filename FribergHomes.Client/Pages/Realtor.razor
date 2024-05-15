@@ -1,4 +1,6 @@
-﻿@* Author: Reb 2024-04-30*@
+﻿@* Author: Reb 2024-04-30
+    // TODO: Behövs denna sida? Eftersom man hittar alla mäklare genom AgencyPage redan? 
+*@
 @page "/realtor"
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
@@ -9,35 +11,14 @@
 
 <hr />
 
-<h3>Alla Mäklare:</h3>
 <div class="row">
-    <form @onsubmit="ShowAllRealtors">
-        <button type="submit">Hämta alla mäklare</button>
-    </form>
     @if (RealtorDtoList != null)
     {
-        <form @onsubmit="HideAllRealtors">
-            <button type="submit">Göm Lista</button>
-        </form>
-
         <GetList ObjectType="Realtor" TItem="RealtorDTO"></GetList>
     }
 </div>
 
-<hr />
-
-<h3>Sök mäklare via Id:</h3>
-<form @onsubmit="SubmitId">
-    <input type="number" @bind="realtorId" />
-    <button type="submit">Hämta mäklare</button>
-</form>
-@if (RealtorDto != null)
-{
-    <GetById ObjectId="@realtorId" ObjectType="Realtor" />
-}
-
-<hr/>
-
+@* // TODO: Se över om denna ska vara med, då Id inte är en int längre*@
 @* <h3>Sök mäklare via Byrå:</h3>
 <form @onsubmit="SubmitAgency">
     <input type="text" @bind="agency" />
@@ -62,29 +43,19 @@
     private int realtorId;
     private string agency;
 
-    private async void SubmitId()
+    protected override async Task OnInitializedAsync()
     {
-        RealtorDto = await realtorService.GetRealtorByIdAsync(realtorId);
+        await ShowAllRealtors();    
+    }
+    private async void SubmitAgency()
+    {
+        RealtorDtoList = await realtorService.GetRealtorsByAgencyAsync(agency);
         StateHasChanged();
     }
 
-    // private async void SubmitAgency()
-    // {
-    //     RealtorDtoList = await realtorService.GetRealtorsByAgencyAsync(agency);
-    //     StateHasChanged();
-    // }
-
-    private async void ShowAllRealtors()
+    private async Task ShowAllRealtors()
     {
         RealtorDtoList = await realtorService.GetAllRealtorsAsync();
         StateHasChanged();
     }
-
-    private async void HideAllRealtors()
-    {
-        RealtorDtoList = null;
-        StateHasChanged();
-    }
-
-
 }

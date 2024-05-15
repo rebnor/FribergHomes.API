@@ -7,26 +7,26 @@
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
 
-                <li class="nav-item">
+           @*      <li class="nav-item">
                     <NavLink class="nav-link" href="weather">
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
                     </NavLink>
-                </li>
-                <li class="nav-item">
+                </li> *@
+  @*               <li class="nav-item">
                     <NavLink class="nav-link" href="county">
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Kommuner
                     </NavLink>
-                </li>
+                </li> *@
                 <li class="nav-item">
                     <NavLink class="nav-link" href="salesObject">
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Annonser
                     </NavLink>
                 </li>
-                <li class="nav-item">
+           @*      <li class="nav-item">
                     <NavLink class="nav-link" href="realtor">
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Mäklare
                     </NavLink>
-                </li>
+                </li> *@
                 <li class="nav-item">
                     <NavLink class="nav-link" href="category">
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Kategorier
@@ -58,11 +58,31 @@
                     </NotAuthorized>
 
                     <Authorized>
-
+                        @inject Authentications.IAuthService authService
                         <li class="nav-item">
-                            <NavLink class="nav-link" href="realtor">
-                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
+                            <NavLink class="nav-link profile" href="realtor">
+                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> @* @context.User.Identity?.Name *@ Min Profil
                             </NavLink>
+                        </li>
+                        <li class="nav-item">
+
+
+
+                            <p class="logout pt-2" @onclick="ShowModal">Logga ut</p>
+@* 
+                            <Modal @ref="modal" title="Logga ut" IsVerticallyCentered="true">
+                                <BodyTemplate>
+                                    Är du säker på att du vill logga ut?
+                                </BodyTemplate>
+                                <FooterTemplate>
+                                    <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Nej, Avbryt</Button>
+                                    <Button Color="ButtonColor.Danger" @onclick="LogOut">Logga ut</Button>
+                                </FooterTemplate>
+                            </Modal> *@
+
+                            @*          <NavLink class="nav-link" href="logout">
+                            <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Logga Ut
+                            </NavLink> *@
                         </li>
 
                     </Authorized>
@@ -77,5 +97,32 @@
 </nav>
 
 @code {
+
+    [Inject] ModalService ModalService { get; set; } = default!;
+
+    private Modal modal = default!;
+
+    private async Task ShowModal()
+    {
+        var modalOption = new ModalOption
+            {
+                Title = "Logga Ut",
+                Message = "Är du säker på att du vill logga ut?",
+                Type = ModalType.Warning,
+                FooterButtonColor = ButtonColor.Danger,
+                FooterButtonText = "Logga Ut"
+            };
+        await ModalService.ShowAsync(modalOption);
+    }
+
+    // private async Task OnHideModalClick()
+    // {
+    //     await modal.HideAsync();
+    // }
+
+    private async Task LogOut()
+    {
+        await authService.LogOut();
+    }
 
 }
