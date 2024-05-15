@@ -21,7 +21,7 @@ namespace FribergHomes.Client.Services
         {
             return await _client.GetFromJsonAsync<List<RealtorDTO>>("api/Realtor");
         }
-        public async Task<RealtorDTO> GetRealtorByIdAsync(int id)
+        public async Task<RealtorDTO> GetRealtorByIdAsync(string id)
         {
             return await _client.GetFromJsonAsync<RealtorDTO>($"api/realtor/{id}");
         }
@@ -33,7 +33,7 @@ namespace FribergHomes.Client.Services
             return await response.Content.ReadFromJsonAsync<RealtorDTO>();
         }
 
-        public async Task DeleteRealtorAsync(int id)
+        public async Task DeleteRealtorAsync(string id)
         {
             await _client.DeleteAsync($"api/realtor/{id}");
         }
