@@ -3,9 +3,9 @@
 *@
 @page "/login"
 @using Blazored.LocalStorage
-@using FribergHomes.Client.Helper
+@using FribergHomes.Client.Authentications
 @using Microsoft.AspNetCore.Components.Authorization
-@inject TokenHandler tokenHandler
+@inject AuthService tokenHandler
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService localStorage
@@ -48,9 +48,10 @@
     private string token;
     private string error;
 
+    private bool isLoggedIn = false;
+
     private AuthResponseDTO authResponse;
     private AuthenticationState authState;
-
 
     private async Task Login()
     {
@@ -58,16 +59,24 @@
         {
             // token = await tokenHandler.GetToken(email, password); // hämtar token-string
 
-            authResponse = await tokenHandler.GetToken(email, password); // hämtar authResponse - innehåller UserId, email och Id
 
-            await localStorage.SetItemAsync("jwt", authResponse.Token); // lagrar token i localStorage som jwt
-            var jwt = await localStorage.GetItemAsync<string>("jwt"); // hämtar token som ligger i localStorage jwt
+            authState = await tokenHandler.LogIn(email, password); // hämtar authState 
+            if (authState.User.Identity.IsAuthenticated) // ??
+            {
+                NavigationManager.NavigateTo("/");
+            }
 
-            authState = await AuthStateProvider.GetAuthenticationStateAsync(); // kollar AuthState -> kollar den även Roller?
+            // await localStorage.SetItemAsync("jwt", authResponse.Token); // lagrar token i localStorage som jwt
+            // var jwt = await localStorage.GetItemAsync<string>("jwt"); // hämtar token som ligger i localStorage jwt
+
+            // authState = await AuthStateProvider.GetAuthenticationStateAsync(); // kollar AuthState -> kollar den även Roller?
+
+            // tokenHandler.ConfigureHttpClientWithToken(httpClient, jwt); // Lägger token/jwt i Bearer/Header
+
+            // NavigationManager.NavigateTo("/"); // navigeras till Index - test för att se att de funkar
+            // state = await tokenHandler.LogIn(email, password);
+            // var isSucess = state.IsCompletedSuccessfully;
             
-            tokenHandler.ConfigureHttpClientWithToken(httpClient, jwt); // Lägger token/jwt i Bearer/Header
-
-            NavigationManager.NavigateTo("/"); // navigeras till Index - test för att se att de funkar
         }
         catch (Exception ex)
         {

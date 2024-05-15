@@ -1,5 +1,5 @@
 using Blazored.LocalStorage;
-using FribergHomes.Client.Helper;
+using FribergHomes.Client.Authentications;
 using FribergHomes.Client.Services;
 using FribergHomes.Client.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -37,6 +37,7 @@ namespace FribergHomes.Client
             builder.Services.AddBlazorBootstrap();
 
             builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddScoped<IAuthService, AuthService>(); // Rebecka 2024-05-13 // Update Reb 2025-05-14
 
 
             await builder.Build().RunAsync();
