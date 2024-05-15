@@ -62,22 +62,15 @@ else
         <h3>Lägg till nytt försäljningsobjekt</h3>
         <form @onsubmit="AddNewObject">
 
-            Kategori:
+            Välj kategori:
             <select @bind="selectedCategoryId">
-                <option value="">Välj en kategori</option>
+                <option value="">---</option>
                 @foreach (var c in categoryList)
                 {
                     <option value="@c.Id">@c.Name</option>
                 }
             </select>
-            <Button @onclick="GetCategoryName">Välj kategori</Button>
-            @* EXPERIMENT :))  *@
-       @*      @foreach (var c in categoryList)
-            {
-                <button @onclick="() => SetSelectedCategory(category.CategoryId)">
-                    @category.CategoryName
-                </button>
-            } *@
+            <Button Color="ButtonColor.Primary" @onclick="GetCategoryName">Ok</Button>      
 
 
             Kommun:
@@ -117,10 +110,7 @@ else
             <input type="hidden" @bind="((SalesObjectDTO)salesObject).ListingPrice" />
             Bildlänkar: <input type="text" @bind="imageLinksInput" @oninput="AddImageLinks" multiple />
 
-
-            @* Lägenhet *@@* 
-            @if (selectedCategoryId == 22) *@
-                      @if(categoryName == "Lägenhet")
+            @if (categoryName == "Lägenhet")
             {
                 <p>Våning:</p>
                 <input type="number" @bind="((SalesObjectDTO)salesObject).Level" />
@@ -129,26 +119,20 @@ else
                 <p>Månadsavgift:</p>
                 <input type="number" @bind="((SalesObjectDTO)salesObject).MonthlyFee" />
             }
-
-            @* Hus *@
             @if (categoryName == "Hus")
             {
                 <p>Biarea:</p>
                 <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
                 <p>Driftkostnad:</p>
                 <input type="number" @bind="((SalesObjectDTO)salesObject).YearlyCost" />
-            }
-
-            @* Radhus *@
+            }          
             @if (categoryName == "Radhus")
             {
                 <p>Månadsavgift:</p>
                 <input type="number" @bind="((SalesObjectDTO)salesObject).MonthlyFee" />
                 <p>Biarea:</p>
                 <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
-            }
-
-            @* Semesterboende *@
+            }        
             @if (categoryName == "Semesterhem")
             {
                 <p>Biarea:</p>
@@ -179,8 +163,6 @@ else
     private List<CountyDTO> countyList = new List<CountyDTO>();
     private bool isListingPriceSet = false;
     private string? imageLinksInput;
-
-
     private string categoryName;
 
 
@@ -225,13 +207,13 @@ else
                 await agencyService.AddAgencyAsync((AgencyDTO)newObject);
             }
             else if (newObject is RealtorDTO realtor)
-            {               
+            {
                 var selectedAgency = await agencyService.GetAgencyByIdAsync(selectedAgencyId);
                 if (selectedAgency != null)
                 {
                     realtor.AgencyId = selectedAgency.Id;
                     realtor.AgencyName = selectedAgency.Name;
-                    realtor.AgencyLogo = selectedAgency.Logo;               
+                    realtor.AgencyLogo = selectedAgency.Logo;
                     await realtorService.AddRealtorAsync(realtor);
                 }
             }
@@ -268,14 +250,13 @@ else
     }
 
     private async Task GetCategoryName()
-    {     
+    {
         var category = await categoryService.GetCategoryByIdAsync(selectedCategoryId);
-        if(category != null)
+        if (category != null)
         {
             categoryName = category.Name;
-        }       
+        }
     }
-
 
     async Task OnSelectedCategoryIdChanged()
     {
@@ -288,6 +269,7 @@ else
         StateHasChanged();
     }
 
+    //adds urls for pictures
     private async Task AddImageLinks()
     {
         if (newObject is SalesObjectDTO salesObject && !string.IsNullOrWhiteSpace(imageLinksInput))
