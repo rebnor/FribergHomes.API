@@ -2,7 +2,7 @@
    Co-author: Rebecka
 *@
 
-@page "/add"
+@* @page "/add" *@
 @using FribergHomes.Client.Services.Interfaces
 @using FribergHomes.Client.DTOs
 @inject ISalesObject salesService
@@ -12,7 +12,6 @@
 @inject ICounty countyService
 @inject NavigationManager NavigationManager
 
-<h3>AddObject</h3>
 
 @if (isAdded == true)
 {
@@ -22,8 +21,8 @@ else
 {
     @if (newObject is CategoryDTO category)
     {
+        <h3>Lägg till kategori</h3>
         <form @onsubmit="AddNewObject">
-            <input type="hidden" @bind="category.Id" />
             Namn: <input type="text" @bind="category.Name" />
             Logga: <input type="text" @bind="category.IconUrl" />
             <button type="submit">Lägg till kategori</button>
@@ -31,8 +30,8 @@ else
     }
     else if (newObject is AgencyDTO agency)
     {
+        <h3>Lägg till mäklarbyrå</h3>
         <form @onsubmit="AddNewObject">
-            <input type="hidden" @bind="agency.Id" />
             Mäklarbyrå: <input type="text" @bind="agency.Name" />
             Presentation: <input type="text" @bind="agency.Presentation" />
             Logga: <input type="text" @bind="agency.Logo" />
@@ -41,6 +40,7 @@ else
     }
     else if (newObject is RealtorDTO realtor)
     {
+        <h3>Lägg till mäklare</h3>
         <form @onsubmit="AddNewObject">
             Namn: <input type="text" @bind="realtor.FullName" />
             Email: <input type="email" @bind="realtor.Email" />
@@ -59,16 +59,20 @@ else
     }
     else if (newObject is SalesObjectDTO salesObject)
     {
+        <h3>Lägg till nytt försäljningsobjekt</h3>
         <form @onsubmit="AddNewObject">
 
-            Kategori:
+            Välj kategori:
             <select @bind="selectedCategoryId">
-                <option value="">Välj en kategori</option>
+                <option value="">---</option>
                 @foreach (var c in categoryList)
                 {
                     <option value="@c.Id">@c.Name</option>
                 }
             </select>
+            <Button Color="ButtonColor.Primary" @onclick="GetCategoryName">Ok</Button>
+
+
             Kommun:
             <select @bind="selectedCountyId">
                 <option value="">Välj kommun</option>
@@ -88,6 +92,7 @@ else
             <Button Color="ButtonColor.Primary" @onclick="GetRealtorByAgency">
                 Hämta mäklare
             </Button>
+
             Mäklare:
             <select @bind="selectedRealtorId">
                 <option value="">Välj mäklare</option>
@@ -103,17 +108,9 @@ else
             Beskrivning: <input type="text" @bind="((SalesObjectDTO)salesObject).ObjectDescription" />
             Pris: <input type="number" @bind="((SalesObjectDTO)salesObject).CurrentPrice" />
             <input type="hidden" @bind="((SalesObjectDTO)salesObject).ListingPrice" />
-            @*  <input type="text" @bind="((SalesObjectDTO)salesObject).ImageLinks" /> *@
+            Bildlänkar: <input type="text" @bind="imageLinksInput" @oninput="AddImageLinks" multiple />
 
-
-          @*   <Button Color="ButtonColor.Primary" @onclick="AddImageLinks">
-                Lägg till bilder
-            </Button> *@
-            Bildlänkar: <input type="text" @bind="imageLinksInput" @oninput="AddImageLinks" multiple/> 
-         
-
-            @* Lägenhet *@
-            @if (selectedCategoryId == 1)
+            @if (categoryName == "Lägenhet")
             {
                 <p>Våning:</p>
                 <input type="number" @bind="((SalesObjectDTO)salesObject).Level" />
@@ -122,27 +119,21 @@ else
                 <p>Månadsavgift:</p>
                 <input type="number" @bind="((SalesObjectDTO)salesObject).MonthlyFee" />
             }
-
-            @* Hus *@
-            @if (selectedCategoryId == 2)
+            @if (categoryName == "Hus")
             {
                 <p>Biarea:</p>
                 <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
                 <p>Driftkostnad:</p>
                 <input type="number" @bind="((SalesObjectDTO)salesObject).YearlyCost" />
             }
-
-            @* Radhus *@
-            @if (selectedCategoryId == 3)
+            @if (categoryName == "Radhus")
             {
                 <p>Månadsavgift:</p>
                 <input type="number" @bind="((SalesObjectDTO)salesObject).MonthlyFee" />
                 <p>Biarea:</p>
                 <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
             }
-
-            @* Semesterboende *@
-            @if (selectedCategoryId == 4)
+            @if (categoryName == "Semesterhem")
             {
                 <p>Biarea:</p>
                 <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
@@ -171,11 +162,9 @@ else
     private List<CategoryDTO> categoryList = new List<CategoryDTO>();
     private List<CountyDTO> countyList = new List<CountyDTO>();
     private bool isListingPriceSet = false;
-
-
-
     private string? imageLinksInput;
-  
+    private string categoryName;
+
 
 
     protected override async Task OnInitializedAsync()
@@ -202,12 +191,6 @@ else
                 {
                     ImageLinks = new List<string>()
                 };
-            // var salesObject = new SalesObjectDTO()
-            //     {
-            //         ImageLinks = new List<string>()
-            //     };
-            // salesObject.ListingPrice = salesObject.CurrentPrice;
-            // newObject = salesObject;
         }
     }
 
@@ -225,30 +208,28 @@ else
             }
             else if (newObject is RealtorDTO realtor)
             {
-                // realtor = (RealtorDTO)newObject;
                 var selectedAgency = await agencyService.GetAgencyByIdAsync(selectedAgencyId);
                 if (selectedAgency != null)
                 {
                     realtor.AgencyId = selectedAgency.Id;
                     realtor.AgencyName = selectedAgency.Name;
                     realtor.AgencyLogo = selectedAgency.Logo;
-                    // await realtorService.AddRealtorAsync((RealtorDTO)newObject);
                     await realtorService.AddRealtorAsync(realtor);
                 }
             }
             else if (newObject is SalesObjectDTO salesObject)
             {
-                //CHATTES FÖRSLAG
                 if (string.IsNullOrEmpty(salesObject.Adress) || selectedCategoryId == 0 ||
-              selectedCountyId == 0 || selectedAgencyId == 0 /* || selectedRealtorId == 0 */)
+              selectedCountyId == 0 || selectedAgencyId == 0 || selectedRealtorId == null)
                 {
                     errorMessage = "Alla fält blev inte korrekt ifyllda.";
                     return;
                 }
+
                 salesObject.CategoryId = selectedCategoryId;
                 salesObject.CountyId = selectedCountyId;
                 salesObject.AgencyId = selectedAgencyId;
-                salesObject.RealtorId = selectedRealtorId;              
+                salesObject.RealtorId = selectedRealtorId;
 
                 //Method to set ListingPrice to same value as CurrentPrice
                 if (!isListingPriceSet && ((SalesObjectDTO)salesObject).CurrentPrice != 0)
@@ -264,9 +245,22 @@ else
         }
         catch (Exception e)
         {
-            // throw new Exception("Ett oväntat fel uppstod");
             errorMessage = e.Message;
         }
+    }
+
+    private async Task GetCategoryName()
+    {
+        var category = await categoryService.GetCategoryByIdAsync(selectedCategoryId);
+        if (category != null)
+        {
+            categoryName = category.Name;
+        }
+    }
+
+    async Task OnSelectedCategoryIdChanged()
+    {
+        await GetCategoryName();
     }
 
     private async Task GetRealtorByAgency()
@@ -275,27 +269,14 @@ else
         StateHasChanged();
     }
 
+    //adds urls for pictures
     private async Task AddImageLinks()
     {
         if (newObject is SalesObjectDTO salesObject && !string.IsNullOrWhiteSpace(imageLinksInput))
         {
-            // var imageLinks = imageLinksInput.Split(new[] { ",", "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            // salesObject.ImageLinks.AddRange(imageLinks);
-
-
-
             var delimiters = new string[] { ",", ";", "\r\n", "\r", "\n" };
             var imageLinks = imageLinksInput.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             salesObject.ImageLinks.AddRange(imageLinks);
-
-
-
-
-            // Clear the input after adding
-            // imageLinksInput = "";
-
-            // // Optionally, you can update the database with the new image links here if needed
-            // await salesService.Update(salesObject);
         }
     }
 
