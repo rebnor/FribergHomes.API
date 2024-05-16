@@ -28,7 +28,7 @@ namespace FribergHomes.Client.Authentications
             
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             var jwtContent = jwtSecurityTokenHandler.ReadJwtToken(jwt); // Hämtar token innehåll
-            if (jwtContent.ValidTo < DateTime.Now) // Ser över om tiden har gått ut på token
+            if (jwtContent.ValidTo < DateTime.UtcNow) // Ser över om tiden har gått ut på token
             {
                 return new AuthenticationState(user); // Skickar ny state med tomma användaren
             }
