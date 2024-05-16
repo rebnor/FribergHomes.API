@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using FribergHomes.Client.Constants;
 using FribergHomes.Client.DTOs;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using System.Net.Http.Headers;
@@ -45,8 +46,6 @@ namespace FribergHomes.Client.Authentications
             throw new Exception("Fel användarnamn och/eller lösenord. Försök igen!");
         }
         public async Task<string> Register(RegisterRealtorDTO realtorData)
-        //public async Task<bool> Register(RegisterRealtorDTO realtorData)
-        //public async Task Register(RegisterRealtorDTO realtorData)
         {
             try
             {
@@ -64,9 +63,8 @@ namespace FribergHomes.Client.Authentications
 
         public async Task LogOut()
         {
-            RemoveTokenFromHttpClient(_httpClient); // Tar bort token/jwt i Bearer/Header ??
-
             await _authStateProvider.LogOutAsync();
+            RemoveTokenFromHttpClient(_httpClient); // Tar bort token/jwt i Bearer/Header ??
         }
 
         public void ConfigureHttpClientWithToken(HttpClient httpClient, string token)
@@ -76,6 +74,12 @@ namespace FribergHomes.Client.Authentications
         public void RemoveTokenFromHttpClient(HttpClient httpClient)
         {
             httpClient.DefaultRequestHeaders.Authorization = null;
+        }
+
+        public async Task<AuthenticationState> CheckAuthState()
+        {
+            var state = await _authStateProvider.GetAuthenticationStateAsync();
+            return state;
         }
 
 

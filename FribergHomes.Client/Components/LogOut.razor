@@ -1,0 +1,33 @@
+﻿@using FribergHomes.Client.Authentications
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IAuthService authService
+@inject ModalService modalService
+@inject NavigationManager NavigationManager
+
+
+
+<p class="logout pt-2" @onclick="LogOutAsync">Logga ut</p>
+@* <Modal @onclick="LogOutAsync" /> *@
+
+@code {
+
+
+    private async Task ShowModal()
+    {
+        var modalOption = new ModalOption
+            {
+                Title = "Logga Ut",
+                Message = "Är du säker på att du vill logga ut?",
+                Type = ModalType.Warning,
+                FooterButtonColor = ButtonColor.Danger,
+                FooterButtonText = "Logga Ut"
+            };
+        await modalService.ShowAsync(modalOption);
+    }
+
+    private async Task LogOutAsync()
+    {
+        await authService.LogOut();
+        NavigationManager.NavigateTo("/"); // TODO: Måste uppdatera sidan för att loggas ut?
+    }
+}
