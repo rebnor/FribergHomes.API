@@ -14,22 +14,22 @@ namespace FribergHomes.API.Seeders
                 await appDbCtx.AddRangeAsync(
                 new Category
                 {
-                    Name = "Apartment",
+                    Name = "Lägenhet",
                     IconUrl = "<span class=\"material-symbols-outlined\">\r\napartment\r\n</span>"
                 },
                 new Category
                 {
-                    Name = "House", 
+                    Name = "Hus", 
                     IconUrl = "<span class=\"material-symbols-outlined\">\r\nhouse\r\n</span>"
                 },
                 new Category
                 {
-                    Name = "TownHouse",
+                    Name = "Radhus",
                     IconUrl = "<span class=\"material-symbols-outlined\">\r\nholiday_village\r\n</span>"
                 },
                 new Category
                 {
-                    Name = "VacationHome",
+                    Name = "Semesterhem",
                     IconUrl = "<span class=\"material-symbols-outlined\">\r\nother_houses\r\n</span>"
                 });
                 await appDbCtx.SaveChangesAsync();
