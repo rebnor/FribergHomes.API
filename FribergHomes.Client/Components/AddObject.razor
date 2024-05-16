@@ -64,7 +64,7 @@ else
 
             Välj kategori:
             <select @bind="selectedCategoryId">
-                <option value="">---</option>
+                <option value=""></option>
                 @foreach (var c in categoryList)
                 {
                     <option value="@c.Id">@c.Name</option>
@@ -108,7 +108,16 @@ else
             Beskrivning: <input type="text" @bind="((SalesObjectDTO)salesObject).ObjectDescription" />
             Pris: <input type="number" @bind="((SalesObjectDTO)salesObject).CurrentPrice" />
             <input type="hidden" @bind="((SalesObjectDTO)salesObject).ListingPrice" />
-            Bildlänkar: <input type="text" @bind="imageLinksInput" @oninput="AddImageLinks" multiple />
+            Bildlänkar: <input type="text" @bind="imageLinksInput" placeholder="Skriv in din bildlänk här" />
+            <Button Color="ButtonColor.Primary" @onclick="AddImageLinks">Lägg till</Button>
+            @if(salesObject.ImageLinks.Any())
+            {
+                @foreach (var link in salesObject.ImageLinks)
+                {
+                    <img src="@link" alt="Bild" style="max-width: 200px; margin-right: 10px;" />
+                }
+            }
+
 
             @if (categoryName == "Lägenhet")
             {
@@ -274,10 +283,9 @@ else
     {
         if (newObject is SalesObjectDTO salesObject && !string.IsNullOrWhiteSpace(imageLinksInput))
         {
-            var delimiters = new string[] { ",", ";", "\r\n", "\r", "\n" };
-            var imageLinks = imageLinksInput.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-            salesObject.ImageLinks.AddRange(imageLinks);
+            salesObject.ImageLinks.Add(imageLinksInput);
+            //Gör inputfältet tomt igen efter länken lagts till
+            imageLinksInput = "";
         }
     }
-
 }
