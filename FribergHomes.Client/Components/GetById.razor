@@ -185,5 +185,7 @@ else
     {
         await GetObject();
         authState = await authService.CheckAuthState();
+        StateHasChanged();
+
     }
 }

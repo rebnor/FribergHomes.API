@@ -13,19 +13,12 @@ Update: Reb 2024-05-15
 
 <h3>Alla annonser:</h3>
 <div class="row">
-@*     <form @onsubmit="ShowAllSaleObjects">
-        <button type="submit">Hämta alla annonser</button>
-    </form>
- *@
     <Button Color="ButtonColor.Primary" @onclick="ShowAllSaleObjects">
         Visa alla annonser i Hela Sverige
     </Button>
 
     @if (ListSalesDtos != null)
     {
-@*         <form @onsubmit="HideAllSaleObjects">
-            <button type="submit">Göm Lista</button>
-        </form> *@
         <Button Color="ButtonColor.Secondary" @onclick="HideAllSaleObjects">
             Göm lista
         </Button>
@@ -37,8 +30,6 @@ Update: Reb 2024-05-15
 <hr />
 
 <Search></Search>
-
-<AddObject Objecttype="salesObject"/>
 
 @code {
 

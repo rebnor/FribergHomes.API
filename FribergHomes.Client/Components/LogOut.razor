@@ -1,4 +1,5 @@
-﻿@using FribergHomes.Client.Authentications
+﻿@* Author: Rebecka 2024-05-16*@
+@using FribergHomes.Client.Authentications
 @using Microsoft.AspNetCore.Components.Authorization
 @inject IAuthService authService
 @inject ModalService modalService
@@ -7,27 +8,48 @@
 
 
 <p class="logout pt-2" @onclick="LogOutAsync">Logga ut</p>
-@* <Modal @onclick="LogOutAsync" /> *@
+
+@* <Modal @ref="modal" title="Logga Ut" IsServiceModal="true" ModalType="ModalType.Warning" class="modal-custom">
+    <BodyTemplate>
+        <p>Är du säker på att du vill logga ut?</p>
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Color="ButtonColor.Primary" @onclick="OnHideModalClick">Nej, Avbryt</Button>
+        <Button Color="ButtonColor.Danger" @onclick="LogOutAsync">Logga Ut</Button>
+    </FooterTemplate>
+</Modal> *@
 
 @code {
+    // private Modal modal = default!;
+
+    // private async Task ShowModal()
+    // {
+    //     modal.IsServiceModal = true;
+    //     await modal.ShowAsync();
+    // }
+
+    // private async Task OnHideModalClick()
+    // {
+    //     await modal.HideAsync();
+    // }
 
 
-    private async Task ShowModal()
-    {
-        var modalOption = new ModalOption
-            {
-                Title = "Logga Ut",
-                Message = "Är du säker på att du vill logga ut?",
-                Type = ModalType.Warning,
-                FooterButtonColor = ButtonColor.Danger,
-                FooterButtonText = "Logga Ut"
-            };
-        await modalService.ShowAsync(modalOption);
-    }
+    // private async Task ShowModal()
+    // {
+    //     var modalOption = new ModalOption
+    //         {
+    //             Title = "Logga Ut",
+    //             Message = "Är du säker på att du vill logga ut?",
+    //             Type = ModalType.Warning,
+    //             FooterButtonColor = ButtonColor.Danger,
+    //             FooterButtonText = "Logga Ut"
+    //         };
+    //     await modalService.ShowAsync(modalOption);
+    // }
 
     private async Task LogOutAsync()
     {
         await authService.LogOut();
-        NavigationManager.NavigateTo("/"); // TODO: Måste uppdatera sidan för att loggas ut?
+        NavigationManager.NavigateTo("/", forceLoad: true);
     }
 }
