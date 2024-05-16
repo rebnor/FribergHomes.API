@@ -4,9 +4,11 @@
 * @ Update: All-around update on code/ Reb 30/4 - 1/5
 * @Update: Added so you click on button to come på infopage about choosen object / Reb 2024-05-02
 * @Update: Implemented EditButton component where required. / Tobias 2024-05-03
+* @Update: Added <AuthorizeView Roles="Realtor, Admin"> where its needed / Reb 2024-05-16
 *@
 @using System.Text.Json
 @using System.Net.Http.Json
+@using FribergHomes.Client.Authentications
 @using FribergHomes.Client.Services.Interfaces;
 @using FribergHomes.Client.DTOs
 @inject IRealtor realtorService
@@ -14,6 +16,7 @@
 @inject ICounty countyService
 @inject IAgencyService agencyService
 @inject ISalesObject salesService
+@inject IAuthService authService;
 
 @if (ObjectToShow != null)
 {
@@ -32,14 +35,13 @@
                 <a href="/info/Realtor/@realtor.Id" class="custom-link">Kolla info om Mäklare</a>
             </Button>
 
-            // TODO: Lägg till Authentication koll här
-            
+            <AuthorizeView Roles="Realtor, Admin">
             <EditButton TargetObject="realtor" /> // Tobias
 
             <Button Color="ButtonColor.Danger">
                 <a href="/delete/Realtor/@realtor.Id" class="custom-link">Ta bort Realtor</a>
             </Button>
-
+            </AuthorizeView>
         }
         else if (ObjectToShow is SalesObjectDTO salesObject)
         {
@@ -83,14 +85,15 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/SalesObject/@salesObject.Id" class="custom-link">Kolla info</a>
             </Button>
-            
-            // TODO: Lägg till Authentication koll här
 
-            <EditButton TargetObject="salesObject" /> // Tobias
+            <AuthorizeView Roles="Realtor, Admin">
+                <EditButton TargetObject="salesObject" />
+                // Tobias
 
-            <Button Color="ButtonColor.Danger">
-                <a href="/delete/SalesObject/@salesObject.Id" class="custom-link">Ta bort Annons</a>
-            </Button>
+                <Button Color="ButtonColor.Danger">
+                    <a href="/delete/SalesObject/@salesObject.Id" class="custom-link">Ta bort Annons</a>
+                </Button>
+                </AuthorizeView>
         }
         else if (ObjectToShow is AgencyDTO agency)
         {
@@ -101,14 +104,13 @@
                 <a href="/info/Agency/@agency.Id" class="custom-link">Kolla info om Mäklarbyrå</a>
             </Button>
 
-            // TODO: Lägg till Authentication koll här
-
+            <AuthorizeView Roles="Realtor, Admin">
             <EditButton TargetObject="agency" /> // Tobias
 
             <Button Color="ButtonColor.Danger">
                 <a href="/delete/Agency/@agency.Id">Ta bort Mäklarbyrå</a>
             </Button>
-
+            </AuthorizeView>
         }
         else if (ObjectToShow is CountyDTO county)
         {
@@ -129,13 +131,13 @@
                 <a href="/info/Category/@category.Id" class="custom-link">Kolla info om Kategori</a>
             </Button>
 
-            // TODO: Lägg till Authentication koll här
-
+            <AuthorizeView Roles="Realtor, Admin">
             <EditButton TargetObject="category" /> // Tobias
 
             <Button Color="ButtonColor.Danger">
                 <a href="/delete/Category/@category.Id">Ta bort Kategori</a>
             </Button>
+            </AuthorizeView>
         }
     </div>
 }
@@ -155,12 +157,14 @@ else
     public object? ObjectToShow { get; set; }
     public string error;
 
+    private AuthenticationState authState;
+
     private async Task GetObject()
     {
         try
         {
             //if (ObjectType == "Realtor")
-                // ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId); // TODO: Tar in fel datatyp (int istället för string) /Tobias
+            // ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId); // TODO: Tar in fel datatyp (int istället för string) /Tobias
             if (ObjectType == "SalesObject")
                 ObjectToShow = await salesService.Get(ObjectId);
             else if (ObjectType == "Category")
@@ -180,5 +184,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetObject();
+        authState = await authService.CheckAuthState();
     }
 }
