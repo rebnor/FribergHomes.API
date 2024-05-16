@@ -151,9 +151,9 @@ else
     {
         try
         {
-            if (ObjectType == "Realtor")
-                ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId);
-            else if (ObjectType == "SalesObject")
+            //if (ObjectType == "Realtor")
+                // ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId); // TODO: Tar in fel datatyp (int istället för string) /Tobias
+            if (ObjectType == "SalesObject")
                 ObjectToShow = await salesService.Get(ObjectId);
             else if (ObjectType == "Category")
                 ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);

@@ -33,7 +33,7 @@
 </form>
 @if (RealtorDto != null)
 {
-    <GetById ObjectId="@realtorId" ObjectType="Realtor" />
+    @* <GetById ObjectId="@realtorId" ObjectType="Realtor" /> *@ //TODO
 }
 
 <hr/>
@@ -59,7 +59,7 @@
     private RealtorDTO RealtorDto { get; set; }
     private List<RealtorDTO> RealtorDtoList;
 
-    private int realtorId;
+    private string realtorId;
     private string agency;
 
     private async void SubmitId()

@@ -41,7 +41,7 @@ namespace FribergHomes.Client.Pages
 
                 case "realtor":
 
-                    Realtor = await RealtorService.GetRealtorByIdAsync(Id);
+                    //Realtor = await RealtorService.GetRealtorByIdAsync(Id); // TODO: Tar in fel datatyp (int istället för string) /Tobias
                     break;
 
                 case "agency":

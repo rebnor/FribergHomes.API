@@ -77,9 +77,9 @@ else
 
     private async Task GetObject()
     {
-        if (ObjectType == "Realtor")
-            ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId);
-        else if (ObjectType == "SalesObject")
+        //if (ObjectType == "Realtor")
+        // ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId); // TODO: Tar in fel datatyp (int istället för string) /Tobias
+        if (ObjectType == "SalesObject")
             ObjectToShow = await salesService.Get(ObjectId);
         else if (ObjectType == "Category")
             ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
@@ -97,9 +97,9 @@ else
 
     private async void YesDelete()
     {
-        if (ObjectType == "Realtor")
-            await realtorService.DeleteRealtorAsync(ObjectId);
-        else if (ObjectType == "SalesObject") 
+        //if (ObjectType == "Realtor")
+            //await realtorService.DeleteRealtorAsync(ObjectId);
+        if (ObjectType == "SalesObject") 
             await salesService.Delete(ObjectId);
         else if (ObjectType == "Category")
             await categoryService.DeleteCategoryAsync(ObjectId);

@@ -1,0 +1,156 @@
+﻿@using FribergHomes.Client.Authentications
+@using FribergHomes.Client.Services.Interfaces
+@using Microsoft.AspNetCore.Authorization
+
+@page "/realtorprofile"
+
+@inject IAuthService AuthService
+@inject IRealtor RealtorService
+@inject ISalesObject SalesObjectService
+@attribute [Authorize(Roles = "Admin, Realtor")]
+
+
+
+<h3>Mäklarprofil</h3>
+
+@if (Realtor is null)
+{
+    <span>Laddar mäklare...</span>
+}
+else
+{
+
+    <div class="content-frame">
+
+        <div class="content-container">
+
+            <div class="row">
+
+                <div class="col">
+
+                    @* Profilbild *@
+
+                    <span>Profilbild</span>
+                    <div class="profile-picture">
+                        <img src="@Realtor.Picture" alt="profilbild" />
+                    </div>
+                    
+
+
+                </div>
+                <div class="col">
+
+                    @* Beskrivning *@
+
+                    <h4>@Realtor.FullName</h4>
+
+                </div>
+
+            </div>
+
+            <div>
+                @* Tabell - försäljningsobjekt *@
+
+
+
+                <Grid TItem="SalesObjectDTO"
+                      AllowSorting="true"
+                      Class=""
+                      DataProvider="GetSalesObjects"
+                      Responsive="true">
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Kategori" SortKeySelector="item => item.CategoryLogoUrl">
+                        <img src="@context.CategoryLogoUrl" />
+                    </GridColumn>
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Adress" SortKeySelector="item => item.Adress">
+                        @context.Adress
+                    </GridColumn>
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Kommun" SortKeySelector="item => item.CountyName">
+                        @context.CountyName
+                    </GridColumn>
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Pris (ursprungligt)" SortKeySelector="item => item.ListingPrice">
+                        @context.ListingPrice
+                    </GridColumn>
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Pris (aktuellt)" SortKeySelector="item => item.CurrentPrice">
+                        @context.CurrentPrice
+                    </GridColumn>
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Driftkostnad" SortKeySelector="item => item.YearlyCost">
+                        @if (@context.YearlyCost is null)
+                        {
+                            <span> - </span>
+                        }
+                        else
+                        {
+                            @context.YearlyCost
+                        }
+                    </GridColumn>
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Månadsavgift" SortKeySelector="item => item.MonthlyFee">
+                        @if (@context.MonthlyFee is null)
+                        {
+                            <span> - </span>
+                        }
+                        else
+                        {
+                            @context.MonthlyFee
+                        }
+                    </GridColumn>
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Boarea" SortKeySelector="item => item.LivingArea">
+                        @context.LivingArea
+                    </GridColumn>
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Tomtarea" SortKeySelector="item => item.PlotArea">
+                        @context.PlotArea
+                    </GridColumn>
+
+
+                </Grid>
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+}
+
+
+
+@code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
+
+    public RealtorDTO? Realtor { get; set; }
+
+    private IEnumerable<SalesObjectDTO> salesObjects = default!;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = await AuthService.GetUserId();
+
+        Realtor = await RealtorService.GetRealtorByIdAsync(userId);
+    }
+
+
+    private async Task<GridDataProviderResult<SalesObjectDTO>> GetSalesObjects(GridDataProviderRequest<SalesObjectDTO> request)
+    {
+        if (Realtor is not null)
+        {
+            salesObjects = await SalesObjectService.GetAllByRealtor(Realtor.Id);
+        }
+
+        return await Task.FromResult(request.ApplyTo(salesObjects));
+    }
+
+
+
+}
