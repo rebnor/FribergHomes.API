@@ -1,5 +1,6 @@
 ﻿using FribergHomes.API.Data;
 using FribergHomes.API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Metrics;
 using static System.Net.WebRequestMethods;
@@ -11,7 +12,6 @@ namespace FribergHomes.API.Seeders
      * Author: Tobias 2024-04-19
      * Update: Added more pictures / Rebecka 2024-05-03
      * Update: SalesObject price will now be evened out / Tobias 2024-05-03
-
      */
     public class SalesObjectSeeder
     {
@@ -23,9 +23,8 @@ namespace FribergHomes.API.Seeders
         }
 
         // <parameter> Amount of SalesObjects to generate.
-        public async Task SeedSalesObjects(int objectAmount)
+        public async Task SeedSalesObjects(int objectAmount, UserManager<Realtor> userManager)
         {
-
             #region pictures
 
             List<string[]> picStringsHouse = new List<string[]>();
@@ -245,7 +244,8 @@ namespace FribergHomes.API.Seeders
             if (!_appDbContext.SalesObjects.Any())
             {
                 var categories = _appDbContext.Categories.ToList();
-                var realtors = _appDbContext.Realtors.ToList();
+                //var realtors = _appDbContext.Realtors.ToList();
+                var realtors = userManager.Users.ToList();
                 var counties = _appDbContext.Counties.ToList();
 
                 var salesObjects = new List<SalesObject>();
@@ -279,7 +279,7 @@ namespace FribergHomes.API.Seeders
 
                     switch (category.Name)
                     {
-                        case "Apartment":
+                        case "Lägenhet":
 
                             salesObjects[i].Rooms = Random.Shared.Next(1, 6);
                             salesObjects[i].LivingArea = Random.Shared.Next(30, 101);
@@ -291,7 +291,7 @@ namespace FribergHomes.API.Seeders
                             salesObjects[i].ImageLinks = picStringsApartment[Random.Shared.Next(0, picStringsApartment.Count)].ToList();
                             break;
 
-                        case "House":
+                        case "Hus":
 
                             salesObjects[i].Rooms = Random.Shared.Next(3, 9);
                             salesObjects[i].LivingArea = Random.Shared.Next(60, 201);
@@ -303,7 +303,7 @@ namespace FribergHomes.API.Seeders
                             salesObjects[i].ImageLinks = picStringsHouse[Random.Shared.Next(0, picStringsHouse.Count)].ToList();
                             break;
 
-                        case "TownHouse":
+                        case "Radhus":
 
                             salesObjects[i].Rooms = Random.Shared.Next(3, 6);
                             salesObjects[i].LivingArea = Random.Shared.Next(60, 131);
@@ -315,7 +315,7 @@ namespace FribergHomes.API.Seeders
                             salesObjects[i].ImageLinks = picStringsTown[Random.Shared.Next(0, picStringsTown.Count)].ToList();
                             break;
 
-                        case "VacationHome":
+                        case "Semesterhem":
 
                             salesObjects[i].Rooms = Random.Shared.Next(3, 6);
                             salesObjects[i].LivingArea = Random.Shared.Next(20, 111);
@@ -347,4 +347,3 @@ namespace FribergHomes.API.Seeders
         }
     }
 }
-
