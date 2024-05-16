@@ -69,6 +69,32 @@ namespace FribergHomes.API.Data.Repositories
             return realtors;
         }
 
+        public async Task<Agency> GetAgencyByRealtorEmail(string email)
+        {
+            //var realtor = await _dbContext.Realtors.FirstOrDefaultAsync(r => r.Email.ToLower() == email.ToLower());
+            //var agency = await _dbContext.Agencies.FirstOrDefaultAsync(a=>a.Id == realtor.Agency.Id);
+            //return agency;
+            // Konvertera e-postadressen till gemener för att undvika problem med gemener/stora bokstäver
+            string normalizedEmail = email.ToLower();
+
+            // Hämta mäklaren baserat på den normaliserade e-postadressen
+            var realtor = await _dbContext.Realtors
+                .Include(r => r.Agency) // Inkludera byrån för mäklaren
+                .FirstOrDefaultAsync(r => r.Email.ToLower() == normalizedEmail);
+
+            // Kontrollera om mäklaren hittades
+            if (realtor != null)
+            {
+                // Returnera byrån som mäklaren tillhör
+                return realtor.Agency;
+            }
+            else
+            {
+                // Om mäklaren inte hittades, returnera null eller kasta ett undantag
+                return null; // Eller kasta ett undantag: throw new Exception("Mäklaren hittades inte med den angivna e-postadressen.");
+            }
+        }
+
 
     }
 }

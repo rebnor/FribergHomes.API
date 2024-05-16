@@ -36,11 +36,11 @@
             </Button>
 
             <AuthorizeView Roles="Realtor, Admin">
-            <EditButton TargetObject="realtor" /> // Tobias
+                <EditButton TargetObject="realtor" /> // Tobias
 
-            <Button Color="ButtonColor.Danger">
-                <a href="/delete/Realtor/@realtor.Id" class="custom-link">Ta bort Realtor</a>
-            </Button>
+                <Button Color="ButtonColor.Danger">
+                    <a href="/delete/Realtor/@realtor.Id" class="custom-link">Ta bort Realtor</a>
+                </Button>
             </AuthorizeView>
         }
         else if (ObjectToShow is SalesObjectDTO salesObject)
@@ -93,7 +93,7 @@
                 <Button Color="ButtonColor.Danger">
                     <a href="/delete/SalesObject/@salesObject.Id" class="custom-link">Ta bort Annons</a>
                 </Button>
-                </AuthorizeView>
+            </AuthorizeView>
         }
         else if (ObjectToShow is AgencyDTO agency)
         {
@@ -105,11 +105,11 @@
             </Button>
 
             <AuthorizeView Roles="Realtor, Admin">
-            <EditButton TargetObject="agency" /> // Tobias
+                <EditButton TargetObject="agency" /> // Tobias
 
-            <Button Color="ButtonColor.Danger">
-                <a href="/delete/Agency/@agency.Id">Ta bort Mäklarbyrå</a>
-            </Button>
+                <Button Color="ButtonColor.Danger">
+                    <a href="/delete/Agency/@agency.Id">Ta bort Mäklarbyrå</a>
+                </Button>
             </AuthorizeView>
         }
         else if (ObjectToShow is CountyDTO county)
@@ -132,11 +132,11 @@
             </Button>
 
             <AuthorizeView Roles="Realtor, Admin">
-            <EditButton TargetObject="category" /> // Tobias
+                <EditButton TargetObject="category" /> // Tobias
 
-            <Button Color="ButtonColor.Danger">
-                <a href="/delete/Category/@category.Id">Ta bort Kategori</a>
-            </Button>
+                <Button Color="ButtonColor.Danger">
+                    <a href="/delete/Category/@category.Id">Ta bort Kategori</a>
+                </Button>
             </AuthorizeView>
         }
     </div>
