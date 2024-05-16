@@ -117,6 +117,7 @@ namespace FribergHomes.API
             var app = builder.Build();
 
             // Seeders  / Reb 2024-04-17
+            // Added UserManager as a service, it's needed to seed Realtors and SalesObjects / Sanna 
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -130,10 +131,11 @@ namespace FribergHomes.API
                 var config = services.GetRequiredService<IConfiguration>();
                 var countySeeder = new CountySeeder(dbContext, config);
                 await countySeeder.SeedCounties();
-
-                //RealtorSeeder added by Sanna 2024-04-18
-                var seedRealtors = new RealtorSeeder();
-                await seedRealtors.SeedRealtors(dbContext);
+                            
+                //Realtor seeder / Sanna 
+                var userManager = services.GetRequiredService<UserManager<Realtor>>();
+                RealtorSeeder realtorSeeder = new RealtorSeeder();
+                await realtorSeeder.SeedRealtors(dbContext, userManager);
 
                 //CategorySeeder added by Sanna 2024-04-18
                 var seedCategories = new CategorySeeder();
@@ -142,7 +144,7 @@ namespace FribergHomes.API
                 // SalesObject seeder /Tobias 2024-04-19
                 //SeedSalesObject parameters: int objectAmount (amount of objects to generate and store to DB).
                 var salesObjectSeeder = new SalesObjectSeeder(dbContext);
-                await salesObjectSeeder.SeedSalesObjects(100);
+                await salesObjectSeeder.SeedSalesObjects(100, userManager);
             }
 
 
