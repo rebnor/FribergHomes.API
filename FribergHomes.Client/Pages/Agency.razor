@@ -1,5 +1,6 @@
 ﻿@* Author: Sanna
 Update: Reb 2024-05-02
+Update: Skriver nu direkt ut alla mäklarbyråer Reb 2024-05-15
 *@
 @page "/agency"
 @using FribergHomes.Client.DTOs
@@ -7,18 +8,14 @@ Update: Reb 2024-05-02
 @using FribergHomes.Client.Components
 @inject IAgencyService agencyService
 
-<h3>Alla Mäklarbyåer:</h3>
+<h1>Mäklarbyåer</h1>
+
+<hr/>
 
 <div class="row">
-    <form @onsubmit="ShowAllAgencies">
-        <button type="submit">Hämta alla mäklarbyråer</button>
-    </form>
+
     @if (Agencies != null)
     {
-        <form @onsubmit="HideAllAgencies">
-            <button type="submit">Göm Lista</button>
-        </form>
-
         <GetList ObjectType="Agency" TItem="AgencyDTO" />
     }
 </div>
@@ -26,15 +23,14 @@ Update: Reb 2024-05-02
 @code {
     private List<AgencyDTO> Agencies;
 
-    private async void ShowAllAgencies()
+    private async Task ShowAllAgencies()
     {
         Agencies = await agencyService.GetAllAgenciesAsync();
         StateHasChanged();
     }
 
-    private async void HideAllAgencies()
+    protected override async Task OnInitializedAsync()
     {
-        Agencies = null;
-        StateHasChanged();
+        await ShowAllAgencies();
     }
 }

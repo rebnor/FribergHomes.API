@@ -25,18 +25,14 @@ namespace FribergHomes.Client
             builder.Services.AddTransient<ISalesObject, SalesObjectService>(); // Tobias 2024-04-25
             builder.Services.AddTransient<ICategory, CategoryService>(); // Rebecka 2024-04-26
 
-            builder.Services.AddScoped<AuthService>(); // Rebecka 2024-05-13
-
             builder.Services.AddAuthorizationCore();
             builder.Services.AddCascadingAuthenticationState();
             builder.Services.AddScoped<AuthProvider>();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
-            
-            builder.Services.AddBlazorBootstrap();
-
-            builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddScoped<IAuthService, AuthService>(); // Rebecka 2024-05-13 // Update Reb 2025-05-14
 
+            builder.Services.AddBlazorBootstrap();
+            builder.Services.AddBlazoredLocalStorage();
 
             await builder.Build().RunAsync();
         }

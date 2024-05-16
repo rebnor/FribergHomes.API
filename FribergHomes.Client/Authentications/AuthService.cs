@@ -2,31 +2,30 @@
 using FribergHomes.Client.Constants;
 using FribergHomes.Client.DTOs;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.JSInterop;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-
-
+using System.Security.Claims;
 
 /* @ Author: Reb 2024-05-13
- * @ Update: GetToken skickar hela AuthResponse ist för endast token-sträng / Reb 2024-05-14*/
+ * @ Update: GetToken skickar hela AuthResponse ist för endast token-sträng / Reb 2024-05-14
+ * @Update: Bytt namn på metoder, uppdaterat med localstorage, authstate, authprovider och arv av Iauthstate / Reb 2024-05-14+15 */
 namespace FribergHomes.Client.Authentications
 {
     public class AuthService : IAuthService
     {
         private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorage;
-        private readonly AuthenticationStateProvider _authStateProvider;
+        private readonly AuthProvider _authStateProvider;
 
-        public AuthService(HttpClient httpClient, ILocalStorageService localStorage, AuthenticationStateProvider authStateProvider)
+        public AuthService(HttpClient httpClient, ILocalStorageService localStorage,AuthProvider authStateProvider)
         {
             _httpClient = httpClient;
             _localStorage = localStorage;
             _authStateProvider = authStateProvider;
         }
 
-        //public async Task<string> GetToken(string email, string password)
         public async Task<AuthenticationState> LogIn(string email, string password)
-        //public async Task<Task<AuthenticationState>> LogIn(string email, string password)
         {
             var response = await _httpClient.PostAsJsonAsync("api/auth/login", new
             {
@@ -36,59 +35,49 @@ namespace FribergHomes.Client.Authentications
 
             if (response.IsSuccessStatusCode)
             {
-
-                var authResponse = await response.Content.ReadFromJsonAsync<AuthResponseDTO>();
-
+                var authResponse = await response.Content.ReadFromJsonAsync<AuthResponseDTO>(); // hämtar svar
                 await _localStorage.SetItemAsync("jwt", authResponse.Token); // lagrar token i localStorage som jwt
-
                 ConfigureHttpClientWithToken(_httpClient, authResponse.Token); // Lägger token/jwt i Bearer/Header
-
                 var authState = await _authStateProvider.GetAuthenticationStateAsync(); // hämtar authentication state
-
                 return authState; // skickar authentication state
-
-
-                //var isSucess = authState.IsCompletedSuccessfully;
-                //if (isSucess)
-                //{
-                //    return true;
-                //    //ConfigureHttpClientWithToken(_httpClient, jwt); // Lägger token/jwt i Bearer/Header
-
-                //    //return authResponse;
-                //}
             }
 
             throw new Exception("Fel användarnamn och/eller lösenord. Försök igen!");
         }
         public async Task<string> Register(RegisterRealtorDTO realtorData)
+        //public async Task<bool> Register(RegisterRealtorDTO realtorData)
+        //public async Task Register(RegisterRealtorDTO realtorData)
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("api/auth/register", realtorData);
-                response.EnsureSuccessStatusCode();
-
-                var authResponse = await response.Content.ReadFromJsonAsync<AuthResponseDTO>();
-                return authResponse.Token;
+                var response = await _httpClient.PostAsJsonAsync("api/auth/register", realtorData); // registrerar och hämtar svar
+                response.EnsureSuccessStatusCode(); // ser över att det gick bra
+                //var authResponse = await response.Content.ReadFromJsonAsync<AuthResponseDTO>(); // hämtar authDTO svaret // TODO: <-- Tydligen skrivs inte i Json...
+                var authResponse = await response.Content.ReadAsStringAsync(); // Behövdes läggas till för att fungera.
+                return authResponse; // skickar response
             }
             catch (Exception ex)
             {
-                throw new Exception("Registrering av användare misslyckades.");
+                throw new Exception("Registrering av användare misslyckades." + ex.Message);
             }
         }
 
         public async Task LogOut()
         {
+            RemoveTokenFromHttpClient(_httpClient); // Tar bort token/jwt i Bearer/Header ??
 
+            await _authStateProvider.LogOutAsync();
         }
 
-        //public void AddTokenToRequest(HttpRequestMessage request, string token)
-        //{
-        //    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        //}
         public void ConfigureHttpClientWithToken(HttpClient httpClient, string token)
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
+        public void RemoveTokenFromHttpClient(HttpClient httpClient)
+        {
+            httpClient.DefaultRequestHeaders.Authorization = null;
+        }
+
 
         /// Author: Tobias 2024-05-15
         /// <summary>

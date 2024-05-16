@@ -2,9 +2,8 @@
 @using FribergHomes.Client.Authentications
 @using FribergHomes.Client.Services.Interfaces
 @inject IAgencyService agencyService
-@inject AuthService tokenHandler
-@inject HttpClient httpClient
 @inject NavigationManager NavigationManager
+@inject IAuthService authService
 
 
 <div>
@@ -48,18 +47,18 @@
                         <label>Bekräfta lösenord</label>
                         <span class="text-danger"></span>
                     </div>
-                    @if(Agencies != null)
+                    @if (Agencies != null)
                     {
-                    <div class="form-floating mb-3">
-                        <p>Mäklarbyrå</p>
-                        <select @bind="agencyId">
-                            <option value="">Välj mäklarbyrå</option>
-                            @foreach (var agency in Agencies)
-                            {
-                                <option value="@agency.Id">@agency.Name</option>
-                            }
-                        </select>
-                    </div>
+                        <div class="form-floating mb-3">
+                            <p>Mäklarbyrå</p>
+                            <select @bind="agencyId">
+                                <option value="">Välj mäklarbyrå</option>
+                                @foreach (var agency in Agencies)
+                                {
+                                    <option value="@agency.Id">@agency.Name</option>
+                                }
+                            </select>
+                        </div>
                     }
                     <div>
                         <button type="submit" class="w-100 btn btn-lg btn-primary">Registrera dig</button>
@@ -77,8 +76,11 @@
     private string email;
     private string password;
     private string confirmPassword;
-    private string token;
     private string error;
+
+    private string registerOk;
+    private string token;
+
 
     private int agencyId;
     private List<AgencyDTO> Agencies;
@@ -105,9 +107,27 @@
                         AgencyId = agencyId
                     };
 
-                token = await tokenHandler.Register(newRealtor); // Registrerar ny användare och lägger in token + role
+                token = await authService.Register(newRealtor);
+                NavigationManager.NavigateTo("/login");
 
-                NavigationManager.NavigateTo("/"); // testa för att se att de funkar
+
+                // registerOk = await authService.Register(newRealtor); // Registrerar ny användare och lägger in token + role
+                // if (registerOk)
+                // {
+                //     NavigationManager.NavigateTo("/"); // skickas till index
+                // }
+
+
+
+                // await authService.Register(newRealtor);
+                // NavigationManager.NavigateTo("/");
+
+
+                // registerOk = await authService.Register(newRealtor);
+                // if (registerOk != null)
+                // {
+                //     NavigationManager.NavigateTo("/");    
+                // }
             }
             catch (Exception ex)
             {

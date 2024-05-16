@@ -2,6 +2,7 @@
 * Author: Reb 2024-05-02
 * Update: Finishing the re-navigations / Reb 2024-05-03
 * Update: Divided "Kommande visningar" and "Sold" - depending on viewingdates / Reb 2024-05-06
+* Update: småfix / Reb 2025-05-15
 *@
 @page "/info/{ObjectType}/{ObjectStringId}"
 @using FribergHomes.Client.DTOs
@@ -78,16 +79,16 @@
                 {
                     @if (vdate < DateTime.Now)
                     {
-                    <h4>@so.Adress</h4>
-                    foreach (var picture in so.ImageLinks)
-                    {
-                        <img src="@picture" width="150" />
-                    }
-                    <Button Color="ButtonColor.Info">
-                        <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)">
-                            Kolla Annons
-                        </a>
-                    </Button>
+                        <h4>@so.Adress</h4>
+                        foreach (var picture in so.ImageLinks)
+                        {
+                            <img src="@picture" width="150" />
+                        }
+                        <Button Color="ButtonColor.Info">
+                            <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)">
+                                Kolla Annons
+                            </a>
+                        </Button>
                     }
                 }
             }
@@ -103,7 +104,8 @@
                 <Badge Color="BadgeColor.Danger">SÅLD</Badge>
             }
         }
-        <h3>@salesObject.Adress</h3>
+        <h3>@salesObject.Adress - @salesObject.CountyName</h3>
+        <br />
         foreach (var picture in salesObject.ImageLinks)
         {
             <img src="@picture" width="500" />
@@ -154,7 +156,8 @@
             Visningsdatum:
             @foreach (var date in salesObject.ViewingDates)
             {
-                @date.ToString("yyy-MM-dd");
+                @date.ToString("yyy-MM-dd")
+                ;
             }
         </p>
         <h4>Beskrivning:</h4>
@@ -174,9 +177,10 @@
     else if (ObjectToShow is AgencyDTO agency) @* Shows info of Agency *@
     {
         <h2>@agency.Name</h2>
-        <img src="@agency.Logo" width="300" />
-        <p>@agency.Presentation</p>
-
+        <div class="text-center">
+            <img src="@agency.Logo" width="300" />
+            <p>@agency.Presentation</p>
+        </div>
         <hr />
 
         <h4>Anställda</h4>
@@ -199,9 +203,11 @@
                         <td>@r.Email</td>
                         <td>@r.PhoneNumber</td>
                         <td>
-                            @* <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
-                                Kolla Mäklare
-                            </a> *@
+
+                            @*  // TODO: Se över detta, då Id nu inte är en int
+                <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(@r.Email)">
+                Kolla Mäklare
+                </a> *@
                         </td>
                     </tr>
                 }
@@ -254,36 +260,26 @@
     else if (ObjectToShow is CategoryDTO category)
     @* Shows info of Category *@
     {
-        @if (category.Id != null)
-        {
-            CategoryId = category.Id;
-        }
         <h2>@category.Name</h2>
-
         <div>@((MarkupString)category.IconUrl)</div>
-
-        <Button Color="ButtonColor.Info" @onclick="GetCategorySales">
-            Hämta annonser
-        </Button>
-
         @if (CategorySalesObjects != null)
         {
             if (CategorySalesObjects.Count > 0)
             {
-                <Button Color="ButtonColor.Secondary" @onclick="HideCategorySales">
-                    Göm annonser
-                </Button>
-
                 foreach (var so in CategorySalesObjects)
                 {
-                    <h3>@so.Adress</h3>
-                    foreach (var picture in so.ImageLinks)
-                    {
-                        <img src="@picture" width="200" />
-                    }
-                    <Button Color="ButtonColor.Info">
-                        <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)" class="custom-link">Kolla annons</a>
-                    </Button>
+                    <div style="border: 1px solid #2A432B" class="m-2 p-2 shadow text-center">
+                        <h3>@so.Adress - @so.CountyName</h3>
+                        @* // TODO: Varför skrivs inte kommun ut? *@
+                        @foreach (var picture in so.ImageLinks)
+                        {
+                            <img src="@picture" width="200" />
+                        }
+                        <br />
+                        <Button Color="ButtonColor.Info">
+                            <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)" class="custom-link">Kolla annons</a>
+                        </Button>
+                    </div>
                 }
             }
             else
@@ -313,7 +309,7 @@
     private List<SalesObjectDTO> CategorySalesObjects;
 
     public string CountyName;
-    public int CategoryId;
+    // public int CategoryId;
 
     public string error = "";
 
@@ -324,7 +320,10 @@
         if (ObjectType == "SalesObject")
             ObjectToShow = await salesService.Get(ObjectId);
         else if (ObjectType == "Category")
+        {
             ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
+            await GetCategorySales(ObjectId);
+        }
         else if (ObjectType == "County")
             ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
         else if (ObjectType == "Agency")
@@ -370,9 +369,9 @@
     }
 
     /* Get & Hide List of Category Salesobjects */
-    private async Task GetCategorySales()
+    private async Task GetCategorySales(int id)
     {
-        CategorySalesObjects = await salesService.GetSalesByCategory(CategoryId);
+        CategorySalesObjects = await salesService.GetSalesByCategory(id);
         StateHasChanged();
         if (CategorySalesObjects.Count <= 0)
         {
@@ -380,11 +379,11 @@
         }
         StateHasChanged();
     }
-    private async Task HideCategorySales()
-    {
-        CategorySalesObjects = null;
-        StateHasChanged();
-    }
+    // private async Task HideCategorySales()
+    // {
+    //     CategorySalesObjects = null;
+    //     StateHasChanged();
+    // }
 
     /* Re-Navigates to InfoPage of choosen Object */
     // private async void NavigateToRealtor(int realtorId)

@@ -5,11 +5,8 @@
 @using Blazored.LocalStorage
 @using FribergHomes.Client.Authentications
 @using Microsoft.AspNetCore.Components.Authorization
-@inject AuthService tokenHandler
-@inject HttpClient httpClient
+@inject IAuthService authService
 @inject NavigationManager NavigationManager
-@inject ILocalStorageService localStorage
-@inject AuthenticationStateProvider AuthStateProvider
 
 
 <div>
@@ -45,38 +42,21 @@
 
     private string email;
     private string password;
-    private string token;
     private string error;
 
     private bool isLoggedIn = false;
 
-    private AuthResponseDTO authResponse;
     private AuthenticationState authState;
 
     private async Task Login()
     {
         try
         {
-            // token = await tokenHandler.GetToken(email, password); // hämtar token-string
-
-
-            authState = await tokenHandler.LogIn(email, password); // hämtar authState 
-            if (authState.User.Identity.IsAuthenticated) // ??
+            authState = await authService.LogIn(email, password); // hämtar authState 
+            if (authState.User.Identity.IsAuthenticated) // ser över att authstate innehåller en user
             {
                 NavigationManager.NavigateTo("/");
-            }
-
-            // await localStorage.SetItemAsync("jwt", authResponse.Token); // lagrar token i localStorage som jwt
-            // var jwt = await localStorage.GetItemAsync<string>("jwt"); // hämtar token som ligger i localStorage jwt
-
-            // authState = await AuthStateProvider.GetAuthenticationStateAsync(); // kollar AuthState -> kollar den även Roller?
-
-            // tokenHandler.ConfigureHttpClientWithToken(httpClient, jwt); // Lägger token/jwt i Bearer/Header
-
-            // NavigationManager.NavigateTo("/"); // navigeras till Index - test för att se att de funkar
-            // state = await tokenHandler.LogIn(email, password);
-            // var isSucess = state.IsCompletedSuccessfully;
-            
+            }            
         }
         catch (Exception ex)
         {
