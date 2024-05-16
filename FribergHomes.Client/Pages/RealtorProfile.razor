@@ -10,43 +10,41 @@
 @attribute [Authorize(Roles = "Admin, Realtor")]
 
 
+<div class="content">
 
-<h3>Mäklarprofil</h3>
+    <h3>Mäklarprofil</h3>
 
-@if (Realtor is null)
-{
-    <span>Laddar mäklare...</span>
-}
-else
-{
+    <hr />
 
-    <div class="content-frame">
-
-        <div class="content-container">
-
-            <div class="row">
-
-                <div class="col">
-
-                    @* Profilbild *@
-
-                    <span>Profilbild</span>
-                    <div class="profile-picture">
-                        <img src="@Realtor.Picture" alt="profilbild" width="500" />
-                    </div>
-                    
+    @if (Realtor is null)
+    {
+        <span>Laddar mäklare...</span>
+    }
+    else
+    {
 
 
-                </div>
-                <div class="col">
 
-                    @* Beskrivning *@
+            <div class="">
 
-                    <h4>@Realtor.FullName</h4>
+                @* Profilbild *@
 
-                </div>
+                <span>Profilbild</span>
+                <img src="@Realtor.Picture" alt="profilbild" class="profile-picture" /> @* TODO: visa defaultbild *@
 
             </div>
+
+            <div class="">
+
+                @* Beskrivning *@
+
+                <h4>@Realtor.FullName</h4>
+                <span>Mäklarbyrå: @Realtor.AgencyName</span>
+
+            </div>
+      
+
+        <div>
 
             @if (showAddForm)
             {
@@ -125,22 +123,22 @@ else
 
 
             </div>
-
         </div>
+   
+    }
 
-    </div>
-}
+</div>
 
 
 
-@code {
+    @code {
 
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthState { get; set; }
+        [CascadingParameter]
+        private Task<AuthenticationState>? AuthState { get; set; }
 
-    public RealtorDTO? Realtor { get; set; }
+        public RealtorDTO? Realtor { get; set; }
 
-    private IEnumerable<SalesObjectDTO> salesObjects = default!;
+        private IEnumerable<SalesObjectDTO> salesObjects = default!;
 
     private bool showAddForm;
 
@@ -149,23 +147,23 @@ else
         showAddForm = true;    
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        var userId = await AuthService.GetUserId();
-
-        Realtor = await RealtorService.GetRealtorByIdAsync(userId);
-    }
-
-
-    private async Task<GridDataProviderResult<SalesObjectDTO>> GetSalesObjects(GridDataProviderRequest<SalesObjectDTO> request)
-    {
-        if (Realtor is not null)
+        protected override async Task OnInitializedAsync()
         {
-            salesObjects = await SalesObjectService.GetAllByRealtor(Realtor.Id);
+            var userId = await AuthService.GetUserId();
+
+            Realtor = await RealtorService.GetRealtorByIdAsync(userId);
         }
 
-        return await Task.FromResult(request.ApplyTo(salesObjects));
-    }
+
+        private async Task<GridDataProviderResult<SalesObjectDTO>> GetSalesObjects(GridDataProviderRequest<SalesObjectDTO> request)
+        {
+            if (Realtor is not null)
+            {
+                salesObjects = await SalesObjectService.GetAllByRealtor(Realtor.Id);
+            }
+
+            return await Task.FromResult(request.ApplyTo(salesObjects));
+        }
 
 
 
