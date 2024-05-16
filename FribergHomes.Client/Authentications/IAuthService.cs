@@ -8,5 +8,7 @@ namespace FribergHomes.Client.Authentications
         public Task<AuthenticationState> LogIn(string email, string password);
         public Task<string> Register(RegisterRealtorDTO realtorData);
         public Task LogOut();
+
+        Task<string> GetUserId();
     }
 }

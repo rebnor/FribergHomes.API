@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using FribergHomes.Client.Constants;
 using FribergHomes.Client.DTOs;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
@@ -77,6 +78,29 @@ namespace FribergHomes.Client.Authentications
             httpClient.DefaultRequestHeaders.Authorization = null;
         }
 
+
+        /// Author: Tobias 2024-05-15
+        /// <summary>
+        /// Method to get Id of currently logged in user.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> GetUserId()
+        {
+            if (_authStateProvider is not null)
+            {
+                var authState = await _authStateProvider.GetAuthenticationStateAsync();
+                var userIdClaim = authState.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.Uid);
+
+                if (userIdClaim is not null)
+                {
+                    var userId = userIdClaim.Value;
+
+                    return userId;
+                }
+            }
+
+            return string.Empty;
+        }
 
     }
 }
