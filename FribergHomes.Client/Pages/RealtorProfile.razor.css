@@ -1,0 +1,20 @@
+﻿
+.content {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.col{
+    flex-direction: column;
+}
+
+.row{
+    flex-direction: row;
+}
+
+.profile-picture {
+    height: 200px;
+    width: auto;
+    
+}
