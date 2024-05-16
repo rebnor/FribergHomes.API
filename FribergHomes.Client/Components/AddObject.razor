@@ -278,14 +278,19 @@ else
         StateHasChanged();
     }
 
-    //adds urls for pictures
+    //Lets the user add up to 40 pictures 
     private async Task AddImageLinks()
     {
-        if (newObject is SalesObjectDTO salesObject && !string.IsNullOrWhiteSpace(imageLinksInput))
+        if (newObject is SalesObjectDTO salesObject && !string.IsNullOrWhiteSpace(imageLinksInput) &&
+        salesObject.ImageLinks.Count < 40)
         {
             salesObject.ImageLinks.Add(imageLinksInput);
             //Gör inputfältet tomt igen efter länken lagts till
             imageLinksInput = "";
+        }
+        else
+        {
+            errorMessage = "Det går inte att lägga till fler än 40 bilder.";           
         }
     }
 }
