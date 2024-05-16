@@ -18,14 +18,12 @@ namespace FribergHomes.Client.Authentications
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity()); // gör en ny tom användare
-
             var jwt = await _localStorage.GetItemAsync<string>("jwt"); // hämtar token som ligger i localStorage jwt
             // Om jwt är tom eller null returneras ett AuthenticationState med tomt ClaimsPrinciple.// Tobias
             if (string.IsNullOrEmpty(jwt))
             {
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())); 
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
-            
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             var jwtContent = jwtSecurityTokenHandler.ReadJwtToken(jwt); // Hämtar token innehåll
             if (jwtContent.ValidTo < DateTime.UtcNow) // Ser över om tiden har gått ut på token
@@ -47,7 +45,8 @@ namespace FribergHomes.Client.Authentications
             {
                 new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
-            await _localStorage.RemoveItemAsync("jwt"); // raderar jwt
+            //await _localStorage.RemoveItemAsync("jwt"); // raderar jwt
+            await _localStorage.ClearAsync();
             ClaimsPrincipal? emptyClaim = new ClaimsPrincipal(new ClaimsIdentity()); // gör en tom claim-user
             var authstate = Task.FromResult(new AuthenticationState(emptyClaim)); // sätter state till den tomma claim-user
             NotifyAuthenticationStateChanged(authstate); // megafon om att state är ändrad
