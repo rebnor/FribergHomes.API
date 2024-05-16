@@ -41,7 +41,6 @@
                     </NotAuthorized>
 
                     <Authorized>
-                        @inject Authentications.IAuthService authService
                         <li class="nav-item">
                             <NavLink class="nav-link" href="realtorprofile">
                                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
@@ -50,23 +49,9 @@
                         <li class="nav-item">
 
 
-
-                            <p class="logout pt-2" @onclick="ShowModal">Logga ut</p>
-@* 
-                            <Modal @ref="modal" title="Logga ut" IsVerticallyCentered="true">
-                                <BodyTemplate>
-                                    Är du säker på att du vill logga ut?
-                                </BodyTemplate>
-                                <FooterTemplate>
-                                    <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Nej, Avbryt</Button>
-                                    <Button Color="ButtonColor.Danger" @onclick="LogOut">Logga ut</Button>
-                                </FooterTemplate>
-                            </Modal> *@
-
-                            @*          <NavLink class="nav-link" href="logout">
-                            <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Logga Ut
-                            </NavLink> *@
-                        </li>
+                            <LogOut/>
+                            @* <p class="logout pt-2" @onclick="ShowModal">Logga ut</p> *@
+                       </li>
 
                     </Authorized>
 
@@ -81,31 +66,31 @@
 
 @code {
 
-    [Inject] ModalService ModalService { get; set; } = default!;
+    // [Inject] ModalService ModalService { get; set; } = default!;
 
-    private Modal modal = default!;
+    // private Modal modal = default!;
 
-    private async Task ShowModal()
-    {
-        var modalOption = new ModalOption
-            {
-                Title = "Logga Ut",
-                Message = "Är du säker på att du vill logga ut?",
-                Type = ModalType.Warning,
-                FooterButtonColor = ButtonColor.Danger,
-                FooterButtonText = "Logga Ut"
-            };
-        await ModalService.ShowAsync(modalOption);
-    }
-
-    // private async Task OnHideModalClick()
+    // private async Task ShowModal()
     // {
-    //     await modal.HideAsync();
+    //     var modalOption = new ModalOption
+    //         {
+    //             Title = "Logga Ut",
+    //             Message = "Är du säker på att du vill logga ut?",
+    //             Type = ModalType.Warning,
+    //             FooterButtonColor = ButtonColor.Danger,
+    //             FooterButtonText = "Logga Ut"
+    //         };
+    //     await ModalService.ShowAsync(modalOption);
     // }
 
-    private async Task LogOut()
-    {
-        await authService.LogOut();
-    }
+    // // private async Task OnHideModalClick()
+    // // {
+    // //     await modal.HideAsync();
+    // // }
+
+    // private async Task LogOut()
+    // {
+    //     await authService.LogOut();
+    // }
 
 }

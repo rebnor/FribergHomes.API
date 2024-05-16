@@ -1,11 +1,36 @@
 ﻿@page "/"
 @using FribergHomes.Client.Components
+@* @using FribergHomes.Client.Authentications
+@using FribergHomes.Client.Services.Interfaces
+@inject IAuthService authService
+@inject AuthProvider _authStateProvider;
+@inject IRealtor RealtorService *@
+
+
 
 <div class="text-center">
 
 @*     <h1>Hemlängtan</h1>
     <small>BY FRIBERG</small> *@
-
+@*     @if (authState.User.Identity.IsAuthenticated)
+    {
+        <p>Välkommen, @authState.User.Identity.Name</p>
+    }
+    else
+    {
+        <Search></Search>
+    } *@
     <Search></Search>
 
+
 </div>
+
+@code{
+    // private AuthenticationState authState;
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     authState = await authService.CheckAuthState();
+    //     StateHasChanged();
+    // }
+}
