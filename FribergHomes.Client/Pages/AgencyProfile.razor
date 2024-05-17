@@ -1,0 +1,66 @@
+﻿@using FribergHomes.Client.Authentications
+@using FribergHomes.Client.Services.Interfaces
+@using Microsoft.AspNetCore.Authorization
+
+@page "/agencyprofile"
+
+@inject IAuthService authService
+@inject IAgencyService agencyService
+@attribute [Authorize(Roles = "Admin")]
+
+
+<h3>@Agency.Name</h3>
+<img src="@Agency.Logo" width="300" />
+<p>@Agency.Presentation</p>
+<EditButton TargetObject="Agency" />
+<hr />
+
+<h4>Anställda</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Namn</th>
+            <th>Bild</th>
+            <th>Email</th>
+            <th>Telefon</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in AgencyRealtors)
+        {
+            <tr>
+                <td>@r.FullName</td>
+                <td><img src="@r.Picture" width="100" /></td>
+                <td>@r.Email</td>
+                <td>@r.PhoneNumber</td>
+                <td>
+
+                    @*  // TODO: Se över detta, då Id nu inte är en int
+                <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(@r.Email)">
+                Kolla Mäklare
+                </a> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private AuthenticationState authState;
+    private AgencyDTO Agency { get; set; }
+    private List<RealtorDTO> AgencyRealtors;
+    private string email;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        authState = await authService.CheckAuthState(); // Hämtar inloggade-realtor
+        email = authState.User.Identity.Name; // hämtar inloggade email
+        Agency = await agencyService.GetAgencyByRealtorEmailAsync(email);
+        AgencyRealtors = await agencyService.GetRealtorsAtAgency(Agency.Id);
+        StateHasChanged();
+    }
+}

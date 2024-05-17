@@ -5,28 +5,36 @@
 
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
-             <li class="nav-item">
-                    <NavLink class="nav-link" href="salesObject">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Annonser
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="category">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Kategorier
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="agency">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Mäklarbyråer
-                    </NavLink>
-                </li>
+                @* Rebecka *@
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="agencyprofile">
+                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Byrå Profil
+                            </NavLink>
+                        </li>
 
-
+                    </Authorized>
+                </AuthorizeView>
                 @* Tobias *@
                 <AuthorizeView Roles="Realtor, Admin">
 
                     <NotAuthorized>
-
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="salesObject">
+                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Annonser
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="category">
+                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Kategorier
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="agency">
+                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Mäklarbyråer
+                            </NavLink>
+                        </li>
                         <li class="nav-item">
                             <NavLink class="nav-link" href="login">
                                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Logga In
@@ -47,8 +55,8 @@
                             </NavLink>
                         </li>
                         <li class="nav-item">
-                            <LogOut/>
-                       </li>
+                            <LogOut />
+                        </li>
 
                     </Authorized>
 
