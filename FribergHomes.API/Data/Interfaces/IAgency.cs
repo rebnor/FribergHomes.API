@@ -24,5 +24,7 @@ namespace FribergHomes.API.Data.Interfaces
 
         Task<Agency> GetAgencyByRealtorEmail(string email);
 
+        Task<List<SalesObject>> GetSalesObjectsAtAgencyAsync(int id);
+
     }
 }

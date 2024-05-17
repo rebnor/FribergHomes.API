@@ -23,7 +23,6 @@
     <div class="card shadow col-6 col-sm-3">
         @if (ObjectToShow is RealtorDTO realtor)
         {
-
             <h2>@realtor.FullName - @realtor.AgencyName</h2>
             <div class="pictures">
                 <img src="@realtor.Picture" width="100" />
@@ -34,14 +33,6 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/Realtor/@realtor.Id" class="custom-link">Kolla info om Mäklare</a>
             </Button>
-
-            <AuthorizeView Roles="Realtor, Admin">
-            <EditButton TargetObject="realtor" /> @* // Tobias *@
-
-                <Button Color="ButtonColor.Danger">
-                    <a href="/delete/Realtor/@realtor.Id" class="custom-link">Ta bort Realtor</a>
-                </Button>
-            </AuthorizeView>
         }
         else if (ObjectToShow is SalesObjectDTO salesObject)
         {
@@ -85,15 +76,6 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/SalesObject/@salesObject.Id" class="custom-link">Kolla info</a>
             </Button>
-
-            <AuthorizeView Roles="Realtor, Admin">
-                <EditButton TargetObject="salesObject" />
-               @*  // Tobias *@
-
-                <Button Color="ButtonColor.Danger">
-                    <a href="/delete/SalesObject/@salesObject.Id" class="custom-link">Ta bort Annons</a>
-                </Button>
-            </AuthorizeView>
         }
         else if (ObjectToShow is AgencyDTO agency)
         {
@@ -103,14 +85,6 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/Agency/@agency.Id" class="custom-link">Kolla info om Mäklarbyrå</a>
             </Button>
-
-            <AuthorizeView Roles="Realtor, Admin">
-            <EditButton TargetObject="agency" /> @* // Tobias *@
-
-                <Button Color="ButtonColor.Danger">
-                    <a href="/delete/Agency/@agency.Id">Ta bort Mäklarbyrå</a>
-                </Button>
-            </AuthorizeView>
         }
         else if (ObjectToShow is CountyDTO county)
         {
@@ -119,7 +93,6 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/County/@county.Id" class="custom-link">Kolla info om Kommun</a>
             </Button>
-
         }
         else if (ObjectToShow is CategoryDTO category)
         {
@@ -130,14 +103,6 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/Category/@category.Id" class="custom-link">Kolla info om Kategori</a>
             </Button>
-
-            <AuthorizeView Roles="Realtor, Admin">
-            <EditButton TargetObject="category" /> @* // Tobias *@
-
-                <Button Color="ButtonColor.Danger">
-                    <a href="/delete/Category/@category.Id">Ta bort Kategori</a>
-                </Button>
-            </AuthorizeView>
         }
     </div>
 }

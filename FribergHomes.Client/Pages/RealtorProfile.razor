@@ -1,4 +1,5 @@
 ﻿@using FribergHomes.Client.Authentications
+@using FribergHomes.Client.Components
 @using FribergHomes.Client.Services.Interfaces
 @using Microsoft.AspNetCore.Authorization
 
@@ -7,6 +8,7 @@
 @inject IAuthService AuthService
 @inject IRealtor RealtorService
 @inject ISalesObject SalesObjectService
+@inject NavigationManager NavMan
 @attribute [Authorize(Roles = "Admin, Realtor")]
 
 
@@ -22,53 +24,67 @@
     }
     else
     {
+        
+        <div class="">
 
+            @* Profilbild *@
 
+            <span>Profilbild</span>
+            <img src="@Realtor.Picture" alt="profilbild" class="profile-picture" width="500" /> @* TODO: visa defaultbild *@
 
-            <div class="">
+            <EditButton TargetObject="Realtor" />
 
-                @* Profilbild *@
+        </div>
 
-                <span>Profilbild</span>
-                <img src="@Realtor.Picture" alt="profilbild" class="profile-picture" width="500"/> @* TODO: visa defaultbild *@
+        <div class="">
 
-            </div>
+            @* Beskrivning *@
 
-            <div class="">
+            <h4>@Realtor.FullName</h4>
+            <span>Mäklarbyrå: @Realtor.AgencyName</span>
 
-                @* Beskrivning *@
+        </div>
 
-                <h4>@Realtor.FullName</h4>
-                <span>Mäklarbyrå: @Realtor.AgencyName</span>
+        @* Editera mäklarprofil *@
 
-            </div>
-      
+        
 
         <div>
+            <CascadingValue Value="Realtor">
+                
+                @if (ShowCreateForm)
+                {
+                    <CreateSalesObject HideForms="HideForms" />
+                }
+                @if (ShowEditForm)
+                {
+                    <p>Visa editform</p>
+                }
 
-            @if (showAddForm)
-            {
-                <div>
-                <AddObject Objecttype="salesObject" />
-                </div>
-            }
-            <Button Color="ButtonColor.Success" @onclick="AddSalesObject" >
-                Lägg till annons
-            </Button>
+            </CascadingValue>
 
+
+            @* Funktionsknappar *@
+            
+
+            <Button Color="ButtonColor.Success" Disabled="@(!selectedObject.Any())" @onclick="RedirectToEdit">Editera</Button>
+
+            <Button Color="ButtonColor.Success" @onclick="(() => ShowCreateForm = true)">Skapa annons</Button>
+
+
+            @* Lista, egna försäljningsobjekt *@
             <div>
-                @* Tabell - försäljningsobjekt *@
-
-
 
                 <Grid TItem="SalesObjectDTO"
                       AllowSorting="true"
+                      AllowSelection="true"
                       Class=""
                       DataProvider="GetSalesObjects"
+                      SelectedItemsChanged="OnSelectedItemsChanged"
                       Responsive="true">
 
                     <GridColumn TItem="SalesObjectDTO" HeaderText="Kategori" SortKeySelector="item => item.CategoryLogoUrl">
-                        <img src="@context.CategoryLogoUrl" />
+                        @context.CategoryName
                     </GridColumn>
 
                     <GridColumn TItem="SalesObjectDTO" HeaderText="Adress" SortKeySelector="item => item.Adress">
@@ -79,92 +95,75 @@
                         @context.CountyName
                     </GridColumn>
 
-                    <GridColumn TItem="SalesObjectDTO" HeaderText="Pris (ursprungligt)" SortKeySelector="item => item.ListingPrice">
-                        @context.ListingPrice
-                    </GridColumn>
-
-                    <GridColumn TItem="SalesObjectDTO" HeaderText="Pris (aktuellt)" SortKeySelector="item => item.CurrentPrice">
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Pris" SortKeySelector="item => item.CurrentPrice">
                         @context.CurrentPrice
                     </GridColumn>
 
-                    <GridColumn TItem="SalesObjectDTO" HeaderText="Driftkostnad" SortKeySelector="item => item.YearlyCost">
-                        @if (@context.YearlyCost is null)
-                        {
-                            <span> - </span>
-                        }
-                        else
-                        {
-                            @context.YearlyCost
-                        }
-                    </GridColumn>
-
-                    <GridColumn TItem="SalesObjectDTO" HeaderText="Månadsavgift" SortKeySelector="item => item.MonthlyFee">
-                        @if (@context.MonthlyFee is null)
-                        {
-                            <span> - </span>
-                        }
-                        else
-                        {
-                            @context.MonthlyFee
-                        }
-                    </GridColumn>
-
-                    <GridColumn TItem="SalesObjectDTO" HeaderText="Boarea" SortKeySelector="item => item.LivingArea">
-                        @context.LivingArea
-                    </GridColumn>
-
-                    <GridColumn TItem="SalesObjectDTO" HeaderText="Tomtarea" SortKeySelector="item => item.PlotArea">
-                        @context.PlotArea
-                    </GridColumn>
+                    
 
 
                 </Grid>
 
-
-
             </div>
         </div>
-   
+
     }
 
 </div>
 
 
 
-    @code {
+@code {
 
-        [CascadingParameter]
-        private Task<AuthenticationState>? AuthState { get; set; }
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthState { get; set; }
 
-        public RealtorDTO? Realtor { get; set; }
+    [Parameter]
+    public RealtorDTO? Realtor { get; set; }
 
-        private IEnumerable<SalesObjectDTO> salesObjects = default!;
+    private IEnumerable<SalesObjectDTO> salesObjects = default!;
 
-    private bool showAddForm;
+    private HashSet<SalesObjectDTO> selectedObject = new();
 
-    private void AddSalesObject()
+    private bool ShowCreateForm;
+
+    private bool ShowEditForm;
+
+
+    protected override async Task OnInitializedAsync()
     {
-        showAddForm = true;    
+        var userId = await AuthService.GetUserId();
+
+        Realtor = await RealtorService.GetRealtorByIdAsync(userId);
     }
 
-        protected override async Task OnInitializedAsync()
-        {
-            var userId = await AuthService.GetUserId();
+    private void HideForms()
+    {
+        ShowCreateForm = false;
+        ShowEditForm = false;
+    }
 
-            Realtor = await RealtorService.GetRealtorByIdAsync(userId);
+    private void RedirectToEdit()
+    {
+        NavMan.NavigateTo($"/edit/salesobject/{selectedObject.First().Id}");
+    }
+
+    private async Task<GridDataProviderResult<SalesObjectDTO>> GetSalesObjects(GridDataProviderRequest<SalesObjectDTO> request)
+    {
+        if (Realtor is not null)
+        {
+            salesObjects = await SalesObjectService.GetAllByRealtor(Realtor.Id);
         }
 
+        return await Task.FromResult(request.ApplyTo(salesObjects));
+    }
 
-        private async Task<GridDataProviderResult<SalesObjectDTO>> GetSalesObjects(GridDataProviderRequest<SalesObjectDTO> request)
-        {
-            if (Realtor is not null)
-            {
-                salesObjects = await SalesObjectService.GetAllByRealtor(Realtor.Id);
-            }
+    private Task OnSelectedItemsChanged(HashSet<SalesObjectDTO> salesObjects)
+    {
+        selectedObject = salesObjects;
+        return Task.CompletedTask;
+    }
 
-            return await Task.FromResult(request.ApplyTo(salesObjects));
-        }
-
-
+   
 
 }
