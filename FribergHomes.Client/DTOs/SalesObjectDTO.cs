@@ -22,7 +22,7 @@ namespace FribergHomes.Client.DTOs
         public string? ChangeName { get; set; } = string.Empty;
 
         [RegularExpression(@"^[a-zA-ZåäöÅÄÖ\s-\d]+$", ErrorMessage = "Adress får enbart innehålla a-ö, 0-9, bindestreck och mellanslag")]
-        [MaxLength(50, ErrorMessage = "Adress får ej överstiga 50 tecken")]
+        [Length(6, 50, ErrorMessage = "Adress måste innehålla minst 6 och högst 50 tecken")]
         public string Adress { get; set; } = string.Empty;
 
         [DisplayName("Rum")]
@@ -38,15 +38,15 @@ namespace FribergHomes.Client.DTOs
         public double? AncillaryArea { get; set; }
 
         [DisplayName("Tomtarea")]
-        [Range(0,1000000, ErrorMessage = "Tomtarea får ej överstiga 1000000m2")]
+        [Range(1,1000000, ErrorMessage = "Tomtarea får ej understiga 1m2 eller överstiga 1000000m2")]
         public double? PlotArea { get; set; }
 
         [DisplayName("Driftkostnad")]
-        [Range(0, 1000000, ErrorMessage = "Driftskostnad får ej överstiga 1,000,000SEK")]
+        [Range(1, 1000000, ErrorMessage = "Driftskostnad får ej undstiga 1SEK eller överstiga 1,000,000SEK")]
         public double? YearlyCost { get; set; }
 
         [DisplayName("Månadsavgift")]
-        [Range(0, 100000, ErrorMessage = "Månadsavgift får ej överstiga 100,000SEK")]
+        [Range(1, 100000, ErrorMessage = "Månadsavgift får ej understiga 1SEK eller överstiga 100,000SEK")]
         public double? MonthlyFee { get; set; }
 
         [DisplayName("Våning")]
@@ -56,13 +56,16 @@ namespace FribergHomes.Client.DTOs
         [DisplayName("Hiss")]
         public bool? Lift { get; set; }
 
+        [DisplayName("Pris (ursprungligt")]
+        [Range(1, 100000000, ErrorMessage = "Pris får ej överstiga 100,0000,000SEK")]
         public int ListingPrice { get; set; }
 
         [DisplayName("Pris")]
-        [Range(0, 100000000, ErrorMessage = "Pris får ej överstiga 100,0000,000SEK")]
+        [Range(1, 100000000, ErrorMessage = "Pris får ej överstiga 100,0000,000SEK")]
         public int CurrentPrice { get; set; }
 
         [DisplayName("Objektbeskrivning")]
+        [MinLength(10, ErrorMessage = "Objektbeskrivning får er understiga 10 tecken.")]
         public string ObjectDescription { get; set; } = string.Empty;
 
         [DisplayName("Byggnadsår")]
@@ -89,6 +92,7 @@ namespace FribergHomes.Client.DTOs
 
         public string AgencyLogoUrl { get; set; } = string.Empty;
 
+        [Range(1, 300, ErrorMessage = "Felaktig kommun angiven")]
         public int CountyId { get; set; }
 
         public string CountyName { get; set; } = string.Empty;
