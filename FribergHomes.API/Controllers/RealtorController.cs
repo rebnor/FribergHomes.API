@@ -236,17 +236,28 @@ namespace FribergHomes.API.Controllers
 
         // DELETE method that finds and deletes an existing Realtor object based on Id.
         // DELETE api/<RealtorController>/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteRealtor(string id)
+        [HttpDelete("{realtorId}/{newRealtorId}")]
+        public async Task<ActionResult> DeleteRealtor(string realtorId, string newRealtorId) // TODO: När Realtor raderas ska en ny mäklare få alla dess SalesObject
         {
             try
             {
-                var realtor = await _realtorRepository.GetRealtorByIdAsync(id);
+                var realtor = await _realtorRepository.GetRealtorByIdAsync(realtorId);
                 if (realtor == null)
                 {
                     return NotFound();
                 }
-                await _realtorRepository.DeleteRealtorAsync(realtor);
+                //List<SalesObject> salesObjects = await _realtorRepository.GetRealtorsSalesObjects(realtor); // Hämtar Realtorns salesobjects
+                var newRealtor = await _realtorRepository.GetRealtorByIdAsync(newRealtorId); // Hämtar nya realtorn (den valda)
+                //foreach (var so in salesObjects)
+                //{
+                //    so.Realtor = newRealtor;
+                //    salesObjects.Add(so); // Lägger nya realtorn på salesobjecte och lägger i salesobject lista
+                //}
+
+                // TODO: Uppdatera SalesObject-listan till databasen ?
+
+                await _realtorRepository.DeleteRealtorAsync(realtor, newRealtor);
+
                 return NoContent();
             }
             catch (Exception e)

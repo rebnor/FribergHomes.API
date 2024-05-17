@@ -33,9 +33,11 @@ namespace FribergHomes.Client.Services
             return await response.Content.ReadFromJsonAsync<RealtorDTO>();
         }
 
-        public async Task DeleteRealtorAsync(string id)
+        public async Task DeleteRealtorAsync(string realtorId, string newRealtorId)
         {
-            await _client.DeleteAsync($"api/realtor/{id}");
+            // TODO: När Realtor raderas ska en ny mäklare få alla dess SalesObject
+
+            await _client.DeleteAsync($"api/realtor/{realtorId}/{newRealtorId}");
         }
 
         public async Task<RealtorDTO> UpdateRealtorAsync(RealtorDTO realtor)

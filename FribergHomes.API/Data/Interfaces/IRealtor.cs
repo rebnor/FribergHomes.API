@@ -11,7 +11,8 @@ namespace FribergHomes.API.Data.Interfaces
         Task<List<Realtor>> GetRealtorsByAgencyAsync(Agency agency);
         Task<Realtor> AddRealtorAsync(Realtor realtor);
         Task<Realtor> UpdateRealtorAsync(Realtor realtor);
-        Task DeleteRealtorAsync(Realtor realtor);
+        //Task DeleteRealtorAsync(Realtor realtor);
+        Task DeleteRealtorAsync(Realtor realtor, Realtor newRealtor);
 
         // Update: Added this because its needed in the ModelMapper / Reb 2024-04-24
         Task<Agency> GetAgencyByNameAsync(string name);
