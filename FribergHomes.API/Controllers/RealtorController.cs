@@ -18,7 +18,7 @@ namespace FribergHomes.API.Controllers
      * @ Update: Switched from Realtor-object to RealtorDTO-object 
      *          Added DtoToRealtor in Post & Put methods 
      *          Added GetRealtorByAgency, it was already in Repository but wasnt used here // Reb 2024-04-24
-     * 
+     * @Update: När är Realtor raderas ska en ny mäklare få alla dess SalesObject // Reb 2024-05-17
      */
 
     [Route("api/[controller]")]
@@ -236,17 +236,19 @@ namespace FribergHomes.API.Controllers
 
         // DELETE method that finds and deletes an existing Realtor object based on Id.
         // DELETE api/<RealtorController>/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteRealtor(string id)
+        [HttpDelete("{realtorId}/{newRealtorId}")]
+        public async Task<ActionResult> DeleteRealtor(string realtorId, string newRealtorId)
         {
             try
             {
-                var realtor = await _realtorRepository.GetRealtorByIdAsync(id);
+                var realtor = await _realtorRepository.GetRealtorByIdAsync(realtorId);
                 if (realtor == null)
                 {
                     return NotFound();
                 }
-                await _realtorRepository.DeleteRealtorAsync(realtor);
+                var newRealtor = await _realtorRepository.GetRealtorByIdAsync(newRealtorId);
+                await _realtorRepository.DeleteRealtorAsync(realtor, newRealtor);
+
                 return NoContent();
             }
             catch (Exception e)

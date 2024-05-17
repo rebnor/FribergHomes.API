@@ -1,5 +1,6 @@
 @* Author: Rebecka
   Update: Cleaned up code so we use GetById-component for all / Reb 2024-05-02
+  Update: Added stringID to realtor /Sanna 
 *@
 @using System.Text.Json
 @using System.Net.Http.Json
@@ -16,13 +17,13 @@
 
 @if (ListToShow != null)
 {
-    <div class="row text-center">
+    <div class="row text-center justify-content-center">
 
         @foreach (var item in ListToShow)
         {      
             @if (item is RealtorDTO realtor)
             {
-                @* <GetById ObjectType="Realtor" ObjectId="realtor.Id" /> *@
+                <GetById ObjectType="Realtor" ObjectStringId="realtor.Id" />
             }
             else if (item is SalesObjectDTO salesObject)
             {

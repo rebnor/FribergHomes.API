@@ -4,6 +4,7 @@
 * Update: Divided "Kommande visningar" and "Sold" - depending on viewingdates / Reb 2024-05-06
 * Update: småfix / Reb 2025-05-15
 * Update: Changed realtor int id to string id / Sanna
+* 
 *@
 @page "/info/{ObjectType}/{ObjectStringId}"
 @using FribergHomes.Client.DTOs
@@ -32,8 +33,6 @@
         </div>
         <p>Email: @realtor.Email</p>
         <p>Telefon: @realtor.PhoneNumber</p>
-
-        // TODO: Lägg till AuthView så att om Mäklare är inloggad, ska den kunna få CRUD-funktioner här ?
 
         <Button Color="ButtonColor.Primary" @onclick="GetRealtorsSales">
             Hämta annonser
@@ -183,8 +182,8 @@
             <img src="@agency.Logo" width="300" />
             <div style="border: 1px solid #2A432B; background-color: #F2FADC" class="m-2 p-2 shadow">
 
-            <p>@agency.Presentation</p>
-        </div>
+                <p>@agency.Presentation</p>
+            </div>
         </div>
         <hr />
 
@@ -263,26 +262,31 @@
     else if (ObjectToShow is CategoryDTO category)
     @* Shows info of Category *@
     {
-        <h2>@category.Name</h2>
-        <div>@((MarkupString)category.IconUrl)</div>
+        <h2>@category.Name @((MarkupString)category.IconUrl)</h2>
+
+        <h4>Annonser i denna kategori:</h4>
         @if (CategorySalesObjects != null)
         {
             if (CategorySalesObjects.Count > 0)
             {
                 foreach (var so in CategorySalesObjects)
                 {
-                    <div style="border: 1px solid #2A432B; background-color: #F2FADC" class="m-2 p-2 shadow text-center">
-                        <h3>@so.Adress - @so.CountyName</h3>
-                        @* // TODO: Varför skrivs inte kommun ut? *@
-                        @foreach (var picture in so.ImageLinks)
-                        {
-                            <img src="@picture" width="200" />
-                        }
-                        <br />
-                        <Button Color="ButtonColor.Info">
-                            <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)" class="custom-link">Kolla annons</a>
-                        </Button>
-                    </div>
+                    @* style="border: 1px solid #2A432B; background-color: #F2FADC" *@
+                    @* <div class="row text-center"> *@
+                        <div class="shadow text-center card category-card">
+                            <h3>@so.Adress - @so.CountyName</h3>
+                            <h4>@so.CurrentPrice kr</h4>
+                            <img src="@so.AgencyLogoUrl" width="90" class="logo" />
+                            @foreach (var picture in so.ImageLinks)
+                            {
+                                <img src="@picture" width="200" />
+                            }
+
+                            <Button Color="ButtonColor.Info">
+                                <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)" class="custom-link">Kolla annons</a>
+                            </Button>
+                        </div>
+
                 }
             }
             else
@@ -299,10 +303,9 @@
 @code {
     [Parameter]
     public string? ObjectType { get; set; }
-
     [Parameter]
     public string ObjectStringId { get; set; }
-
+    [Parameter]
     public int ObjectId { get; set; }
     public object? ObjectToShow { get; set; }
 

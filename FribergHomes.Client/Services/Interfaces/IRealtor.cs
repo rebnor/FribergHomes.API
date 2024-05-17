@@ -13,7 +13,7 @@ namespace FribergHomes.Client.Services.Interfaces
         //Task<List<RealtorDTO>> GetRealtorsByAgencyAsync(AgencyDTO agency);
         Task<RealtorDTO> AddRealtorAsync(RealtorDTO realtor);
         Task<RealtorDTO> UpdateRealtorAsync(RealtorDTO realtor);
-        Task DeleteRealtorAsync(string id);
+        Task DeleteRealtorAsync(string realtorId, string newRealtorId);
        
 
     }

@@ -1,5 +1,6 @@
-﻿ @* DeletePage for choosen object
-Author: Reb 2024-05-01 *@
+﻿@* DeletePage for choosen object
+Author: Reb 2024-05-01
+Update: När en mäklare raderas måste salesobjekt gå till ny mäklare / Reb 2024-05-17*@
 @page "/delete/{ObjectType}/{ObjectStringId}"
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
@@ -28,6 +29,44 @@ else
                 <h3>@realtor.FullName</h3>
                 <img src="@realtor.Picture" width="200" />
                 <p>@realtor.Email</p>
+
+                @if (!changeRealtor)
+                {
+                    <form @onsubmit="YesDelete">
+                        <button class="btn-primary" type="submit">Ja, ta bort!</button>
+                    </form>
+
+                    <form @onsubmit="NoCancel">
+                        <button class="btn-danger" type="submit">Nej, avbryt!</button>
+                    </form>
+                }
+                else
+                {
+                    @if(error != null)
+                    {
+                        <p>@error</p>
+                    }
+                    <form @onsubmit="ChooseRealtor">
+                        <p>Vilken mäklare vill du ska ta över alla @realtor.FullName annonser?</p>
+                        <select @bind="NewRealtorId">
+                            <option value="">Välj en mäklare</option>
+                            @foreach (var r in Realtors)
+                            {
+                                if(r.Id != realtor.Id)
+                                {
+                                <option value="@r.Id">@r.FullName</option>
+                                }
+                            }
+                        </select>
+                        <button type="submit">Välj</button>
+                    </form>
+                    @if (deleteAndChange)
+                    {
+                        <form @onsubmit="DeleteAndChangeRealtor">
+                            <button class="btn-primary mb-3" type="submit">Byt och Ta Bort</button>
+                    </form>
+                    }
+                }
             }
             else if (ObjectToShow is SalesObjectDTO salesObject)
             {
@@ -37,16 +76,13 @@ else
                 {
                     <img src="@picture" width="100" />
                 }
+
             }
             else if (ObjectToShow is AgencyDTO agency)
             {
                 <h2>@agency.Name - #@agency.Id</h2>
                 <img src="@agency.Logo" width="300" />
             }
-    @*         else if (ObjectToShow is CountyDTO county)
-            {
-                <h2>@county.Name - #@county.Id</h2>
-            } *@
             else if (ObjectToShow is CategoryDTO category)
             {
                 <h2>@category.Name - @category.Id</h2>
@@ -55,13 +91,18 @@ else
             }
         </div>
 
-        <form @onsubmit="YesDelete">
-            <button class="btn-primary" type="submit">Ja, ta bort!</button>
-        </form>
+        <div class="m-3">
+        @if (!(ObjectToShow is RealtorDTO))
+        {
+            <form @onsubmit="YesDelete">
+                <button class="btn-primary" type="submit">Ja, ta bort!</button>
+            </form>
 
-        <form @onsubmit="NoCancel">
-            <button class="btn-danger" type="submit">Nej, avbryt!</button>
-        </form>
+            <form @onsubmit="NoCancel">
+                <button class="btn-danger" type="submit">Nej, avbryt!</button>
+            </form>
+        }
+        </div>
     }
 }
 
@@ -75,12 +116,26 @@ else
 
     public int ObjectId { get; set; }
     public object? ObjectToShow { get; set; }
+
     public bool isDeleted = false;
+    public string? NewRealtorId { get; set; }
+    public List<RealtorDTO> Realtors;
+    public RealtorDTO RealtorDto;
+    public bool changeRealtor = false;
+    public bool deleteAndChange = false;
+    public string error;
 
     private async Task GetObject()
     {
         if (ObjectType == "Realtor")
+        {
             ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectStringId);
+            StateHasChanged();
+            RealtorDto = (RealtorDTO)ObjectToShow;
+            StateHasChanged();
+            Realtors = await agencyService.GetRealtorsAtAgency(RealtorDto.AgencyId);
+            StateHasChanged();
+        }
         else if (ObjectType == "SalesObject")
         {
             ObjectId = Convert.ToInt16(ObjectStringId);
@@ -106,22 +161,48 @@ else
         await GetObject();
     }
 
+    private async void ChooseRealtor()
+    {
+        if (NewRealtorId != null)
+        {
+            deleteAndChange = true;
+        }
+        else
+        {
+            error = "Du måste välja en ny mäklare";
+        }
+    }
+
+    private async void DeleteAndChangeRealtor()
+    {
+
+        await realtorService.DeleteRealtorAsync(ObjectStringId, NewRealtorId);
+        isDeleted = true;
+        StateHasChanged();
+    }
+
     private async void YesDelete()
     {
-        // ObjectId = Convert.ToInt16(ObjectStringId);
         if (ObjectType == "Realtor")
-            await realtorService.DeleteRealtorAsync(ObjectStringId);
-        else if (ObjectType == "SalesObject") 
+        {
+            changeRealtor = true;
+        }
+        else if (ObjectType == "SalesObject")
+        {
             await salesService.Delete(ObjectId);
+            isDeleted = true;
+        }
         else if (ObjectType == "Category")
+        {
+            isDeleted = true;
             await categoryService.DeleteCategoryAsync(ObjectId);
-        // else if (ObjectType == "County")
-        //     await countyService.DeleteCountyAsync(ObjectId);
+        }
         else if (ObjectType == "Agency")
+        {
+            isDeleted = true;
             await agencyService.DeleteAgencyAsync(ObjectId);
+        }
 
-
-        isDeleted = true;
         StateHasChanged();
 
     }
@@ -131,3 +212,10 @@ else
         NavigationManager.NavigateTo("/");
     }
 }
+            @*else if (ObjectToShow is CountyDTO county)
+               {
+                 <h2>@county.Name - #@county.Id</h2>
+                 } 
+                         // else if (ObjectType == "County")
+        //     await countyService.DeleteCountyAsync(ObjectId);
+                 *@
