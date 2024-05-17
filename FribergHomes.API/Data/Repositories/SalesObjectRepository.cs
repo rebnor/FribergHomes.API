@@ -112,7 +112,7 @@ namespace FribergHomes.API.Data.Repositories
 
         public async Task<List<SalesObject>> GetSalesObjectsByCategoryAsync(int categoryId)
         {
-            var salesObjects = await _appDBctx.SalesObjects.Where(s => s.Category.Id == categoryId).ToListAsync();
+            var salesObjects = await _appDBctx.SalesObjects.Where(s => s.Category.Id == categoryId).Include(s=>s.County).Include(s=>s.Realtor).ThenInclude(r=>r.Agency).ToListAsync();
             return salesObjects;
 
         }

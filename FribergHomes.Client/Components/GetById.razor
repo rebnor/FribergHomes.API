@@ -21,7 +21,7 @@
 
 @if (ObjectToShow != null)
 {
-    <div class="card shadow col-6 col-sm-3">
+    <div class="shadow col-6 col-sm-3 text-center card">
         @if (ObjectToShow is RealtorDTO realtor)
         {
             <h2>@realtor.FullName - @realtor.AgencyName</h2>
@@ -40,8 +40,13 @@
             <h3>@salesObject.Adress - @salesObject.CountyName</h3>
             foreach (var picture in salesObject.ImageLinks)
             {
+                <div>
                 <img src="@picture" width="100" />
+                </div>
             }
+            <strong>@salesObject.CategoryName</strong>
+            <div>@((MarkupString)salesObject.CategoryLogoUrl)</div>// TODO: Syns inte
+            // TODO: Hur blev det med CurrentPrice & ListingPrice ?? 
             if (salesObject.CurrentPrice > salesObject.ListingPrice)
             {
                 <del>@salesObject.ListingPrice kr</del>
@@ -49,30 +54,29 @@
             }
             else
             {
-                <p>@salesObject.CurrentPrice kr</p>
+                <h4>@salesObject.CurrentPrice kr</h4>
             }
-            <p>@salesObject.CategoryName</p>
-            <div>@((MarkupString)@salesObject.CategoryLogoUrl)</div>
-            <p>Rum @salesObject.Rooms</p>
-            <p>Boarea: @salesObject.LivingArea m<sup>2</sup></p>
+            <p><strong>Rum: </strong>@salesObject.Rooms</p>
+            <p><strong>Boarea: </strong>@salesObject.LivingArea m<sup>2</sup></p>
             if (salesObject.CategoryName == "Lägenhet")
             {
-                <p>Våning: @salesObject.Level</p>
+                <p><strong>Våning: </strong>@salesObject.Level</p>
                 if (salesObject.Lift == true)
                 {
-                    <p>Hiss: Ja</p>
+                    <p><strong>Hiss: </strong>Ja</p>
                 }
                 else
                 {
-                    <p>Hiss: Nej</p>
+                    <p><strong>Hiss: </strong>Nej</p>
                 }
             }
             else
             {
-                <p>Tomtarea: @salesObject.PlotArea m<sup>2</sup></p>
+                <p><strong>Tomtarea: </strong>@salesObject.PlotArea m<sup>2</sup></p>
             }
-            <h3>Mäklare</h3>
-            <p>@salesObject.RealtorName - @salesObject.AgencyName</p>
+            <h4>Mäklare</h4>
+            <strong>@salesObject.RealtorName</strong>
+            <img src="@salesObject.AgencyLogoUrl" width="70"/>
 
             <Button Color="ButtonColor.Info">
                 <a href="/info/SalesObject/@salesObject.Id" class="custom-link">Kolla info</a>
@@ -80,7 +84,7 @@
         }
         else if (ObjectToShow is AgencyDTO agency)
         {
-            <h2>@agency.Name</h2>
+            <h3>@agency.Name</h3>
             <img src="@agency.Logo" width="100" />
 
             <Button Color="ButtonColor.Info">
@@ -102,7 +106,7 @@
             <div>@((MarkupString)category.IconUrl)</div>
 
             <Button Color="ButtonColor.Info">
-                <a href="/info/Category/@category.Id" class="custom-link">Kolla info om Kategori</a>
+                <a href="/info/Category/@category.Id" class="custom-link">Annonser i denna Kategori</a>
             </Button>
         }
     </div>

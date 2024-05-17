@@ -8,6 +8,7 @@ namespace FribergHomes.Client.Services
 {
     /* RealtorService that inherit from IRealtor. 
      * @ Author: Rebecka 2024-04-24
+     * @ Update: När en mäklare raderas måste salesobjekt gå till ny mäklare / Reb 2024-05-17
      */
     public class RealtorService : IRealtor
     {
@@ -35,8 +36,6 @@ namespace FribergHomes.Client.Services
 
         public async Task DeleteRealtorAsync(string realtorId, string newRealtorId)
         {
-            // TODO: När Realtor raderas ska en ny mäklare få alla dess SalesObject
-
             await _client.DeleteAsync($"api/realtor/{realtorId}/{newRealtorId}");
         }
 

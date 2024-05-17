@@ -133,10 +133,8 @@ else
             StateHasChanged();
             RealtorDto = (RealtorDTO)ObjectToShow;
             StateHasChanged();
-            // Hämta alla realtors
             Realtors = await agencyService.GetRealtorsAtAgency(RealtorDto.AgencyId);
             StateHasChanged();
-
         }
         else if (ObjectType == "SalesObject")
         {
@@ -185,7 +183,7 @@ else
 
     private async void YesDelete()
     {
-        if (ObjectType == "Realtor") // TODO: När Realtor raderas ska en ny mäklare få alla dess SalesObject
+        if (ObjectType == "Realtor")
         {
             changeRealtor = true;
         }
