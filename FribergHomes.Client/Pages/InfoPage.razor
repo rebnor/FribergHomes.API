@@ -3,6 +3,7 @@
 * Update: Finishing the re-navigations / Reb 2024-05-03
 * Update: Divided "Kommande visningar" and "Sold" - depending on viewingdates / Reb 2024-05-06
 * Update: småfix / Reb 2025-05-15
+* Update: Changed realtor int id to string id / Sanna
 *@
 @page "/info/{ObjectType}/{ObjectStringId}"
 @using FribergHomes.Client.DTOs
@@ -32,10 +33,11 @@
         <p>Email: @realtor.Email</p>
         <p>Telefon: @realtor.PhoneNumber</p>
 
+        // TODO: Lägg till AuthView så att om Mäklare är inloggad, ska den kunna få CRUD-funktioner här ?
+
         <Button Color="ButtonColor.Primary" @onclick="GetRealtorsSales">
             Hämta annonser
         </Button>
-        @* <Badge Color="BadgeColor.Light">@RealtorsSales.Count</Badge> *@
         @if (RealtorsSales != null)
         {
             <Button Color="ButtonColor.Secondary" @onclick="HideRealtorsSales">
@@ -128,7 +130,7 @@
         {
             <p>Biarea: @salesObject.AncillaryArea m<sup>2</sup></p>
         }
-        if (salesObject.CategoryName == "Apartment")
+        if (salesObject.CategoryName == "Lägenhet")
         {
             <p>Våning: @salesObject.Level</p>
             if (salesObject.Lift == true)
@@ -165,9 +167,9 @@
 
         <h3>Mäklare</h3>
 
-        @* <a href="/info/Realtor/@salesObject.RealtorId" @onclick="() => NavigateToRealtor(salesObject.RealtorId)">
+        <a href="/info/Realtor/@salesObject.RealtorId" @onclick="() => NavigateToRealtor(salesObject.RealtorId)">
             @salesObject.RealtorName
-        </a> *@
+        </a>
 
         <a href="/info/Agency/@salesObject.AgencyId" @onclick="() => NavigateToAgency(salesObject.AgencyId)">
             <img src="@salesObject.AgencyLogoUrl" width="50" />
@@ -179,7 +181,10 @@
         <h2>@agency.Name</h2>
         <div class="text-center">
             <img src="@agency.Logo" width="300" />
+            <div style="border: 1px solid #2A432B; background-color: #F2FADC" class="m-2 p-2 shadow">
+
             <p>@agency.Presentation</p>
+        </div>
         </div>
         <hr />
 
@@ -203,11 +208,9 @@
                         <td>@r.Email</td>
                         <td>@r.PhoneNumber</td>
                         <td>
-
-                            @*  // TODO: Se över detta, då Id nu inte är en int
-                <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(@r.Email)">
-                Kolla Mäklare
-                </a> *@
+                            <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
+                                Kolla Mäklare
+                            </a>
                         </td>
                     </tr>
                 }
@@ -315,19 +318,28 @@
 
     private async Task GetObjects()
     {
-        //if (ObjectType == "Realtor")
-        // ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId); // TODO: Tar in fel datatyp (int istället för string) /Tobias
+        if (ObjectType == "Realtor")
+            ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectStringId);
         if (ObjectType == "SalesObject")
+        {
+            ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await salesService.Get(ObjectId);
+        }
         else if (ObjectType == "Category")
         {
+            ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
             await GetCategorySales(ObjectId);
         }
         else if (ObjectType == "County")
+        {
+            ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
+        }
         else if (ObjectType == "Agency")
         {
+            ObjectId = Convert.ToInt16(ObjectStringId);
+
             ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
             AgencyRealtors = await agencyService.GetRealtorsAtAgency(ObjectId);
         }
@@ -335,14 +347,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ObjectId = Convert.ToInt16(ObjectStringId);
         await GetObjects();
     }
 
     /* Get & Hide List of Realtors Salesobjects */
     private async Task GetRealtorsSales()
     {
-        // RealtorsSales = await salesService.GetAllByRealtor(ObjectId);
+        RealtorsSales = await salesService.GetAllByRealtor(ObjectStringId);
         StateHasChanged();
     }
     private async Task HideRealtorsSales()
@@ -386,14 +397,14 @@
     // }
 
     /* Re-Navigates to InfoPage of choosen Object */
-    // private async void NavigateToRealtor(int realtorId)
-    // {
-    //     ObjectType = "Realtor";
-    //     ObjectId = realtorId;
-    //     ObjectToShow = await realtorService.GetRealtorByIdAsync(realtorId);
-    //     RealtorsSales = null;
-    //     StateHasChanged();
-    // }
+    private async void NavigateToRealtor(string realtorId)
+    {
+        ObjectType = "Realtor";
+        ObjectStringId = realtorId;
+        ObjectToShow = await realtorService.GetRealtorByIdAsync(realtorId);
+        RealtorsSales = null;
+        StateHasChanged();
+    }
     private async void NavigateToAgency(int agencyId)
     {
         ObjectType = "Agency";

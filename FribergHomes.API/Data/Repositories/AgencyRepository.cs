@@ -1,6 +1,7 @@
 ﻿using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace FribergHomes.API.Data.Repositories
 {
@@ -94,6 +95,13 @@ namespace FribergHomes.API.Data.Repositories
                 return null; // Eller kasta ett undantag: throw new Exception("Mäklaren hittades inte med den angivna e-postadressen.");
             }
         }
+
+        public async Task<List<SalesObject>> GetSalesObjectsAtAgencyAsync(int id)
+        {
+            return await _dbContext.SalesObjects.Where(s=>s.Realtor.Agency.Id == id).Include(s=>s.County).Include(s=>s.Realtor).ToListAsync();
+
+        }
+
 
 
     }

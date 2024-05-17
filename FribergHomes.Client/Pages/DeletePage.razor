@@ -25,7 +25,9 @@ else
         <div class="card shadow">
             @if (ObjectToShow is RealtorDTO realtor)
             {
-                <h3>@realtor.FullName - #@realtor.Id</h3>
+                <h3>@realtor.FullName</h3>
+                <img src="@realtor.Picture" width="200" />
+                <p>@realtor.Email</p>
             }
             else if (ObjectToShow is SalesObjectDTO salesObject)
             {
@@ -77,29 +79,39 @@ else
 
     private async Task GetObject()
     {
-        //if (ObjectType == "Realtor")
-        // ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId); // TODO: Tar in fel datatyp (int istället för string) /Tobias
-        if (ObjectType == "SalesObject")
+        if (ObjectType == "Realtor")
+            ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectStringId);
+        else if (ObjectType == "SalesObject")
+        {
+            ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await salesService.Get(ObjectId);
+        }
         else if (ObjectType == "Category")
+        {
+            ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
+        }
         // else if (ObjectType == "County")
         //     ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
         else if (ObjectType == "Agency")
+        {
+            ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
+        }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        ObjectId = Convert.ToInt16(ObjectStringId);
+        // ObjectId = Convert.ToInt16(ObjectStringId);
         await GetObject();
     }
 
     private async void YesDelete()
     {
-        //if (ObjectType == "Realtor")
-            //await realtorService.DeleteRealtorAsync(ObjectId);
-        if (ObjectType == "SalesObject") 
+        // ObjectId = Convert.ToInt16(ObjectStringId);
+        if (ObjectType == "Realtor")
+            await realtorService.DeleteRealtorAsync(ObjectStringId);
+        else if (ObjectType == "SalesObject") 
             await salesService.Delete(ObjectId);
         else if (ObjectType == "Category")
             await categoryService.DeleteCategoryAsync(ObjectId);

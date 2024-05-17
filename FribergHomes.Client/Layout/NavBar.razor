@@ -5,36 +5,25 @@
 
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
-                @* Rebecka *@
-                <AuthorizeView Roles="Admin">
-                    <Authorized>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="agencyprofile">
-                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Byrå Profil
-                            </NavLink>
-                        </li>
 
-                    </Authorized>
-                </AuthorizeView>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="salesObject">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Annonser
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="category">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Kategorier
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="agency">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Mäklarbyråer
+                    </NavLink>
+                </li>
                 @* Tobias *@
                 <AuthorizeView Roles="Realtor, Admin">
-
                     <NotAuthorized>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="salesObject">
-                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Annonser
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="category">
-                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Kategorier
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="agency">
-                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Mäklarbyråer
-                            </NavLink>
-                        </li>
                         <li class="nav-item">
                             <NavLink class="nav-link" href="login">
                                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Logga In
@@ -45,9 +34,7 @@
                                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Registrera
                             </NavLink>
                         </li>
-
                     </NotAuthorized>
-
                     <Authorized>
                         <li class="nav-item">
                             <NavLink class="nav-link profile" href="realtorprofile">
@@ -55,11 +42,19 @@
                             </NavLink>
                         </li>
                         <li class="nav-item">
-                            <LogOut />
+                            <LogOut /> @*Reb*@
                         </li>
-
                     </Authorized>
-
+                </AuthorizeView>
+                @* Rebecka *@
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <li class="nav-item agencyprofile">
+                            <NavLink class="nav-link" href="agencyprofile">
+                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Byrå Profil
+                            </NavLink>
+                        </li>
+                    </Authorized>
                 </AuthorizeView>
 
             </ul>
