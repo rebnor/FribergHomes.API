@@ -79,15 +79,18 @@ namespace FribergHomes.Client.Pages
 
         }
 
-        private async void Submit()
+        private async Task Submit()
         {
             switch (ObjectType)
             {
                 case "salesobject":
 
                     SalesObject!.ChangeDate = DateTime.Now;
-                    SalesObject!.ChangeName = "<<<NAME>>>";  //TODO: Hämta användare
+                    SalesObject!.ChangeName = await AuthService.GetUserName();
+
                     await SalesObjectService.Update(Id, SalesObject!);
+                    NavMan.NavigateTo("/realtorprofile");
+
                     break;
 
                 case "realtor":
