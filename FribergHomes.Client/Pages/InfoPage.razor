@@ -3,6 +3,7 @@
 * Update: Finishing the re-navigations / Reb 2024-05-03
 * Update: Divided "Kommande visningar" and "Sold" - depending on viewingdates / Reb 2024-05-06
 * Update: småfix / Reb 2025-05-15
+* Update: Changed realtor int id to string id / Sanna 
 *@
 @page "/info/{ObjectType}/{ObjectStringId}"
 @using FribergHomes.Client.DTOs
@@ -165,9 +166,9 @@
 
         <h3>Mäklare</h3>
 
-        @* <a href="/info/Realtor/@salesObject.RealtorId" @onclick="() => NavigateToRealtor(salesObject.RealtorId)">
+        <a href="/info/Realtor/@salesObject.RealtorId" @onclick="() => NavigateToRealtor(salesObject.RealtorId)">
             @salesObject.RealtorName
-        </a> *@
+        </a>
 
         <a href="/info/Agency/@salesObject.AgencyId" @onclick="() => NavigateToAgency(salesObject.AgencyId)">
             <img src="@salesObject.AgencyLogoUrl" width="50" />
@@ -204,10 +205,10 @@
                         <td>@r.PhoneNumber</td>
                         <td>
 
-                            @*  // TODO: Se över detta, då Id nu inte är en int
-                <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(@r.Email)">
+                             @* // TODO: Se över detta, då Id nu inte är en int *@
+                <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
                 Kolla Mäklare
-                </a> *@
+                </a>
                         </td>
                     </tr>
                 }
@@ -315,8 +316,8 @@
 
     private async Task GetObjects()
     {
-        //if (ObjectType == "Realtor")
-        // ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId); // TODO: Tar in fel datatyp (int istället för string) /Tobias
+        if (ObjectType == "Realtor")
+        ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectStringId); 
         if (ObjectType == "SalesObject")
             ObjectToShow = await salesService.Get(ObjectId);
         else if (ObjectType == "Category")
@@ -342,7 +343,7 @@
     /* Get & Hide List of Realtors Salesobjects */
     private async Task GetRealtorsSales()
     {
-        // RealtorsSales = await salesService.GetAllByRealtor(ObjectId);
+        RealtorsSales = await salesService.GetAllByRealtor(ObjectStringId);
         StateHasChanged();
     }
     private async Task HideRealtorsSales()
@@ -385,15 +386,16 @@
     //     StateHasChanged();
     // }
 
+
     /* Re-Navigates to InfoPage of choosen Object */
-    // private async void NavigateToRealtor(int realtorId)
-    // {
-    //     ObjectType = "Realtor";
-    //     ObjectId = realtorId;
-    //     ObjectToShow = await realtorService.GetRealtorByIdAsync(realtorId);
-    //     RealtorsSales = null;
-    //     StateHasChanged();
-    // }
+    private async void NavigateToRealtor(string realtorId)
+    {
+        ObjectType = "Realtor";
+        ObjectStringId = realtorId;
+        ObjectToShow = await realtorService.GetRealtorByIdAsync(realtorId);
+        RealtorsSales = null;
+        StateHasChanged();
+    }
     private async void NavigateToAgency(int agencyId)
     {
         ObjectType = "Agency";
