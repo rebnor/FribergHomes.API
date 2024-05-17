@@ -135,7 +135,32 @@ namespace FribergHomes.API.Controllers
             }
         }
 
+        /*Hämtar salesobject i ddenna agency*/
+        [HttpGet("saleobjects/{id}")]
+        public async Task<ActionResult<AgencyDTO>> GetSalesAtAgency(int id)
+        {
+            try
+            {
+                var saleObjects = await _agencyRepository.GetSalesObjectsAtAgencyAsync(id);
+                if (saleObjects == null)
+                {
+                    return NotFound($"Det existerar inga annonser i denna byrå.");
+                }
 
+                List<SalesObjectDTO> saleObjectsDtos = new List<SalesObjectDTO>();
+                foreach (var so in saleObjects)
+                {
+                    var salesObjectDto = _mapper.Map<SalesObjectDTO>(so);
+                    saleObjectsDtos.Add(salesObjectDto);
+                }
+                return Ok(saleObjectsDtos);
+
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, _generalFaultMessage + e.Message);
+            }
+        }
 
 
 

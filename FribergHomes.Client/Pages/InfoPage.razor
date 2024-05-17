@@ -3,7 +3,7 @@
 * Update: Finishing the re-navigations / Reb 2024-05-03
 * Update: Divided "Kommande visningar" and "Sold" - depending on viewingdates / Reb 2024-05-06
 * Update: småfix / Reb 2025-05-15
-* Update: Changed realtor int id to string id / Sanna 
+* Update: Changed realtor int id to string id / Sanna
 *@
 @page "/info/{ObjectType}/{ObjectStringId}"
 @using FribergHomes.Client.DTOs
@@ -33,10 +33,11 @@
         <p>Email: @realtor.Email</p>
         <p>Telefon: @realtor.PhoneNumber</p>
 
+        // TODO: Lägg till AuthView så att om Mäklare är inloggad, ska den kunna få CRUD-funktioner här ?
+
         <Button Color="ButtonColor.Primary" @onclick="GetRealtorsSales">
             Hämta annonser
         </Button>
-        @* <Badge Color="BadgeColor.Light">@RealtorsSales.Count</Badge> *@
         @if (RealtorsSales != null)
         {
             <Button Color="ButtonColor.Secondary" @onclick="HideRealtorsSales">
@@ -180,7 +181,10 @@
         <h2>@agency.Name</h2>
         <div class="text-center">
             <img src="@agency.Logo" width="300" />
+            <div style="border: 1px solid #2A432B; background-color: #F2FADC" class="m-2 p-2 shadow">
+
             <p>@agency.Presentation</p>
+        </div>
         </div>
         <hr />
 
@@ -204,11 +208,9 @@
                         <td>@r.Email</td>
                         <td>@r.PhoneNumber</td>
                         <td>
-
-                             @* // TODO: Se över detta, då Id nu inte är en int *@
-                <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
-                Kolla Mäklare
-                </a>
+                            <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
+                                Kolla Mäklare
+                            </a>
                         </td>
                     </tr>
                 }
@@ -317,18 +319,27 @@
     private async Task GetObjects()
     {
         if (ObjectType == "Realtor")
-        ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectStringId); 
+            ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectStringId);
         if (ObjectType == "SalesObject")
+        {
+            ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await salesService.Get(ObjectId);
+        }
         else if (ObjectType == "Category")
         {
+            ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
             await GetCategorySales(ObjectId);
         }
         else if (ObjectType == "County")
+        {
+            ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
+        }
         else if (ObjectType == "Agency")
         {
+            ObjectId = Convert.ToInt16(ObjectStringId);
+
             ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
             AgencyRealtors = await agencyService.GetRealtorsAtAgency(ObjectId);
         }
@@ -336,7 +347,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ObjectId = Convert.ToInt16(ObjectStringId);
         await GetObjects();
     }
 
@@ -385,7 +395,6 @@
     //     CategorySalesObjects = null;
     //     StateHasChanged();
     // }
-
 
     /* Re-Navigates to InfoPage of choosen Object */
     private async void NavigateToRealtor(string realtorId)
