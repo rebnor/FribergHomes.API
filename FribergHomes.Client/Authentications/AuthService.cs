@@ -4,13 +4,18 @@ using FribergHomes.Client.DTOs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
 
 /* @ Author: Reb 2024-05-13
  * @ Update: GetToken skickar hela AuthResponse ist för endast token-sträng / Reb 2024-05-14
- * @Update: Bytt namn på metoder, uppdaterat med localstorage, authstate, authprovider och arv av Iauthstate / Reb 2024-05-14+15 */
+ * @Update: Bytt namn på metoder, uppdaterat med localstorage, authstate, authprovider och arv av Iauthstate / Reb 2024-05-14+15 
+ * @Update: Lagt till metoderna GetUserId() och GetUserName() /Tobias 2024-05-15+18 
+ */
+ 
+
 namespace FribergHomes.Client.Authentications
 {
     public class AuthService : IAuthService
@@ -87,7 +92,7 @@ namespace FribergHomes.Client.Authentications
         /// <summary>
         /// Method to get Id of currently logged in user.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>string id</returns>
         public async Task<string> GetUserId()
         {
             if (_authStateProvider is not null)
@@ -100,6 +105,29 @@ namespace FribergHomes.Client.Authentications
                     var userId = userIdClaim.Value;
 
                     return userId;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        /// Author: Tobias 2024-05-18
+        /// <summary>
+        /// Method to get name of currently logged in user.
+        /// </summary>
+        /// <returns>string userName</returns>
+        public async Task<string> GetUserName()
+        {
+            if (_authStateProvider is not null)
+            {
+                var authState = await _authStateProvider.GetAuthenticationStateAsync();
+                var userNameClaim = authState.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub);
+
+                if (userNameClaim is not null)
+                {
+                    var userName = userNameClaim.Value;
+
+                    return userName;
                 }
             }
 

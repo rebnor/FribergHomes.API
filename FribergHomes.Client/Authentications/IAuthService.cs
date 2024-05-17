@@ -10,5 +10,6 @@ namespace FribergHomes.Client.Authentications
         public Task LogOut();
         public Task<AuthenticationState> CheckAuthState();
         Task<string> GetUserId();
+        Task<string> GetUserName();
     }
 }
