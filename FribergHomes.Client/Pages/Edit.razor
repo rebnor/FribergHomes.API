@@ -61,14 +61,14 @@
                             </label>
                         </div>
                         <div class="fixed-medium">
-                            @if (_category == "House" || _category == "VacationHome")
+                            @if (_category == "Hus" || _category == "Sommarhem")
                             {
                                 <label>
                                     Driftkostnad (år)
                                     <InputNumber @bind-Value="SalesObject!.YearlyCost" />
                                 </label>
                             }
-                            @if (_category == "Apartment" || _category == "TownHouse")
+                            @if (_category == "Lägenhet" || _category == "Radhus")
                             {
                                 <label>
                                     Månadsavgift
@@ -98,7 +98,7 @@
                             </label>
                         </div>
 
-                        @if (_category == "House" || _category == "TownHouse" || _category == "VacationHome")
+                        @if (_category == "Hus" || _category == "Radhus" || _category == "Sommarhem")
                         {
                             <div class="fixed-small">
                                 <label>
@@ -115,7 +115,7 @@
 
                         }
 
-                        @if (_category == "Apartment")
+                        @if (_category == "Lägenhet")
                         {
                             <div class="fixed-small">
                                 <label>
