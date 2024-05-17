@@ -321,6 +321,7 @@ namespace FribergHomes.API.Seeders
                             salesObjects[i].LivingArea = Random.Shared.Next(20, 111);
                             salesObjects[i].AncillaryArea = Random.Shared.Next(51);
                             salesObjects[i].PlotArea = Random.Shared.Next(300, 5001);
+                            salesObjects[i].YearlyCost = Random.Shared.Next(5000, 30001);
                             salesObjects[i].ObjectDescription = descriptionVacationhome[Random.Shared.Next(0, descriptionVacationhome.Length)];
                             //salesObjects[i].ImageLinks = imgHouse.ToList();
                             salesObjects[i].ImageLinks = picStringsVacation[Random.Shared.Next(0, picStringsVacation.Count)].ToList();
