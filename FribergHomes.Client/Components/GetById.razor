@@ -5,6 +5,7 @@
 * @Update: Added so you click on button to come på infopage about choosen object / Reb 2024-05-02
 * @Update: Implemented EditButton component where required. / Tobias 2024-05-03
 * @Update: Added <AuthorizeView Roles="Realtor, Admin"> where its needed / Reb 2024-05-16
+* @Update: Changed RealtorID from int to string /Sanna 
 *@
 @using System.Text.Json
 @using System.Net.Http.Json
@@ -119,6 +120,9 @@ else
     [Parameter]
     public int ObjectId { get; set; }
 
+    [Parameter]
+    public string ObjectStringId { get; set; }
+
     public object? ObjectToShow { get; set; }
     public string error;
 
@@ -128,8 +132,8 @@ else
     {
         try
         {
-            //if (ObjectType == "Realtor")
-            // ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId); // TODO: Tar in fel datatyp (int istället för string) /Tobias
+            if (ObjectType == "Realtor")
+            ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectStringId);
             if (ObjectType == "SalesObject")
                 ObjectToShow = await salesService.Get(ObjectId);
             else if (ObjectType == "Category")
