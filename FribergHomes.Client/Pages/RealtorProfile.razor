@@ -24,37 +24,38 @@
     }
     else
     {
-        
-        <div class="">
+        @if (!ShowCreateForm)
+        {
 
-            @* Profilbild *@
+            <div class="">
 
-            <span>Profilbild</span>
-            <img src="@Realtor.Picture" alt="profilbild" class="profile-picture" width="500" /> @* TODO: visa defaultbild *@
+                @* Profilbild *@
 
-            <EditButton TargetObject="Realtor" />
+                <span>Profilbild</span>
+                <img src="@Realtor.Picture" alt="profilbild" class="profile-picture" width="500" /> @* TODO: visa defaultbild *@
 
-        </div>
+                <EditButton TargetObject="Realtor" />
 
-        <div class="">
+            </div>
 
-            @* Beskrivning *@
+            <div class="">
 
-            <h4>@Realtor.FullName</h4>
-            <span>Mäklarbyrå: @Realtor.AgencyName</span>
+                @* Beskrivning *@
 
-        </div>
+                <h4>@Realtor.FullName</h4>
+                <span>@Realtor.AgencyName</span>
+                 @* Länka till byrå *@
 
-        @* Editera mäklarprofil *@
-
-        
+            </div>
+        }
 
         <div>
+
             <CascadingValue Value="Realtor">
-                
+
                 @if (ShowCreateForm)
                 {
-                    <CreateSalesObject HideForms="HideForms" />
+                    <CreateSalesObject HideForms="HideForms" /> @* HideForms = Parameter callback *@
                 }
                 @if (ShowEditForm)
                 {
@@ -65,17 +66,22 @@
 
 
             @* Funktionsknappar *@
-            
 
-            <Button Color="ButtonColor.Success" Disabled="@(!selectedObject.Any())" @onclick="RedirectToEdit">Editera</Button>
+            <Button Color="ButtonColor.Warning" Disabled="@(!selectedObject.Any())" @onclick="RedirectToEdit">Editera</Button>
+
+            <Button Color="ButtonColor.Danger" Disabled="@(!selectedObject.Any())" @onclick="RedirectToDelete">Radera</Button>
 
             <Button Color="ButtonColor.Success" @onclick="(() => ShowCreateForm = true)">Skapa annons</Button>
 
+            <hr/>
 
-            @* Lista, egna försäljningsobjekt *@
+            @* Lista - egna försäljningsobjekt *@
             <div>
 
-                <Grid TItem="SalesObjectDTO"
+                <h4>Försäljningsobjekt</h4>
+
+                <Grid @ref="grid"
+                      TItem="SalesObjectDTO"
                       AllowSorting="true"
                       AllowSelection="true"
                       Class=""
@@ -99,16 +105,10 @@
                         @context.CurrentPrice
                     </GridColumn>
 
-                    
-
-
                 </Grid>
-
             </div>
         </div>
-
-    }
-
+    } @* Avslut (Realtor is not null) *@
 </div>
 
 
@@ -125,6 +125,8 @@
 
     private HashSet<SalesObjectDTO> selectedObject = new();
 
+    private Grid<SalesObjectDTO> grid = default!;
+
     private bool ShowCreateForm;
 
     private bool ShowEditForm;
@@ -137,15 +139,22 @@
         Realtor = await RealtorService.GetRealtorByIdAsync(userId);
     }
 
-    private void HideForms()
+    private async Task HideForms()
     {
+        await grid.RefreshDataAsync();
         ShowCreateForm = false;
         ShowEditForm = false;
+
     }
 
     private void RedirectToEdit()
     {
         NavMan.NavigateTo($"/edit/salesobject/{selectedObject.First().Id}");
+    }
+
+    private void RedirectToDelete()
+    {
+        NavMan.NavigateTo($"/delete/salesobject/{selectedObject.First().Id}");
     }
 
     private async Task<GridDataProviderResult<SalesObjectDTO>> GetSalesObjects(GridDataProviderRequest<SalesObjectDTO> request)
@@ -164,6 +173,6 @@
         return Task.CompletedTask;
     }
 
-   
+
 
 }
