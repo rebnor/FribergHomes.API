@@ -21,7 +21,7 @@
 
 @if (ObjectToShow != null)
 {
-    <div class="shadow col-6 col-sm-3 text-center card">
+    <div class="shadow col-6 col-sm-3 text-center card custom-card">
         @if (ObjectToShow is RealtorDTO realtor)
         {
             <h2>@realtor.FullName - @realtor.AgencyName</h2>
@@ -87,6 +87,9 @@
             <h3>@agency.Name</h3>
             <img src="@agency.Logo" width="100" />
 
+            <div class="make-space"></div>
+
+
             <Button Color="ButtonColor.Info">
                 <a href="/info/Agency/@agency.Id" class="custom-link">Kolla info om Mäklarbyrå</a>
             </Button>
@@ -102,8 +105,9 @@
         else if (ObjectToShow is CategoryDTO category)
         {
             <h2>@category.Name</h2>
+            <h1>@((MarkupString)category.IconUrl)</h1>
 
-            <div>@((MarkupString)category.IconUrl)</div>
+            <div class="make-space"></div>
 
             <Button Color="ButtonColor.Info">
                 <a href="/info/Category/@category.Id" class="custom-link">Annonser i denna Kategori</a>
@@ -137,7 +141,7 @@ else
         try
         {
             if (ObjectType == "Realtor")
-            ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectStringId);
+                ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectStringId);
             if (ObjectType == "SalesObject")
                 ObjectToShow = await salesService.Get(ObjectId);
             else if (ObjectType == "Category")

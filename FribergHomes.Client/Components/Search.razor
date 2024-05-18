@@ -27,12 +27,12 @@ Update: Filter as you type / Reb 2024-05-01 *@
     {
         @if (SaleObjectsDtos.Count > 0)
         {
-            <div class="county-list">
-                @foreach (var salesObject in SaleObjectsDtos)
-                {
-                    <GetById ObjectId="@salesObject.Id" ObjectType="SalesObject" />
-                }
-            </div>
+
+            @foreach (var salesObject in SaleObjectsDtos)
+            {
+                <GetById ObjectId="@salesObject.Id" ObjectType="SalesObject" />
+            }
+
         }
         else
         {
@@ -54,7 +54,7 @@ Update: Filter as you type / Reb 2024-05-01 *@
         FilteredDto = CountiesDtos.Where(c => c.Name.ToLower().Contains(countyName.ToLower())).ToList();
         StateHasChanged();
         if (countyName == "")
-        { 
+        {
             FilteredDto = null;
             StateHasChanged();
         }
