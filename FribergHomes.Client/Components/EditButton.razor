@@ -28,12 +28,32 @@
             return;
         }
 
-        var dtoType = TargetObject!.GetType().Name.ToLower();
-        var typeName = dtoType[..^3];
+        // var dtoType = TargetObject!.GetType().Name.ToLower();
+        // var typeName = dtoType[..^3];
+
+        // var idProperty = TargetObject.GetType().GetProperty("Id");
+        // Id = (int)idProperty!.GetValue(TargetObject)!;
+
+        // NavMan.NavigateTo($"/edit/{typeName}/{Id}");
+
+
+        var dtoType = TargetObject.GetType().Name.ToLower();
+        var typeName = dtoType.Substring(0, dtoType.Length - 3);
 
         var idProperty = TargetObject.GetType().GetProperty("Id");
-        Id = (int)idProperty!.GetValue(TargetObject)!;
+        var stringIdProperty = TargetObject.GetType().GetProperty("StringId");
 
-        NavMan.NavigateTo($"/edit/{typeName}/{Id}");
+        var idValue = idProperty?.GetValue(TargetObject)?.ToString();
+        var stringIdValue = stringIdProperty?.GetValue(TargetObject)?.ToString();
+
+        if (!string.IsNullOrEmpty(idValue))
+        {
+            NavMan.NavigateTo($"/edit/{typeName}/{idValue}");
+        }
+        else if (!string.IsNullOrEmpty(stringIdValue))
+        {
+            NavMan.NavigateTo($"/edit/{typeName}/{stringIdValue}");
+        }
+
     }
 }

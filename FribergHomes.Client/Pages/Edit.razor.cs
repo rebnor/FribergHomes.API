@@ -7,12 +7,13 @@ namespace FribergHomes.Client.Pages
 
     public partial class Edit
     {
-
         [Parameter]
         public string? ObjectType { get; set; }
 
         [Parameter]
         public int Id { get; set; }
+        [Parameter]
+        public string? StringId { get; set; }
 
         private string? _category;
 
@@ -33,19 +34,18 @@ namespace FribergHomes.Client.Pages
         {
             switch (ObjectType)
             {
-                case "salesobject":
-
+                case "salesObject":
                     SalesObject = await SalesObjectService.Get(Id);
                     _category = SalesObject.CategoryName;
                     break;
 
                 case "realtor":
 
-                    //Realtor = await RealtorService.GetRealtorByIdAsync(Id); // TODO: Tar in fel datatyp (int istället för string) /Tobias
+                    Realtor = await RealtorService.GetRealtorByIdAsync(StringId);
                     break;
 
-                case "agency":
 
+                case "agency":
                     Agency = await AgencyService.GetAgencyByIdAsync(Id);
                     break;
 
@@ -66,25 +66,23 @@ namespace FribergHomes.Client.Pages
 
                     break;
 
-                //case "county":
+                    //case "county":
 
-                //    County = await CountyService.GetCountyByIdAsync(Id);
-                //    break;
+                    //    County = await CountyService.GetCountyByIdAsync(Id);
+                    //    break;
             }
         }
 
         private void UpdatePreview()
         {
             StateHasChanged();
-
         }
 
         private async Task Submit()
         {
             switch (ObjectType)
             {
-                case "salesobject":
-
+                case "salesObject":
                     SalesObject!.ChangeDate = DateTime.Now;
                     SalesObject!.ChangeName = await AuthService.GetUserName();
 
@@ -94,12 +92,11 @@ namespace FribergHomes.Client.Pages
                     break;
 
                 case "realtor":
-
-                    Realtor = await RealtorService.UpdateRealtorAsync(Realtor!);
+                    if (!string.IsNullOrEmpty(StringId))
+                        Realtor = await RealtorService.UpdateRealtorAsync(StringId, Realtor!);
                     break;
 
                 case "agency":
-
                     Agency = await AgencyService.UpdateAgencyAsync(Id, Agency!);
                     break;
 
@@ -108,10 +105,11 @@ namespace FribergHomes.Client.Pages
                     Category = await CategoryService.UpdateCategoryAsync(Category!);
                     break;
 
-                //case "county":
 
-                //    County = await CountyService.UpdateCountyAsync(County!);
-                //    break;
+                    //case "county":
+
+                    //    County = await CountyService.UpdateCountyAsync(County!);
+                    //    break;
             }
         }
 
