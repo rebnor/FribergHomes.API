@@ -254,3 +254,12 @@ main {
     max-width: 400px;
     margin: auto;
 }
+
+.form {
+    border: 1px solid #2A432B;
+    background-color: #F2FADC;
+    width: 60%;
+    margin: auto;
+    margin-bottom: 2em;
+}
+
