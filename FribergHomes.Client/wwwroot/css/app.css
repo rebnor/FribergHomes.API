@@ -133,11 +133,20 @@ code {
 }
 
 
-
-.loader img {
-
-    border-radius: 50%;
+.loader {
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
+/*.loader img {
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}*/
 
 
 .nav-item:hover {
@@ -232,6 +241,7 @@ main {
         margin: auto;
     }
 
+
 .category-card {
     min-width: 600px;
     /*max-width: 1000px;*/
@@ -253,4 +263,48 @@ main {
     width: auto;
     max-width: 400px;
     margin: auto;
+}
+
+.form {
+    border: 1px solid #2A432B;
+    background-color: #F2FADC;
+    width: 60%;
+    margin: auto;
+    margin-bottom: 2em;
+}
+
+button a {
+    text-decoration: none;
+    color: white;
+}
+
+.custom-card {
+    min-width: 250px;
+    width: auto;
+}
+.custom-card button {
+    position: absolute;
+    bottom: 1em;
+    margin: auto;
+}
+
+    .custom-card a {
+        text-decoration: none;
+        color: #2A432B;
+        text-shadow: 0px 0px 2px #9D9D79;
+        font-size: large;
+    }
+        .custom-card a:hover {
+            text-shadow: 0px 0px 2px #2A432B;
+        }
+
+.realtor-pic {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 1em;
+}
+
+.make-space {
+    height: 40px;
 }

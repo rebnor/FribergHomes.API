@@ -1,7 +1,9 @@
 ﻿@using FribergHomes.Client.Authentications
 @using FribergHomes.Client.Services.Interfaces
 @using Microsoft.AspNetCore.Authorization
-
+@* Author Rebecka 
+    Update: 2024-05-18: Sista CRUD funktioner på Mäklare och Annonser, AddObject-komp funkade inte men fixade det / Reb 2024-05-18
+*@
 @page "/agencyprofile"
 
 @inject IAuthService authService
@@ -19,6 +21,16 @@
 <hr />
 
 <h4>Anställda</h4>
+
+<Button Color="ButtonColor.Primary" @onclick="ShowAddRealtor">Lägg till Mäklare</Button>
+
+@if (AddRealtor)
+{
+    <Button Color="ButtonColor.Dark" @onclick="HideAddRealtor">Avbryt</Button>
+
+    <AddObject ObjectType="realtor" />
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -32,6 +44,8 @@
     <tbody>
         @foreach (var r in AgencyRealtors)
         {
+            // TODO: Se över att man inte kan ta bort Admin ? 
+
             <tr>
                 <td>@r.FullName</td>
                 <td><img src="@r.Picture" width="100" /></td>
@@ -54,6 +68,17 @@
 </table>
 
 <hr />
+
+
+<Button Color="ButtonColor.Primary" @onclick="ShowAddSalesObject">Skapa annons</Button>
+
+@if (AddSalesObject)
+{
+    <Button Color="ButtonColor.Dark" @onclick="HideAddSalesObject">Avbryt</Button>
+
+    <AddObject ObjectType="salesObject" />
+}
+
 
 <h4>Annonser</h4>
 <table class="table">
@@ -104,6 +129,8 @@
     private List<RealtorDTO> AgencyRealtors;
     private List<SalesObjectDTO> SaleObjects;
     private string email;
+    private bool AddSalesObject = false;
+    private bool AddRealtor = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -112,6 +139,30 @@
         Agency = await agencyService.GetAgencyByRealtorEmailAsync(email);
         AgencyRealtors = await agencyService.GetRealtorsAtAgency(Agency.Id);
         SaleObjects = await agencyService.GetSaleObjectsAtAgencyAsync(Agency.Id);
+        StateHasChanged();
+    }
+
+    private void ShowAddSalesObject()
+    {
+        AddSalesObject = true;
+        StateHasChanged();
+
+    }
+    private void HideAddSalesObject()
+    {
+        AddSalesObject = false;
+        StateHasChanged();
+    }
+
+    private void ShowAddRealtor()
+    {
+        AddRealtor = true;
+        StateHasChanged();
+
+    }
+    private void HideAddRealtor()
+    {
+        AddRealtor = false;
         StateHasChanged();
     }
 }
