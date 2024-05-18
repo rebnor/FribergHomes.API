@@ -38,7 +38,8 @@
 
 
         var dtoType = TargetObject.GetType().Name.ToLower();
-        var typeName = dtoType.Substring(0, dtoType.Length - 3);
+        // var typeName = dtoType.Substring(0, dtoType.Length - 3);
+        var typeName = dtoType[..^3];
 
         var idProperty = TargetObject.GetType().GetProperty("Id");
         var stringIdProperty = TargetObject.GetType().GetProperty("StringId");

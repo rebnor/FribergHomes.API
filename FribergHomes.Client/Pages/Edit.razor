@@ -5,7 +5,7 @@
 @* Author: Tobias 2024-05-02 *@
 @* Update: Injected AuthService to retrieve Realtor name / Tobias 2024-05-18 *@
 @page "/edit/{objecttype}/{StringId}"
-@page "/edit/{objecttype}/{Id:int}"
+@page "/edit/{objecttype}/{id:int}"
 
 @attribute [Authorize(Roles = "Admin, Realtor")]
 
@@ -22,7 +22,7 @@
 
     <div class="content-box">
 
-        @if (ObjectType == "salesObject")
+        @if (ObjectType == "salesobject")
         {
             if (SalesObject == null)
             {

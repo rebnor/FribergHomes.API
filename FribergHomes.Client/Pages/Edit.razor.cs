@@ -34,7 +34,7 @@ namespace FribergHomes.Client.Pages
         {
             switch (ObjectType)
             {
-                case "salesObject":
+                case "salesobject":
                     SalesObject = await SalesObjectService.Get(Id);
                     _category = SalesObject.CategoryName;
                     break;
@@ -82,7 +82,7 @@ namespace FribergHomes.Client.Pages
         {
             switch (ObjectType)
             {
-                case "salesObject":
+                case "salesobject":
                     SalesObject!.ChangeDate = DateTime.Now;
                     SalesObject!.ChangeName = await AuthService.GetUserName();
 
