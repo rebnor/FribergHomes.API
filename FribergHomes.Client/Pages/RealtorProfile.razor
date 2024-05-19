@@ -44,17 +44,14 @@
                     <span>Telefon: @Realtor.PhoneNumber</span><br />
                     <span>Email: @Realtor.Email </span><br />
                     <span>Mäklarbyrå: @Realtor.AgencyName </span><br />
-                    <img src="@Realtor.AgencyLogo" width="120"/>
+                    <img src="@Realtor.AgencyLogo" width="120" />
 
                 </div>
 
             </div>
-            
+
 
             <div class="">
-
-                
-
             </div>
             <div>
                 <EditButton TargetObject="Realtor" />
@@ -67,20 +64,20 @@
 
             @* <CascadingValue Value="Realtor">
 
-                @if (ShowCreateForm)
-                {
-                    <CreateSalesObject HideForms="HideForms" />  *@@* HideForms = Parameter callback *@
+        @if (ShowCreateForm)
+        {
+        <CreateSalesObject HideForms="HideForms" />  *@@* HideForms = Parameter callback *@
             @*     }
-                @if (ShowEditForm)
-                {
-                    <p>Visa editform</p>
-                }
+        @if (ShowEditForm)
+        {
+        <p>Visa editform</p>
+        }
 
-            </CascadingValue> *@
-     @*        @if (ShowCreateForm)
-            {
-                <AddObject ObjectType="SalesObject" />
-            } *@
+        </CascadingValue> *@
+            @*        @if (ShowCreateForm)
+        {
+        <AddObject ObjectType="SalesObject" />
+        } *@
 
 
 
@@ -120,6 +117,8 @@
                       SelectedItemsChanged="OnSelectedItemsChanged"
                       Responsive="true">
 
+
+
                     <GridColumn TItem="SalesObjectDTO" HeaderText="Kategori" SortKeySelector="item => item.CategoryLogoUrl">
                         @context.CategoryName
                     </GridColumn>
@@ -142,6 +141,7 @@
 
                         <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="@(() => RedirectToDelete(context.Id))">Radera</Button>
 
+                        <Button Color="ButtonColor.Info" Size="Size.Small" @onclick="@(() => RedirectToInfo(context.Id))">Kolla annons</Button>
 
                     </GridColumn>
 
@@ -235,6 +235,10 @@
     {
         NavMan.NavigateTo($"/edit/realtor/{id}", forceLoad: true);
     }
+    private void RedirectToInfo(int id)
+    {
 
+        NavMan.NavigateTo($"/info/SalesObject/{id}", forceLoad: true);
+    }
 
 }

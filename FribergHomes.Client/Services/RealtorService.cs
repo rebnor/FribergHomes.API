@@ -39,10 +39,10 @@ namespace FribergHomes.Client.Services
             await _client.DeleteAsync($"api/realtor/{realtorId}/{newRealtorId}");
         }
 
-        public async Task<RealtorDTO> UpdateRealtorAsync(string id, RealtorDTO realtorDto)
+        public async Task<RealtorDTO> UpdateRealtorAsync(RealtorDTO realtorDto)
         {
 
-            var response = await _client.PutAsJsonAsync($"api/realtor/{id}", realtorDto);
+            var response = await _client.PutAsJsonAsync($"api/realtor/{realtorDto.Id}", realtorDto);
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Ett fel uppstod vid PUT-anropet, felmeddelande: {response.StatusCode}");

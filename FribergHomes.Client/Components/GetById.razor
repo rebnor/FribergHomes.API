@@ -37,6 +37,10 @@
         }
         else if (ObjectToShow is SalesObjectDTO salesObject)
         {
+            if (salesObject.CurrentPrice > salesObject.ListingPrice)
+            {
+                <Badge Color="BadgeColor.Dark">PSST....Sänkt pris</Badge>
+            }
             <h3>@salesObject.Adress - @salesObject.CountyName</h3>
             foreach (var picture in salesObject.ImageLinks)
             {
@@ -46,11 +50,11 @@
             }
             <strong>@salesObject.CategoryName</strong>
             <div>@((MarkupString)salesObject.CategoryLogoUrl)</div>// TODO: Syns inte
-            // TODO: Hur blev det med CurrentPrice & ListingPrice ?? 
+
             if (salesObject.CurrentPrice > salesObject.ListingPrice)
             {
                 <del>@salesObject.ListingPrice kr</del>
-                <p>@salesObject.CurrentPrice kr</p>
+                <h4>@salesObject.CurrentPrice kr</h4>
             }
             else
             {

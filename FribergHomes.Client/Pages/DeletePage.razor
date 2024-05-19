@@ -23,49 +23,45 @@ else
     {
         <h2 class="text-danger">Är du säker på att du vill radera detta objekt?</h2>
 
-        <div class="card shadow">
+        <div class="card shadow custom-card">
             @if (ObjectToShow is RealtorDTO realtor)
             {
                 <h3>@realtor.FullName</h3>
                 <img src="@realtor.Picture" width="200" />
                 <p>@realtor.Email</p>
 
-                @if (!changeRealtor)
+                @if (changeRealtor)
                 {
-                    // TODO: Se över knappar
-                    <form @onsubmit="YesDelete">
-                        <button class="btn-primary" type="submit">Ja, ta bort!</button>
-                    </form>
+                    @if (!deleteAndChange)
+                    {
+                        @if (error != null)
+                        {
+                            <p>@error</p>
+                        }
 
-                    <form @onsubmit="NoCancel">
-                        <button class="btn-danger" type="submit">Nej, avbryt!</button>
-                    </form>
-                }
-                else
-                {
-                    @if(error != null)
-                    {
-                        <p>@error</p>
-                    }
-                    <form @onsubmit="ChooseRealtor">
-                        <p>Vilken mäklare vill du ska ta över alla @realtor.FullName annonser?</p>
-                        <select @bind="NewRealtorId">
-                            <option value="">Välj en mäklare</option>
-                            @foreach (var r in Realtors)
-                            {
-                                if(r.Id != realtor.Id)
+                        <form @onsubmit="ChooseRealtor">
+
+                            <p>Vilken mäklare vill du ska ta över alla @realtor.FullName annonser?</p>
+                            <select @bind="NewRealtorId">
+                                <option value="">Välj en mäklare</option>
+                                @foreach (var r in Realtors)
                                 {
-                                <option value="@r.Id">@r.FullName</option>
+                                    if (r.Id != realtor.Id)
+                                    {
+                                        <option value="@r.Id">@r.FullName</option>
+                                    }
                                 }
-                            }
-                        </select>
-                        <button type="submit">Välj</button>
-                    </form>
-                    @if (deleteAndChange)
+                            </select>
+
+                            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Välj</Button>
+
+                        </form>
+                    }
+                    else
                     {
-                        <form @onsubmit="DeleteAndChangeRealtor">
-                            <button class="btn-primary mb-3" type="submit">Byt och Ta Bort</button>
-                    </form>
+                        <p>Mäklare som tar över alla annonser: @newRealtor.FullName</p>
+
+                        <Button Color="ButtonColor.Danger" @onclick="DeleteAndChangeRealtor">Byt och Ta Bort</Button>
                     }
                 }
             }
@@ -93,16 +89,17 @@ else
         </div>
 
         <div class="m-3">
-        @if (!(ObjectToShow is RealtorDTO))
-        {
-            <form @onsubmit="YesDelete">
-                <button class="btn-primary" type="submit">Ja, ta bort!</button>
-            </form>
+            @if (!(ObjectToShow is RealtorDTO))
+            {
+                <Button Color="ButtonColor.Danger" @onclick="YesDelete">Ja, Ta bort!</Button>
+                <Button Color="ButtonColor.Primary" @onclick="NoCancel">Nej, Avbryt!</Button>
+            }
 
-            <form @onsubmit="NoCancel">
-                <button class="btn-danger" type="submit">Nej, avbryt!</button>
-            </form>
-        }
+            @if (!changeRealtor)
+            {
+                <Button Color="ButtonColor.Danger" @onclick="YesDelete">Ja, Ta bort!</Button>
+                <Button Color="ButtonColor.Primary" @onclick="NoCancel">Nej, Avbryt!</Button>
+            }
         </div>
     }
 }
@@ -125,6 +122,12 @@ else
     public bool changeRealtor = false;
     public bool deleteAndChange = false;
     public string error;
+    public RealtorDTO newRealtor;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetObject();
+    }
 
     private async Task GetObject()
     {
@@ -154,32 +157,6 @@ else
             ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
         }
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        // ObjectId = Convert.ToInt16(ObjectStringId);
-        await GetObject();
-    }
-
-    private async void ChooseRealtor()
-    {
-        if (NewRealtorId != null)
-        {
-            deleteAndChange = true;
-        }
-        else
-        {
-            error = "Du måste välja en ny mäklare";
-        }
-    }
-
-    private async void DeleteAndChangeRealtor()
-    {
-
-        await realtorService.DeleteRealtorAsync(ObjectStringId, NewRealtorId);
-        isDeleted = true;
-        StateHasChanged();
     }
 
     private async void YesDelete()
@@ -212,11 +189,26 @@ else
     {
         NavigationManager.NavigateTo("/");
     }
+
+    private async void ChooseRealtor()
+    {
+        if (NewRealtorId != null)
+        {
+            newRealtor = await realtorService.GetRealtorByIdAsync(NewRealtorId);
+            deleteAndChange = true;
+            StateHasChanged();
+        }
+        else
+        {
+            error = "Du måste välja en ny mäklare";
+        }
+    }
+
+    private async void DeleteAndChangeRealtor()
+    {
+
+        await realtorService.DeleteRealtorAsync(ObjectStringId, NewRealtorId);
+        isDeleted = true;
+        StateHasChanged();
+    }
 }
-            @*else if (ObjectToShow is CountyDTO county)
-               {
-                 <h2>@county.Name - #@county.Id</h2>
-                 } 
-                         // else if (ObjectType == "County")
-        //     await countyService.DeleteCountyAsync(ObjectId);
-                 *@

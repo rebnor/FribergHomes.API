@@ -79,19 +79,23 @@
                 {
                     foreach (var vdate in so.ViewingDates)
                     {
-                        @if (vdate < DateTime.Now)
-                        {
-                            <h4>@so.Adress</h4>
-                            foreach (var picture in so.ImageLinks)
+                        <div class="shadow text-center card custom-card">
+
+                            @if (vdate < DateTime.Now)
                             {
-                                <img src="@picture" width="150" />
+                                <h4>@so.Adress - @so.CountyName</h4>
+                                foreach (var picture in so.ImageLinks)
+                                {
+                                    <img src="@picture" width="150" />
+                                }
+                                <Button Color="ButtonColor.Info">
+                                    <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)">
+                                        Kolla Annons
+                                    </a>
+                                </Button>
                             }
-                            <Button Color="ButtonColor.Info">
-                                <a href="/info/SalesObject/@so.Id" @onclick="() => NavigateToSalesObject(so.Id)">
-                                    Kolla Annons
-                                </a>
-                            </Button>
-                        }
+                        </div>
+
                     }
                 }
 
@@ -110,61 +114,66 @@
             <br />
             foreach (var picture in salesObject.ImageLinks)
             {
-                <img src="@picture" width="500" />
+                <img src="@picture" width="600" />
             }
-            // TODO: Funkar ej?
-            if (salesObject.CurrentPrice > salesObject.ListingPrice)
-            {
-                <del>@salesObject.ListingPrice kr</del>
-                <h4>@salesObject.CurrentPrice kr</h4>
-            }
-            else
-            {
-                <h4>@salesObject.CurrentPrice kr</h4>
-            }
-            <p><strong>@salesObject.CategoryName</strong></p>
-            <div>@((MarkupString)@salesObject.CategoryLogoUrl)</div>
-            <p><strong>Rum: </strong>@salesObject.Rooms</p>
-            <p><strong>Byggnadsår: </strong>@salesObject.BuildYear</p>
-            <p><strong>Boarea: </strong>@salesObject.LivingArea m<sup>2</sup></p>
-            if (salesObject.AncillaryArea > 0)
-            {
-                <p><strong>Biarea: </strong>@salesObject.AncillaryArea m<sup>2</sup></p>
-            }
-            if (salesObject.CategoryName == "Lägenhet")
-            {
-                <p><strong>Våning: </strong>@salesObject.Level</p>
-                if (salesObject.Lift == true)
+
+            <br />
+            <div class="better-background px-2 pt-2">
+
+                <h4><strong>@salesObject.CategoryName</strong></h4>
+                @if (salesObject.CurrentPrice > salesObject.ListingPrice)
                 {
-                    <p><strong>Hiss: </strong>Ja</p>
+                    <Badge Color="BadgeColor.Dark">PSST....Sänkt pris</Badge>
+                    <strong><del>@salesObject.ListingPrice kr</del></strong>
+                    <h4> @salesObject.CurrentPrice kr</h4>
                 }
                 else
                 {
-                    <p><strong>Hiss: </strong>Nej</p>
+                    <h4>@salesObject.CurrentPrice kr</h4>
                 }
-            }
-            else
-            {
-                <p><strong>Tomtarea: </strong>@salesObject.PlotArea m<sup>2</sup></p>
-            }
-            if (salesObject.YearlyCost > 0)
-            {
-                <p><strong>Driftkostnad: </strong>@salesObject.YearlyCost kr</p>
-            }
-            if (salesObject.MonthlyFee > 0)
-            {
-                <p><strong>Månadsavgift: </strong>@salesObject.MonthlyFee kr</p>
-            }
-            <p>
-                <strong>Visningsdatum: </strong>
-                @foreach (var date in salesObject.ViewingDates)
-                {
-                <p>@date.ToString("yyy-MM-dd")</p>
-                }
-            </p>
-            <h4>Beskrivning:</h4>
-            <p>@salesObject.ObjectDescription</p>
 
+                <div>@((MarkupString)@salesObject.CategoryLogoUrl)</div>
+                <p><strong>Rum: </strong>@salesObject.Rooms</p>
+                <p><strong>Byggnadsår: </strong>@salesObject.BuildYear</p>
+                <p><strong>Boarea: </strong>@salesObject.LivingArea m<sup>2</sup></p>
+                @if (salesObject.AncillaryArea > 0)
+                {
+                    <p><strong>Biarea: </strong>@salesObject.AncillaryArea m<sup>2</sup></p>
+                }
+                @if (salesObject.CategoryName == "Lägenhet")
+                {
+                    <p><strong>Våning: </strong>@salesObject.Level</p>
+                    if (salesObject.Lift == true)
+                    {
+                        <p><strong>Hiss: </strong>Ja</p>
+                    }
+                    else
+                    {
+                        <p><strong>Hiss: </strong>Nej</p>
+                    }
+                }
+                else
+                {
+                    <p><strong>Tomtarea: </strong>@salesObject.PlotArea m<sup>2</sup></p>
+                }
+                @if (salesObject.YearlyCost > 0)
+                {
+                    <p><strong>Driftkostnad: </strong>@salesObject.YearlyCost kr</p>
+                }
+                @if (salesObject.MonthlyFee > 0)
+                {
+                    <p><strong>Månadsavgift: </strong>@salesObject.MonthlyFee kr</p>
+                }
+                <p>
+                    <strong>Visningsdatum: </strong>
+                    @foreach (var date in salesObject.ViewingDates)
+                    {
+                    <p>@date.ToString("yyy-MM-dd")</p>
+                    }
+                </p>
+                <h4>Beskrivning:</h4>
+                <p>@salesObject.ObjectDescription</p>
+            </div>
             <div class="card custom-card">
 
                 <h4>Mäklare</h4>
@@ -217,9 +226,9 @@
                             <td>@r.Email</td>
                             <td>@r.PhoneNumber</td>
                             <td>
-                                <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)">
-                                    Kolla Mäklare
-                                </a>
+                                <Button Color="ButtonColor.Info">
+                                    <a href="/info/Realtor/@r.Id" @onclick="() => NavigateToRealtor(r.Id)" class="custom-link">Kolla Mäklare</a>
+                                </Button>
                             </td>
                         </tr>
                     }

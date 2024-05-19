@@ -168,15 +168,15 @@ namespace FribergHomes.API.Controllers
         // PUT method that updates an existing Realtor object in the DB based on Id and Realtor object.
         // PUT api/<RealtorController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<RealtorDTO>> PutRealtor(string id, RealtorDTO realtorDto)
+        public async Task<ActionResult<RealtorDTO>> PutRealtor(RealtorDTO realtorDto)
         {
-            if (id != realtorDto.Id)
-            {
-                return BadRequest();
-            }
+            //if (id != realtorDto.Id)
+            //{
+            //    return BadRequest();
+            //}
             try
             {
-                var existingRealtor = await _realtorRepository.GetRealtorByIdAsync(id);
+                var existingRealtor = await _realtorRepository.GetRealtorByIdAsync(realtorDto.Id);
                 if (existingRealtor == null)
                 {
                     return NotFound();

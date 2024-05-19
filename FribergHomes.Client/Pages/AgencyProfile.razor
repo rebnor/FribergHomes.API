@@ -8,6 +8,8 @@
 
 @inject IAuthService authService
 @inject IAgencyService agencyService
+@inject NavigationManager NavMan
+
 @attribute [Authorize(Roles = "Admin")]
 
 <h1>@Agency.Name</h1>
@@ -47,20 +49,15 @@
             // TODO: Se över att man inte kan ta bort Admin ? 
 
             <tr>
-                <td>@r.FullName</td>
+                <td>@r.FullName<br /><Button Color="ButtonColor.Info" Size="Size.Small" @onclick="() => RedirectToInfoRealtor(r.Id)">Kolla Mäklare</Button></td>
                 <td><img src="@r.Picture" width="100" /></td>
                 <td>@r.Email</td>
                 <td>@r.PhoneNumber</td>
                 <td>
                     <EditButton TargetObject="r" />
 
-                    <a href="/delete/Realtor/@r.Id">
-                        Ta Bort Mäklare
-                    </a>
+                    <Button Color="ButtonColor.Danger" @onclick="() => RedirectToDeleteRealtor(r.Id)">Ta Bort</Button>
 
-                    <a href="/info/Realtor/@r.Id">
-                        Kolla Mäklare
-                    </a>
                 </td>
             </tr>
         }
@@ -81,13 +78,13 @@
 
 
 <h4>Annonser</h4>
-<table class="table">
+<table class="table shadow">
     <thead>
         <tr>
             <th>Kommun</th>
             <th>Adress</th>
             <th>Bild</th>
-            <th>Försäljnings Pris</th>
+            <th>Pris</th>
             <th>Mäklare</th>
             <th></th>
         </tr>
@@ -97,7 +94,7 @@
         {
             <tr>
                 <td>@so.CountyName</td>
-                <td>@so.Adress</td>
+                <td>@so.Adress<br /><Button Color="ButtonColor.Info" Size="Size.Small" @onclick="() => RedirectToInfo(so.Id)">Kolla Annons</Button></td>
                 <td>
                     @foreach (var pic in so.ImageLinks)
                     {
@@ -109,13 +106,14 @@
                 <td>
                     <EditButton TargetObject="so" />
 
-                    <a href="/delete/SalesObject/@so.Id">
+   @*                  <a href="/delete/SalesObject/@so.Id">
                         Ta Bort Annons
-                    </a>
+                    </a> *@
+                    <Button Color="ButtonColor.Danger" @onclick="() => RedirectToDelete(so.Id)">Ta Bort</Button>
 
-                    <a href="/info/SalesObject/@so.Id">
+ @*                    <a href="/info/SalesObject/@so.Id">
                         Kolla Annons
-                    </a>
+                    </a> *@
                 </td>
             </tr>
         }
@@ -164,5 +162,23 @@
     {
         AddRealtor = false;
         StateHasChanged();
+    }
+
+    private void RedirectToInfoRealtor(string id)
+    {
+        NavMan.NavigateTo($"/info/Realtor/{id}", forceLoad: true);
+    }
+    private void RedirectToDeleteRealtor(string id)
+    {
+        NavMan.NavigateTo($"/delete/Realtor/{id}", forceLoad: true);
+    }
+
+    private void RedirectToInfo(int id)
+    {
+        NavMan.NavigateTo($"/info/SalesObject/{id}", forceLoad: true);
+    }
+    private void RedirectToDelete(int id)
+    {
+        NavMan.NavigateTo($"/delete/SalesObject/{id}", forceLoad: true);
     }
 }

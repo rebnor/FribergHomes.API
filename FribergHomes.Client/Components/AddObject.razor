@@ -382,7 +382,7 @@ else
             }
             isAdded = true;
             StateHasChanged();
-            NavigationManager.Refresh();
+            NavigationManager.Refresh(true);
             // NavigationManager.NavigateTo("/agencyprofile", forceLoad: true);
         }
         catch (Exception e)
