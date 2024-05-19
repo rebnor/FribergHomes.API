@@ -3,7 +3,7 @@
    Update: När man lägger till realtor så kopplas den byrå man är inloggad på direkt /Rebecka 2024-05-18
    Updater: Nu kan man lägga till Realtor (+ att den blir en User med lösenord osv) -> Funkade inte innan / Reb 2024-05-18
    Update: Nu kan man lägga till SalesObject med alla tillbehör / Reb 2024-05-18
-   
+
 
 *@
 
@@ -224,7 +224,18 @@ else
 }
 @if (errorMessage != "")
 {
+
     <p>@errorMessage</p>
+}
+
+@if (errorMessages.Any())
+{
+    <div class="alert alert-danger" role="alert">
+        @foreach (var error in errorMessages)
+        {
+            <p>@error</p>
+        }
+    </div>
 }
 
 @code {
@@ -261,6 +272,8 @@ else
     private DateTime viewDate;
 
 
+    private List<string> errorMessages = new List<string>();
+
 
 
     protected override async Task OnInitializedAsync()
@@ -273,7 +286,7 @@ else
         {
             newObject = new AgencyDTO();
         }
-        else if (ObjectType == "realtor") 
+        else if (ObjectType == "realtor")
         {
             authState = await authService.CheckAuthState(); // Hämtar inloggade-realtor
             email = authState.User.Identity.Name; // hämtar inloggade email
@@ -309,11 +322,26 @@ else
         {
             if (ObjectType == "category")
             {
-                await categoryService.AddCategoryAsync((CategoryDTO)newObject);
+                try
+                {
+                    await categoryService.AddCategoryAsync((CategoryDTO)newObject);
+                }
+                catch (Exception)
+                {
+                    errorMessage = "Det går inte att lägga till den valda kategorin.";
+                }
+
             }
             else if (ObjectType == "agency")
             {
-                await agencyService.AddAgencyAsync((AgencyDTO)newObject);
+                try
+                {
+                    await agencyService.AddAgencyAsync((AgencyDTO)newObject);
+                }
+                catch (Exception)
+                {
+                    errorMessage = "Det går inte att lägga till mäklarbyrån.";
+                }
             }
             else if (newObject is RealtorDTO realtor)
             {
@@ -336,8 +364,6 @@ else
                                 AgencyId = Agency.Id
                             };
                         okString = await authService.Register(newRealtor);
-
-
                         StateHasChanged();
                     }
                     else
@@ -352,11 +378,108 @@ else
             }
             else if (newObject is SalesObjectDTO salesObject)
             {
-                if (string.IsNullOrEmpty(salesObject.Adress) || selectedCategoryId == 0 ||
-              selectedCountyId == 0 /* || selectedAgencyId == 0 */ /* || selectedRealtorId == null */)
+                try
                 {
-                    errorMessage = "Alla fält blev inte korrekt ifyllda.";
-                    return;
+                    //manuell validering... lägger till alla error messages i en lista "errormessages" som visas i html sen
+                    //Category
+                    if (selectedCategoryId == 0)
+                    {
+                        errorMessages.Add("Du måste välja en kategori");
+                    }
+                    //County
+                    if (selectedCountyId == 0)
+                    {
+                        errorMessages.Add("Du måste välja en kommun");
+                    }
+                    //Realtor
+                    if (selectedRealtorId == null)
+                    {
+                        errorMessages.Add("Du måste välja en mäklare");
+                    }
+                    //Adress
+                    if (string.IsNullOrEmpty(salesObject.Adress) || salesObject.Adress.Length < 6)
+                    {
+                        errorMessages.Add("Adress måste innehålla minst 6 och högst 50 tecken");
+                    }
+                    //Rooms
+                    if (salesObject.Rooms < 1 || salesObject.Rooms > 50)
+                    {
+                        errorMessages.Add("Antal rum måste vara minst 1 och högst 50");
+                    }
+                    //LivingArea
+                    if (salesObject.LivingArea < 10 || salesObject.LivingArea > 1000)
+                    {
+                        errorMessages.Add("Bostadsarea måste vara minst 10 och högst 1000m2");
+                    }
+                    //AncillaryArea
+                    if (salesObject.AncillaryArea.HasValue && (salesObject.AncillaryArea < 0 || salesObject.AncillaryArea > 1000))
+                    {
+                        errorMessages.Add("Biarea får ej överstiga 1000m2");
+                    }
+                    //PlotArea
+                    if (salesObject.PlotArea.HasValue && (salesObject.PlotArea < 1 || salesObject.PlotArea > 1000000))
+                    {
+                        errorMessages.Add("Tomtarea får ej understiga 1m2 eller överstiga 1000000m2");
+                    }
+                    //YearlyCost
+                    if (salesObject.YearlyCost.HasValue && (salesObject.YearlyCost < 1 || salesObject.YearlyCost > 1000000))
+                    {
+                        errorMessages.Add("Driftskostnad får ej undstiga 1SEK eller överstiga 1,000,000SEK");
+                    }
+                    //MonthlyFee
+                    if (salesObject.MonthlyFee.HasValue && (salesObject.MonthlyFee < 1 || salesObject.MonthlyFee > 100000))
+                    {
+                        errorMessages.Add("Månadsavgift får ej understiga 1SEK eller överstiga 100,000SEK");
+                    }
+                    //Level
+                    if (salesObject.Level.HasValue && (salesObject.Level < 0 || salesObject.Level > 100))
+                    {
+                        errorMessages.Add("Våning får ej överstiga 100");
+                    }
+                    //ListingPrice
+                    if (salesObject.ListingPrice < 1 || salesObject.ListingPrice > 100000000)
+                    {
+                        errorMessages.Add("Pris får ej överstiga 100,0000,000SEK");
+                    }
+                    //CurrentPrice
+                    if (salesObject.CurrentPrice < 1 || salesObject.CurrentPrice > 100000000)
+                    {
+                        errorMessages.Add("Pris får ej överstiga 100,0000,000SEK");
+                    }
+                    //ObjectDescription
+                    if (string.IsNullOrEmpty(salesObject.ObjectDescription) || salesObject.ObjectDescription.Length < 10)
+                    {
+                        errorMessages.Add("Objektbeskrivning får ej understiga 10 tecken.");
+                    }
+                    // BuildYear
+                    if (salesObject.BuildYear < 1800 || salesObject.BuildYear > 2100)
+                    {
+                        errorMessages.Add("Byggnadsår får ej vara tidigare än 1800");
+                    }
+                    //ObjectDescription
+                    if (string.IsNullOrEmpty(salesObject.ObjectDescription) || salesObject.ObjectDescription.Length < 10)
+                    {
+                        errorMessages.Add("Objektbeskrivning får ej understiga 10 tecken.");
+                    }
+                    //CurrentPrice
+                    if (salesObject.CurrentPrice < 1 || salesObject.CurrentPrice > 100000000)
+                    {
+                        errorMessages.Add("Pris får ej överstiga 100,0000,000SEK");
+                    }
+                    //ImageLinks
+                    if (salesObject.ImageLinks == null || !salesObject.ImageLinks.Any())
+                    {
+                        errorMessages.Add("Du måste lägga till minst en bildlänk.");
+                    }
+                    //ViewingDates
+                    if (salesObject.ViewingDates == null || !salesObject.ViewingDates.Any())
+                    {
+                        errorMessages.Add("Du måste välja minst ett visningsdatum.");
+                    }
+                }
+                catch (Exception e)
+                {
+                    errorMessages.Add(e.Message);
                 }
 
                 salesObject.CategoryId = selectedCategoryId;
@@ -372,7 +495,7 @@ else
                     salesObject.RealtorId = selectedRealtorId;
                 }
 
-                //Method to set ListingPrice to same value as CurrentPrice
+                //Method to set ListingPrice to same value as CurrentPrice when a salesObject gets created
                 if (!isListingPriceSet && ((SalesObjectDTO)salesObject).CurrentPrice != 0)
                 {
                     ((SalesObjectDTO)salesObject).ListingPrice = ((SalesObjectDTO)salesObject).CurrentPrice;
@@ -414,20 +537,11 @@ else
     //Lets the user add up to 40 pictures
     private async Task AddImageLinks()
     {
-
-        // TODO: Se över denna felhanterare
-
-        if (newObject is SalesObjectDTO salesObject && !string.IsNullOrWhiteSpace(imageLinksInput) &&
-        salesObject.ImageLinks.Count < 40)
+        if (newObject is SalesObjectDTO salesObject && !string.IsNullOrWhiteSpace(imageLinksInput))
         {
             salesObject.ImageLinks.Add(imageLinksInput);
-            //Gör inputfältet tomt igen efter länken lagts till
-            imageLinksInput = "";
         }
-        else
-        {
-            errorMessage = "Det går inte att lägga till fler än 40 bilder.";
-        }
+        imageLinksInput = "";
     }
 
     private async Task AddDates()
@@ -436,10 +550,11 @@ else
         {
             salesObject.ViewingDates.Add(viewDate);
         }
-        else
-        {
-            errorMessage = "Det går inte att lägga till fler än 40 bilder.";
-        }
+        // la till errormessage för detta i addobject istället /Sanna 
+        // else
+        // {
+        //     errorMessage = "Det går inte att lägga till fler än 40 bilder.";
+        // }
     }
 
 }
