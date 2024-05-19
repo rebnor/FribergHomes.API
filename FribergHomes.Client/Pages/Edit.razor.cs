@@ -10,7 +10,6 @@ namespace FribergHomes.Client.Pages
 
     public partial class Edit
     {
-
         [Parameter]
         public string? ObjectType { get; set; }
 
@@ -90,7 +89,6 @@ namespace FribergHomes.Client.Pages
         private void UpdatePreview()
         {
             StateHasChanged();
-
         }
 
         private async Task Submit()
@@ -121,10 +119,11 @@ namespace FribergHomes.Client.Pages
                     isEdited = true;
                     break;
 
-                //case "county":
 
-                //    County = await CountyService.UpdateCountyAsync(County!);
-                //    break;
+                    //case "county":
+
+                    //    County = await CountyService.UpdateCountyAsync(County!);
+                    //    break;
             }
         }
 
