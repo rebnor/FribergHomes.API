@@ -7,9 +7,9 @@
 
 
 
-<Button Color="ButtonColor.Success" @onclick="@(() => EditObject())" class=""> 
-    Ändra 
-</Button>
+<button @onclick="@(() => EditObject())" class="btn btn-primary">
+    Ändra
+</button>
 
 
 
@@ -18,8 +18,6 @@
     public TObject? TargetObject { get; set; }
 
     public int Id { get; set; }
-
-    public string? StringId { get; set; }
 
     private string? typeName;
 
@@ -31,23 +29,11 @@
         }
 
         var dtoType = TargetObject!.GetType().Name.ToLower();
-
         var typeName = dtoType[..^3];
 
         var idProperty = TargetObject.GetType().GetProperty("Id");
+        Id = (int)idProperty!.GetValue(TargetObject)!;
 
-        if(typeName == "realtor")
-        {
-            StringId = (string)idProperty!.GetValue(TargetObject)!;
-
-            NavMan.NavigateTo($"/edit/{typeName}/{StringId}");
-        }
-        else
-        {
-            Id = (int)idProperty!.GetValue(TargetObject)!;
-
-            NavMan.NavigateTo($"/edit/{typeName}/{Id}");
-        }
-        
+        NavMan.NavigateTo($"/edit/{typeName}/{Id}");
     }
 }
