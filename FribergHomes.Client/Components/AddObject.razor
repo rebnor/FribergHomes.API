@@ -345,11 +345,40 @@ else
             }
             else if (newObject is RealtorDTO realtor)
             {
+                //manuell validering
                 try
                 {
-                    if (password == confirmPassword)
+                    //FullName
+                    if (string.IsNullOrWhiteSpace(realtor.FullName))
                     {
-                        realtor.FullName = $"{firstName} {lastName}";
+                        errorMessages.Add("Du måste ange både för- och efternamn.");
+                    }
+                    //Email
+                    if (string.IsNullOrWhiteSpace(realtor.Email))
+                    {
+                        errorMessages.Add("Du har angett en ogiltig e-postadress.");
+                    }
+                    //PhoneNumber
+                    if (string.IsNullOrWhiteSpace(realtor.PhoneNumber))
+                    {
+                        errorMessages.Add("Du måste ange ditt telefonnummer.");
+                    }
+                    //Password
+                    if (string.IsNullOrWhiteSpace(realtor.PhoneNumber))
+                    {
+                        errorMessages.Add("Du måste välja lösenord.");
+                    }                    
+                    if (password != confirmPassword)
+                    {
+                        errorMessages.Add("Lösenorden stämmer inte överrens. Försök igen.");
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    errorMessages.Add(e.Message);
+                }
+                realtor.FullName = $"{firstName} {lastName}";
                         realtor.AgencyId = Agency.Id;
                         realtor.AgencyName = Agency.Name;
                         realtor.AgencyLogo = Agency.Logo;
@@ -365,16 +394,37 @@ else
                             };
                         okString = await authService.Register(newRealtor);
                         StateHasChanged();
-                    }
-                    else
-                    {
-                        error = "Lösenorden stämmer inte överrens. Försök igen.";
-                    }
-                }
-                catch (Exception e)
-                {
-                    error = e.Message;
-                }
+
+                // try
+                // {
+                //     if (password == confirmPassword)
+                //     {
+                //         realtor.FullName = $"{firstName} {lastName}";
+                //         realtor.AgencyId = Agency.Id;
+                //         realtor.AgencyName = Agency.Name;
+                //         realtor.AgencyLogo = Agency.Logo;
+                //         // await realtorService.AddRealtorAsync(realtor);
+                //         RegisterRealtorDTO newRealtor = new RegisterRealtorDTO()
+                //             {
+                //                 FirstName = firstName,
+                //                 LastName = lastName,
+                //                 Email = realtor.Email,
+                //                 PhoneNumber = realtor.PhoneNumber,
+                //                 Password = password,
+                //                 AgencyId = Agency.Id
+                //             };
+                //         okString = await authService.Register(newRealtor);
+                //         StateHasChanged();
+                //     }
+                //     else
+                //     {
+                //         error = "Lösenorden stämmer inte överrens. Försök igen.";
+                //     }
+                // }
+                // catch (Exception e)
+                // {
+                //     error = e.Message;
+                // }
             }
             else if (newObject is SalesObjectDTO salesObject)
             {
@@ -550,7 +600,7 @@ else
         {
             salesObject.ViewingDates.Add(viewDate);
         }
-        // la till errormessage för detta i addobject istället /Sanna 
+        // la till errormessage för detta i addobject istället /Sanna
         // else
         // {
         //     errorMessage = "Det går inte att lägga till fler än 40 bilder.";
