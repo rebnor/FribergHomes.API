@@ -29,9 +29,11 @@
                     @realtor.FullName
                 </h2>
                 <div class="pictures">
-                    <img src="@realtor.Picture" width="350" />
+                    <ProfilePicture Realtor="@realtor" Size="ProfilePicture.PictureSize.Medium" /> @* Tobias *@
+                    @* <img src="@realtor.Picture" width="350" /> *@
                     <a href="/info/Agency/@realtor.AgencyId" @onclick="() => NavigateToAgency(realtor.AgencyId)"><img src="@realtor.AgencyLogo" width="100" class="logo" /></a>
                 </div>
+                <br/>
                 <p>Email: @realtor.Email</p>
                 <p>Telefon: @realtor.PhoneNumber</p>
             </div>
@@ -210,8 +212,8 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Namn</th>
-                        <th>Bild</th>
                         <th>Email</th>
                         <th>Telefon</th>
                         <th></th>
@@ -221,8 +223,9 @@
                     @foreach (var r in AgencyRealtors)
                     {
                         <tr>
+                            <td> <ProfilePicture Realtor="@r" Size="ProfilePicture.PictureSize.Small" /> </td> @* Tobias *@
                             <td>@r.FullName</td>
-                            <td><img src="@r.Picture" width="100" /></td>
+                            @* <td><img src="@r.Picture" width="100" /></td> *@
                             <td>@r.Email</td>
                             <td>@r.PhoneNumber</td>
                             <td>

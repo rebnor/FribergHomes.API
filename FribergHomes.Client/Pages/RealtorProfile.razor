@@ -34,7 +34,7 @@
 
                 <div class="col">
                     @* Profilbild *@
-                    <ProfilePicture Realtor="@Realtor" Size="medium" />
+                    <ProfilePicture Realtor="@Realtor" Size="ProfilePicture.PictureSize.Large" />
                 </div>
                 <div class="col">
 
@@ -44,8 +44,10 @@
                     <span>Telefon: @Realtor.PhoneNumber</span><br />
                     <span>Email: @Realtor.Email </span><br />
                     <span>Mäklarbyrå: @Realtor.AgencyName </span><br />
-                    <img src="@Realtor.AgencyLogo" width="120" />
 
+                </div>
+                <div class="col">
+                    <img src="@Realtor.AgencyLogo" width="120" />
                 </div>
 
             </div>

@@ -36,8 +36,8 @@
 <table class="table">
     <thead>
         <tr>
+            <th></th>
             <th>Namn</th>
-            <th>Bild</th>
             <th>Email</th>
             <th>Telefon</th>
             <th></th>
@@ -49,8 +49,9 @@
             // TODO: Se över att man inte kan ta bort Admin ? 
 
             <tr>
+                <td> <ProfilePicture Realtor="@r" Size="ProfilePicture.PictureSize.Small" /> </td> @* Tobias *@
                 <td>@r.FullName<br /><Button Color="ButtonColor.Info" Size="Size.Small" @onclick="() => RedirectToInfoRealtor(r.Id)">Kolla Mäklare</Button></td>
-                <td><img src="@r.Picture" width="100" /></td>
+                @* <td><img src="@r.Picture" width="100" /></td> *@
                 <td>@r.Email</td>
                 <td>@r.PhoneNumber</td>
                 <td>
