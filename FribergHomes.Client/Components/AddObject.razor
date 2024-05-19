@@ -349,9 +349,14 @@ else
                 try
                 {
                     //FullName
-                    if (string.IsNullOrWhiteSpace(realtor.FullName))
+                    if (string.IsNullOrWhiteSpace(firstName))
                     {
-                        errorMessages.Add("Du måste ange både för- och efternamn.");
+                        errorMessages.Add("Du måste ange förnamn.");
+                    }
+                    //LastName
+                    if (string.IsNullOrWhiteSpace(lastName))
+                    {
+                        errorMessages.Add("Du måste ange efternamn.");
                     }
                     //Email
                     if (string.IsNullOrWhiteSpace(realtor.Email))
@@ -372,12 +377,12 @@ else
                     {
                         errorMessages.Add("Lösenorden stämmer inte överrens. Försök igen.");
                     }
-
                 }
                 catch (Exception e)
                 {
                     errorMessages.Add(e.Message);
                 }
+
                 realtor.FullName = $"{firstName} {lastName}";
                         realtor.AgencyId = Agency.Id;
                         realtor.AgencyName = Agency.Name;
@@ -395,6 +400,7 @@ else
                         okString = await authService.Register(newRealtor);
                         StateHasChanged();
 
+                // Gamla koden: 
                 // try
                 // {
                 //     if (password == confirmPassword)
