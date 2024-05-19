@@ -212,13 +212,14 @@
                             </div>
                         </div>
 
-                        <div class="mt">
+                        <div class="">
                             <span>Profile picture preview</span>
-                            <img src="@Realtor.Picture" width="250px" height="auto" />
+                            @* <img src="@Realtor.Picture" width="250px" height="auto" /> *@
+                            <ProfilePicture Realtor="@Realtor" Size="ProfilePicture.PictureSize.Medium" />
                         </div>
 
-                        <div class="fixed-small">
-                            <button type="submit" class="btn btn-primary">Spara</button>
+                        <div class="">
+                            <button type="submit" class="btn btn-success">Spara</button>
                         </div>
 
                     </EditForm>
