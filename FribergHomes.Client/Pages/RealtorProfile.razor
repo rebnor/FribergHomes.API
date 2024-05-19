@@ -14,7 +14,7 @@
 @attribute [Authorize(Roles = "Admin, Realtor")]
 
 
-<div class="content">
+<div class="container">
 
     <h3>Mäklarprofil</h3>
 
@@ -29,27 +29,37 @@
         @if (!ShowCreateForm)
         {
 
+            <div class="row">
+
+                <div class="col">
+                    @* Profilbild *@
+                    <ProfilePicture Realtor="@Realtor" Size="medium" />
+                </div>
+                <div class="col">
+
+                    @* Beskrivning *@
+
+                    <h3>@Realtor.FullName</h3>
+                    <span>Telefon: @Realtor.PhoneNumber</span><br />
+                    <span>Email: @Realtor.Email </span><br />
+                    <span>Mäklarbyrå: @Realtor.AgencyName </span><br />
+                    <img src="@Realtor.AgencyLogo" width="120"/>
+
+                </div>
+
+            </div>
+            
+
             <div class="">
 
-                @* Profilbild *@
+                
 
-                <span>Profilbild</span>
-                <img src="@Realtor.Picture" alt="profilbild" class="profile-picture" width="500" /> @* TODO: visa defaultbild *@
-
+            </div>
+            <div>
                 <EditButton TargetObject="Realtor" />
-
             </div>
 
-            <div class="">
-
-                @* Beskrivning *@
-
-                <h4>@Realtor.FullName</h4>
-                <span>@Realtor.AgencyName</span>
-                 @* Länka till byrå *@
-
-            </div>
-        }
+        } @* Avslut (!ShowCreateForm) *@
 
         <div>
 
@@ -67,26 +77,31 @@
             </CascadingValue>
 
 
-            @* Funktionsknappar *@
+            <hr />
 
-            <Button Color="ButtonColor.Warning" Disabled="@(!selectedObject.Any())" @onclick="RedirectToEdit">Editera</Button>
 
-            <Button Color="ButtonColor.Danger" Disabled="@(!selectedObject.Any())" @onclick="RedirectToDelete">Radera</Button>
 
-            <Button Color="ButtonColor.Success" @onclick="(() => ShowCreateForm = true)">Skapa annons</Button>
 
-            <hr/>
+
 
             @* Lista - egna försäljningsobjekt *@
             <div>
 
                 <h4>Försäljningsobjekt</h4>
 
+                @* Funktionsknappar *@
+
+                @* <Button Color="ButtonColor.Warning" Disabled="@(!selectedObject.Any())" @onclick="RedirectToEdit">Editera</Button>
+
+            <Button Color="ButtonColor.Danger" Disabled="@(!selectedObject.Any())" @onclick="RedirectToDelete">Radera</Button> *@
+
+                <Button Color="ButtonColor.Success" @onclick="(() => ShowCreateForm = true)">Skapa annons</Button>
+
                 <Grid @ref="grid"
                       TItem="SalesObjectDTO"
                       AllowSorting="true"
-                      AllowSelection="true"
-                      Class=""
+                      AllowSelection="false"
+                      Class="table table-hover"
                       DataProvider="GetSalesObjects"
                       SelectedItemsChanged="OnSelectedItemsChanged"
                       Responsive="true">
@@ -107,11 +122,19 @@
                         @context.CurrentPrice
                     </GridColumn>
 
+                    <GridColumn TItem="SalesObjectDTO">
+
+                        <Button Color="ButtonColor.Warning" Size="Size.Small" @onclick="@(() => RedirectToEdit(context.Id))">Editera</Button>
+
+                        <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="@(() => RedirectToDelete(context.Id))">Radera</Button>
+
+
+                    </GridColumn>
+
                 </Grid>
             </div>
         </div>
-    } @* Avslut (Realtor is not null) *@
-</div>
+    } @* Avslut (Realtor is not null) *@</div>
 
 
 
@@ -149,16 +172,17 @@
 
     }
 
-    private void RedirectToEdit()
+    private void RedirectToEdit(int id)
     {
-        NavMan.NavigateTo($"/edit/SalesObject/{selectedObject.First().Id}");
+        NavMan.NavigateTo($"/edit/salesobject/{id}");
     }
 
-    private void RedirectToDelete()
+    private void RedirectToDelete(int id)
     {
-        NavMan.NavigateTo($"/delete/SalesObject/{selectedObject.First().Id}");
+        NavMan.NavigateTo($"/delete/SalesObject/{id.ToString()}");
     }
 
+    // Function to select single item in grid (not used on group decision).
     private async Task<GridDataProviderResult<SalesObjectDTO>> GetSalesObjects(GridDataProviderRequest<SalesObjectDTO> request)
     {
         if (Realtor is not null)
