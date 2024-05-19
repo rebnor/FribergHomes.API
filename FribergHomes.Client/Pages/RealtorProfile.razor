@@ -124,9 +124,9 @@
 
                     <GridColumn TItem="SalesObjectDTO">
 
-                        <Button Color="ButtonColor.Warning" Size="Size.Small" @onclick="RedirectToEdit">Editera</Button>
+                        <Button Color="ButtonColor.Warning" Size="Size.Small" @onclick="@(() => RedirectToEdit(context.Id))">Editera</Button>
 
-                        <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="RedirectToDelete">Radera</Button>
+                        <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="@(() => RedirectToDelete(context.Id))">Radera</Button>
 
 
                     </GridColumn>
@@ -172,16 +172,17 @@
 
     }
 
-    private void RedirectToEdit()
+    private void RedirectToEdit(int id)
     {
-        NavMan.NavigateTo($"/edit/SalesObject/{selectedObject.First().Id}");
+        NavMan.NavigateTo($"/edit/salesobject/{id}");
     }
 
-    private void RedirectToDelete()
+    private void RedirectToDelete(int id)
     {
-        NavMan.NavigateTo($"/delete/SalesObject/{selectedObject.First().Id}");
+        NavMan.NavigateTo($"/delete/SalesObject/{id.ToString()}");
     }
 
+    // Function to select single item in grid (not used on group decision).
     private async Task<GridDataProviderResult<SalesObjectDTO>> GetSalesObjects(GridDataProviderRequest<SalesObjectDTO> request)
     {
         if (Realtor is not null)
