@@ -21,6 +21,8 @@
 
     private string? typeName;
 
+    private string stringId;
+
     private void EditObject()
     {
         if (TargetObject == null)
@@ -31,9 +33,19 @@
         var dtoType = TargetObject!.GetType().Name.ToLower();
         var typeName = dtoType[..^3];
 
-        var idProperty = TargetObject.GetType().GetProperty("Id");
-        Id = (int)idProperty!.GetValue(TargetObject)!;
+        if (typeName != "realtor")
+        {
+            var idProperty = TargetObject.GetType().GetProperty("Id");
+            Id = (int)idProperty!.GetValue(TargetObject)!;
 
-        NavMan.NavigateTo($"/edit/{typeName}/{Id}");
+            NavMan.NavigateTo($"/edit/{typeName}/{Id}");
+        }
+        else
+        {
+            var idProperty = TargetObject.GetType().GetProperty("Id");
+            stringId = (string)idProperty!.GetValue(TargetObject)!;
+
+            NavMan.NavigateTo($"/edit/{typeName}/{stringId}");
+        }
     }
 }

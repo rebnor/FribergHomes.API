@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Authorization
 @*Author Tobias
     Update: Redirect till Delete SalesObject funkar nu /  Reb 2024-05-18
+    Update: AddObject-komp inlagd och fungerar / Reb 2025-05-19
 *@
 @page "/realtorprofile"
 
@@ -59,28 +60,31 @@
                 <EditButton TargetObject="Realtor" />
             </div>
 
-        } @* Avslut (!ShowCreateForm) *@
+        }
+        @* Avslut (!ShowCreateForm) *@
 
         <div>
 
-            <CascadingValue Value="Realtor">
+            @* <CascadingValue Value="Realtor">
 
                 @if (ShowCreateForm)
                 {
-                    <CreateSalesObject HideForms="HideForms" /> @* HideForms = Parameter callback *@
-                }
+                    <CreateSalesObject HideForms="HideForms" />  *@@* HideForms = Parameter callback *@
+            @*     }
                 @if (ShowEditForm)
                 {
                     <p>Visa editform</p>
                 }
 
-            </CascadingValue>
+            </CascadingValue> *@
+     @*        @if (ShowCreateForm)
+            {
+                <AddObject ObjectType="SalesObject" />
+            } *@
+
 
 
             <hr />
-
-
-
 
 
 
@@ -95,7 +99,17 @@
 
             <Button Color="ButtonColor.Danger" Disabled="@(!selectedObject.Any())" @onclick="RedirectToDelete">Radera</Button> *@
 
-                <Button Color="ButtonColor.Success" @onclick="(() => ShowCreateForm = true)">Skapa annons</Button>
+                @* <Button Color="ButtonColor.Success" @onclick="(() => ShowCreateForm = true)">Skapa annons</Button> *@
+
+
+                <Button Color="ButtonColor.Primary" @onclick="ShowAddSalesObject">Skapa annons</Button>
+
+                @if (AddSalesObject)
+                {
+                    <Button Color="ButtonColor.Dark" @onclick="HideAddSalesObject">Avbryt</Button>
+
+                    <AddObject ObjectType="salesObject" />
+                }
 
                 <Grid @ref="grid"
                       TItem="SalesObjectDTO"
@@ -156,6 +170,9 @@
 
     private bool ShowEditForm;
 
+    private bool AddSalesObject = false;
+    private string stringId;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -174,7 +191,8 @@
 
     private void RedirectToEdit(int id)
     {
-        NavMan.NavigateTo($"/edit/salesobject/{id}");
+        stringId = Convert.ToString(id);
+        NavMan.NavigateTo($"/edit/salesobject/{stringId}");
     }
 
     private void RedirectToDelete(int id)
@@ -199,6 +217,24 @@
         return Task.CompletedTask;
     }
 
+
+
+    private void ShowAddSalesObject()
+    {
+        AddSalesObject = true;
+        StateHasChanged();
+
+    }
+    private void HideAddSalesObject()
+    {
+        AddSalesObject = false;
+        StateHasChanged();
+    }
+
+    private void RedirectToEditRealtor(string id)
+    {
+        NavMan.NavigateTo($"/edit/realtor/{id}", forceLoad: true);
+    }
 
 
 }

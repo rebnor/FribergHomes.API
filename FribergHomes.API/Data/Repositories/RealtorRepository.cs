@@ -57,7 +57,8 @@ namespace FribergHomes.API.Data.Repositories
         public async Task<Realtor> GetRealtorByIdAsync(string id)
         {
             //var realtor = await _appDbCtx.Realtors.FirstOrDefaultAsync(r => r.Id == id);
-            var realtor = await _appDbCtx.Realtors.Include(r => r.Agency).FirstOrDefaultAsync(r => r.Id == id);
+            //var realtor = await _appDbCtx.Realtors.Include(r => r.Agency).FirstOrDefaultAsync(r => r.Id == id);
+            var realtor = await _appDbCtx.Users.Include(r => r.Agency).FirstOrDefaultAsync(r => r.Id == id);
             return realtor;
         }
 

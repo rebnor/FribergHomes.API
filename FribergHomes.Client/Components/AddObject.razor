@@ -3,6 +3,7 @@
    Update: När man lägger till realtor så kopplas den byrå man är inloggad på direkt /Rebecka 2024-05-18
    Updater: Nu kan man lägga till Realtor (+ att den blir en User med lösenord osv) -> Funkade inte innan / Reb 2024-05-18
    Update: Nu kan man lägga till SalesObject med alla tillbehör / Reb 2024-05-18
+   
 
 *@
 
@@ -272,7 +273,7 @@ else
         {
             newObject = new AgencyDTO();
         }
-        else if (ObjectType == "realtor") // TODO: Lösenord???
+        else if (ObjectType == "realtor") 
         {
             authState = await authService.CheckAuthState(); // Hämtar inloggade-realtor
             email = authState.User.Identity.Name; // hämtar inloggade email
@@ -320,7 +321,6 @@ else
                 {
                     if (password == confirmPassword)
                     {
-                        // TODO: Lösenord? Göra till User?
                         realtor.FullName = $"{firstName} {lastName}";
                         realtor.AgencyId = Agency.Id;
                         realtor.AgencyName = Agency.Name;
@@ -362,6 +362,7 @@ else
                 salesObject.CategoryId = selectedCategoryId;
                 salesObject.CountyId = selectedCountyId;
                 salesObject.AgencyId = Agency.Id;
+                salesObject.CreatorName = await authService.GetUserName();
                 if (authState.User.IsInRole("Realtor"))
                 {
                     salesObject.RealtorId = await authService.GetUserId();
