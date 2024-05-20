@@ -48,34 +48,41 @@
                 </Button>
 
                 <br />
-                <h2>Kommande visningar</h2>
+                <h2>Mina Annonser</h2>
                 <hr />
                 foreach (var salesObject in RealtorsSales)
                 {
-                    foreach (var vd in salesObject.ViewingDates)
-                    {
+                   
+                   
                         <div class="shadow text-center card custom-card">
 
-                            @if (vd > DateTime.Now)
-                            {
+                      
+                            
                                 <h4>@salesObject.Adress - @salesObject.CountyName</h4>
-                                foreach (var picture in salesObject.ImageLinks)
+                                @foreach (var picture in salesObject.ImageLinks)
                                 {
                                     <img src="@picture" width="150" />
                                 }
-                                <strong>Visning: @vd.ToString("yyy-MM-dd")</strong>
+
+                        @foreach (var date in salesObject.ViewingDates)
+        {
+                            <strong>Visning: @date.ToString("yyy-MM-dd")</strong>
+                        }
+                                
+
+
                                 <Button Color="ButtonColor.Info">
                                     <a href="/info/SalesObject/@salesObject.Id" @onclick="() => NavigateToSalesObject(salesObject.Id)">
                                         Kolla Annons
                                     </a>
                                 </Button>
-                            }
+                            
 
                         </div>
-                    }
+                    
                 }
 
-                <h2>Sålda annonser</h2>
+               @*  <h2>Sålda annonser</h2>
                 <hr />
                 foreach (var so in RealtorsSales)
                 {
@@ -99,19 +106,19 @@
                         </div>
 
                     }
-                }
+                } *@
 
             }
         }
         else if (ObjectToShow is SalesObjectDTO salesObject) @* Shows info of SalesObject *@
         {
-            @foreach (var date in salesObject.ViewingDates)
+  @*           @foreach (var date in salesObject.ViewingDates)
             {
                 if (date < DateTime.Now)
                 {
                     <Badge Color="BadgeColor.Danger">SÅLD</Badge>
                 }
-            }
+            } *@
             <h3>@salesObject.Adress - @salesObject.CountyName</h3>
             <br />
             foreach (var picture in salesObject.ImageLinks)

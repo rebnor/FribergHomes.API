@@ -5,6 +5,7 @@
 @* Author: Tobias 2024-05-02 *@
 @* Update: Injected AuthService to retrieve Realtor name / Tobias 2024-05-18 *@
 @*Update: Nu kan man editera allt och man får upp Alert-box som säger att det funkade / Reb 2024-05-19 *@
+@*Update: Nu kan man tabort&lägga till bilder & visningsobjekt vid SalesObject / Reb 2025-05-20*@
 
 @page "/edit/{objecttype}/{id}"
 @attribute [Authorize(Roles = "Admin, Realtor")]
@@ -102,6 +103,80 @@ else
                                 <InputNumber @bind-Value="SalesObject!.LivingArea" />
                             </label>
                         </div>
+
+                        <div class="">
+                            <label>
+                                Bilder
+                                @foreach (var picture in SalesObject.ImageLinks)
+                                {
+                                    <div>
+
+                                        <img src="@picture" width="200" />
+
+                                        @if (!addPicture)
+                                        {
+
+                                            <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="() => DeletePicture(SalesObject, picture)">Ta Bort</Button>
+
+                                            <br />
+
+                                        }
+
+                                    </div>
+                                }
+                                @if (addPicture)
+                                {
+                                    <label>
+                                        Bildlänk:
+                                        <input type="text" @bind="newPic" placeholder="Skriv in din bildlänk här" />
+
+                                    </label>
+                                    <Button Color="ButtonColor.Success" Size="Size.Small" @onclick="() => SaveAddedPic(SalesObject, newPic)">Lägg till</Button>
+
+                                }
+                                <br />
+                                <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="AddPicture">Lägg till ny bild</Button>
+
+                            </label>
+                        </div>
+
+                        <div class="">
+                            <label>
+                                Visnings Datum:
+                                @foreach (var date in SalesObject.ViewingDates)
+                                {
+                                    <div style="border: 1px solid black" class="p-2 text-center">
+
+                                        <p>@date.ToString("yyyy-MM-dd")</p>
+
+                                        @if (!addDate)
+                                        {
+
+                                            <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="() => DeleteDate(SalesObject, date)">Ta Bort</Button>
+
+                                            <br />
+
+                                        }
+
+                                    </div>
+                                }
+                                @if (addDate)
+                                {
+                                    <label>
+                                        Datum:
+                                        <input type="date" @bind="newDate" />
+
+                                    </label>
+                                    <Button Color="ButtonColor.Success" Size="Size.Small" @onclick="() => SaveAddedDate(SalesObject, newDate)">Lägg till</Button>
+
+                                }
+                                <br />
+                                <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="AddPicture">Lägg till datum</Button>
+
+                            </label>
+                        </div>
+
+
 
                         @if (_category == "Hus" || _category == "Radhus" || _category == "Semesterhem")
                         {

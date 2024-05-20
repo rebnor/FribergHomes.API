@@ -95,7 +95,7 @@ else
                 <Button Color="ButtonColor.Primary" @onclick="NoCancel">Nej, Avbryt!</Button>
             }
 
-            @if (!changeRealtor)
+            @if (ObjectToShow is RealtorDTO && !changeRealtor)
             {
                 <Button Color="ButtonColor.Danger" @onclick="YesDelete">Ja, Ta bort!</Button>
                 <Button Color="ButtonColor.Primary" @onclick="NoCancel">Nej, Avbryt!</Button>

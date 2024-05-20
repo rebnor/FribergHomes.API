@@ -31,6 +31,10 @@ namespace FribergHomes.Client.Pages
         private int intId;
         private Guid guidId;
         private bool isEdited = false;
+        private bool addPicture = false;
+        private string newPic = "";
+        private bool addDate = false;
+        private DateTime newDate;
 
 
         protected override async Task OnParametersSetAsync()
@@ -126,6 +130,51 @@ namespace FribergHomes.Client.Pages
                     //    break;
             }
         }
+
+        private void AddPicture()
+        {
+            addDate = true;
+        }
+
+        private void SaveAddedPic(SalesObjectDTO salesObject, string newPic)
+        {
+            salesObject.ImageLinks.Add(newPic);
+            addPicture = false;
+            //newPic = "";
+            this.newPic = string.Empty;
+            StateHasChanged();
+
+        }
+
+        private void DeletePicture(SalesObjectDTO salesObject, string picLink)
+        { 
+            salesObject.ImageLinks.Remove(picLink);
+
+        }
+
+
+        private void AddDate()
+        {
+            addPicture = true;
+        }
+
+        private void SaveAddedDate(SalesObjectDTO salesObject, DateTime newDate)
+        {
+            salesObject.ViewingDates.Add(newDate);
+            addDate = false;
+            //newPic = "";
+            //this.newDate = string.Empty;
+            StateHasChanged();
+
+        }
+
+        private void DeleteDate(SalesObjectDTO salesObject, DateTime date)
+        {
+            salesObject.ViewingDates.Remove(date);
+
+        }
+
+
 
     }
 }
