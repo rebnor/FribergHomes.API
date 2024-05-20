@@ -68,7 +68,7 @@ namespace FribergHomes.API.Data.Repositories
             return salesObjects;
         }
 
-        public async Task<List<SalesObject>> GetSalesObjectsByRealtorAsync(string id)          
+        public async Task<List<SalesObject>> GetSalesObjectsByRealtorAsync(int id)
         {
             var salesObjects = await _appDBctx.SalesObjects
                 .Where(s => s.Realtor.Id == id)
@@ -103,7 +103,7 @@ namespace FribergHomes.API.Data.Repositories
             return salesObject;
         }
 
-        public async Task<List<SalesObject>> GetRealtorsSalesObjectsAsync(string realtorId)     //TODO: Ta bort dublett
+        public async Task<List<SalesObject>> GetRealtorsSalesObjectsAsync(int realtorId)
         {
             var salesObjects = await _appDBctx.SalesObjects.Where(s=>s.Realtor.Id == realtorId).ToListAsync();
             return salesObjects;
@@ -112,7 +112,7 @@ namespace FribergHomes.API.Data.Repositories
 
         public async Task<List<SalesObject>> GetSalesObjectsByCategoryAsync(int categoryId)
         {
-            var salesObjects = await _appDBctx.SalesObjects.Where(s => s.Category.Id == categoryId).Include(s=>s.County).Include(s=>s.Realtor).ThenInclude(r=>r.Agency).ToListAsync();
+            var salesObjects = await _appDBctx.SalesObjects.Where(s => s.Category.Id == categoryId).ToListAsync();
             return salesObjects;
 
         }

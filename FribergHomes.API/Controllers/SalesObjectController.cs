@@ -122,7 +122,7 @@ namespace FribergHomes.API.Controllers
         // Gets all GetSalesObjects by realtor id from database. // Tobias 2024-04-29
         // GET: api/SalesObject/realtor/{id}
         [HttpGet("realtor/{id}")]
-        public async Task<ActionResult<List<SalesObjectDTO>>> GetSalesObjectsByRealtor(string id)
+        public async Task<ActionResult<List<SalesObjectDTO>>> GetSalesObjectsByRealtor(int id)
         {
             try
             {

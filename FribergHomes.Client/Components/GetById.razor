@@ -4,12 +4,9 @@
 * @ Update: All-around update on code/ Reb 30/4 - 1/5
 * @Update: Added so you click on button to come på infopage about choosen object / Reb 2024-05-02
 * @Update: Implemented EditButton component where required. / Tobias 2024-05-03
-* @Update: Added <AuthorizeView Roles="Realtor, Admin"> where its needed / Reb 2024-05-16
-* @Update: Changed RealtorID from int to string /Sanna 
 *@
 @using System.Text.Json
 @using System.Net.Http.Json
-@using FribergHomes.Client.Authentications
 @using FribergHomes.Client.Services.Interfaces;
 @using FribergHomes.Client.DTOs
 @inject IRealtor realtorService
@@ -17,14 +14,14 @@
 @inject ICounty countyService
 @inject IAgencyService agencyService
 @inject ISalesObject salesService
-@inject IAuthService authService;
 
 @if (ObjectToShow != null)
 {
-    <div class="shadow col-6 col-sm-3 text-center card custom-card">
+    <div class="card shadow col-3 m-2 text-center align-items-center p-2">
         @if (ObjectToShow is RealtorDTO realtor)
         {
-            <h2>@realtor.FullName - @realtor.AgencyName</h2>
+
+            <h3>@realtor.FullName - @realtor.AgencyName</h3>
             <div class="pictures">
                 <img src="@realtor.Picture" width="100" />
             </div>
@@ -34,70 +31,88 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/Realtor/@realtor.Id" class="custom-link">Kolla info om Mäklare</a>
             </Button>
+
+            <EditButton TargetObject="realtor" /> // Tobias
+
+            <Button Color="ButtonColor.Danger">
+                <a href="/delete/Realtor/@realtor.Id" class="custom-link">Ta bort Realtor</a>
+            </Button>
+
+            <EditButton TargetObject="realtor" />
         }
         else if (ObjectToShow is SalesObjectDTO salesObject)
         {
-            if (salesObject.CurrentPrice > salesObject.ListingPrice)
-            {
-                <Badge Color="BadgeColor.Dark">PSST....Sänkt pris</Badge>
-            }
-            <h3>@salesObject.Adress - @salesObject.CountyName</h3>
+            <h3>@salesObject.Adress</h3>
             foreach (var picture in salesObject.ImageLinks)
             {
-                <div>
                 <img src="@picture" width="100" />
-                </div>
             }
-
-            <strong>@salesObject.CategoryName</strong>
-            <div>@((MarkupString)salesObject.CategoryLogoUrl)</div>// TODO: Syns inte
-
-            if (salesObject.CurrentPrice > salesObject.ListingPrice)
+            // TODO: Se över Listing/Current price utskriften / Reb
+            if (salesObject.ListingPrice != 0)
             {
-                <del>@salesObject.ListingPrice kr</del>
-                <h4>@salesObject.CurrentPrice kr</h4>
+                if (salesObject.CurrentPrice > salesObject.ListingPrice)
+                {
+                    <del>@salesObject.ListingPrice kr</del>
+                    <p>@salesObject.CurrentPrice kr</p>
+                }
             }
             else
             {
-                <h4>@salesObject.CurrentPrice kr</h4>
+                <p>@salesObject.CurrentPrice kr</p>
             }
-            <p><strong>Rum: </strong>@salesObject.Rooms</p>
-            <p><strong>Boarea: </strong>@salesObject.LivingArea m<sup>2</sup></p>
-            if (salesObject.CategoryName == "Lägenhet")
+
+            <p>@salesObject.CategoryName</p>
+            <div>@((MarkupString)@salesObject.CategoryLogoUrl)</div>
+            <p>Rum @salesObject.Rooms</p>
+            <p>Boarea: @salesObject.LivingArea m<sup>2</sup></p>
+            if (salesObject.CategoryName == "Apartment")
             {
-                <p><strong>Våning: </strong>@salesObject.Level</p>
+                <p>Våning: @salesObject.Level</p>
                 if (salesObject.Lift == true)
                 {
-                    <p><strong>Hiss: </strong>Ja</p>
+                    <p>Hiss: Ja</p>
                 }
                 else
                 {
-                    <p><strong>Hiss: </strong>Nej</p>
+                    <p>Hiss: Nej</p>
                 }
             }
             else
             {
-                <p><strong>Tomtarea: </strong>@salesObject.PlotArea m<sup>2</sup></p>
+                <p>Tomtarea: @salesObject.PlotArea m<sup>2</sup></p>
             }
-            <h4>Mäklare</h4>
-            <strong>@salesObject.RealtorName</strong>
-            <img src="@salesObject.AgencyLogoUrl" width="70"/>
+            <h3>Mäklare</h3>
+            <p>@salesObject.RealtorName - @salesObject.AgencyName</p>
 
             <Button Color="ButtonColor.Info">
                 <a href="/info/SalesObject/@salesObject.Id" class="custom-link">Kolla info</a>
             </Button>
+
+            <EditButton TargetObject="salesObject" /> // Tobias
+
+            <Button Color="ButtonColor.Danger">
+                <a href="/delete/SalesObject/@salesObject.Id" class="custom-link">Ta bort Annons</a>
+            </Button>
+            <EditButton TargetObject="salesObject" />
+
         }
         else if (ObjectToShow is AgencyDTO agency)
         {
-            <h3>@agency.Name</h3>
+            <h2>@agency.Name</h2>
             <img src="@agency.Logo" width="100" />
-
-            <div class="make-space"></div>
-
 
             <Button Color="ButtonColor.Info">
                 <a href="/info/Agency/@agency.Id" class="custom-link">Kolla info om Mäklarbyrå</a>
             </Button>
+
+            <EditButton TargetObject="agency" /> // Tobias
+
+            <Button Color="ButtonColor.Danger">
+                <a href="/delete/Agency/@agency.Id">Ta bort Mäklarbyrå</a>
+            </Button>
+
+            <EditButton TargetObject="agency" />
+
         }
         else if (ObjectToShow is CountyDTO county)
         {
@@ -106,16 +121,24 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/County/@county.Id" class="custom-link">Kolla info om Kommun</a>
             </Button>
+
+            @* <EditButton TargetObject="county" /> *@
+
         }
         else if (ObjectToShow is CategoryDTO category)
         {
             <h2>@category.Name</h2>
-            <h1>@((MarkupString)category.IconUrl)</h1>
 
-            <div class="make-space"></div>
+            <div>@((MarkupString)category.IconUrl)</div>
 
             <Button Color="ButtonColor.Info">
-                <a href="/info/Category/@category.Id" class="custom-link">Annonser i denna Kategori</a>
+                <a href="/info/Category/@category.Id" class="custom-link">Kolla info om Kategori</a>
+            </Button>
+
+            <EditButton TargetObject="category" /> // Tobias
+
+            <Button Color="ButtonColor.Danger">
+                <a href="/delete/Category/@category.Id">Ta bort Kategori</a>
             </Button>
 
             <EditButton TargetObject="category" />
@@ -136,21 +159,16 @@ else
     [Parameter]
     public int ObjectId { get; set; }
 
-    [Parameter]
-    public string ObjectStringId { get; set; }
-
     public object? ObjectToShow { get; set; }
     public string error;
-
-    private AuthenticationState authState;
 
     private async Task GetObject()
     {
         try
         {
             if (ObjectType == "Realtor")
-                ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectStringId);
-            if (ObjectType == "SalesObject")
+                ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId);
+            else if (ObjectType == "SalesObject")
                 ObjectToShow = await salesService.Get(ObjectId);
             else if (ObjectType == "Category")
                 ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
@@ -169,8 +187,5 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetObject();
-        authState = await authService.CheckAuthState();
-        StateHasChanged();
-
     }
 }

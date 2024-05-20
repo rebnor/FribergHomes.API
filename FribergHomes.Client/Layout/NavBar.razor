@@ -1,14 +1,40 @@
 ﻿<nav class="navbar navbar-expand-sm navbar-toggleable-sm mb-3 border-bottom">
     <div class="container-fluid">
 
-        <a class="navbar-brand home-logo" href=""><img src="../hemlangtanfriberg_mini.png" width="50" alt="Hemlängtan" /></a>
+        <a class="navbar-brand home-logo" href=""><img src="../hemlangtanfriberg_mini.png" width="50" alt="Hemlängtan"/></a>
+        @* <a class="navbar-brand home-logo" href="">Hemlängtan</a> *@
 
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
 
+   @*              <li class="nav-item">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                    </NavLink>
+                </li> *@
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="counter">
+                        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="weather">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="county">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Kommuner
+                    </NavLink>
+                </li>
                 <li class="nav-item">
                     <NavLink class="nav-link" href="salesObject">
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Annonser
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="realtor">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Mäklare
                     </NavLink>
                 </li>
                 <li class="nav-item">
@@ -21,42 +47,6 @@
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Mäklarbyråer
                     </NavLink>
                 </li>
-                @* Tobias *@
-                <AuthorizeView Roles="Realtor, Admin">
-                    <NotAuthorized>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="login">
-                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Logga In
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="register">
-                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Registrera
-                            </NavLink>
-                        </li>
-                    </NotAuthorized>
-                    <Authorized>
-                        <li class="nav-item">
-                            <NavLink class="nav-link profile" href="realtorprofile">
-                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Min Profil
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <LogOut /> @*Reb*@
-                        </li>
-                    </Authorized>
-                </AuthorizeView>
-                @* Rebecka *@
-                <AuthorizeView Roles="Admin">
-                    <Authorized>
-                        <li class="nav-item agencyprofile">
-                            <NavLink class="nav-link" href="agencyprofile">
-                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Byrå Profil
-                            </NavLink>
-                        </li>
-                    </Authorized>
-                </AuthorizeView>
-
             </ul>
         </div>
 
@@ -64,3 +54,6 @@
 
 </nav>
 
+@code {
+
+}

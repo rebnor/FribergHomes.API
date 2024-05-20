@@ -96,7 +96,7 @@ namespace FribergHomes.API.Controllers
                 }
 
                 List<RealtorDTO> realtorsDtos = new List<RealtorDTO>();
-                var realtors = await _agencyRepository.GetRealtorsAtAgencyAsync(agency.Id);
+                var realtors = await _agencyRepository.GetRealtorsAtAgencyAsync(id);
                 foreach (var realtor in realtors)
                 { 
                     var realtorDto = _mapper.Map<RealtorDTO>(realtor);
@@ -110,59 +110,6 @@ namespace FribergHomes.API.Controllers
                 return StatusCode(500, _generalFaultMessage);
             }
         }
-
-
-
-        /* TODO: Ska hämta agency med realtors-email*/
-        [HttpGet("by-email/{email}")]
-        public async Task<ActionResult<AgencyDTO>> GetAgencyByEmail(string email)
-        {
-            try
-            {
-                var agency = await _agencyRepository.GetAgencyByRealtorEmail(email);
-                if (agency == null)
-                {
-                    return NotFound($"Det existerar ingen mäklarbyrå med ID {email}.");
-                }
-
-                var agencyDTO = _mapper.Map<AgencyDTO>(agency);
-                return Ok(agencyDTO);
-
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, _generalFaultMessage + e.Message);
-            }
-        }
-
-        /*Hämtar salesobject i ddenna agency*/
-        [HttpGet("saleobjects/{id}")]
-        public async Task<ActionResult<AgencyDTO>> GetSalesAtAgency(int id)
-        {
-            try
-            {
-                var saleObjects = await _agencyRepository.GetSalesObjectsAtAgencyAsync(id);
-                if (saleObjects == null)
-                {
-                    return NotFound($"Det existerar inga annonser i denna byrå.");
-                }
-
-                List<SalesObjectDTO> saleObjectsDtos = new List<SalesObjectDTO>();
-                foreach (var so in saleObjects)
-                {
-                    var salesObjectDto = _mapper.Map<SalesObjectDTO>(so);
-                    saleObjectsDtos.Add(salesObjectDto);
-                }
-                return Ok(saleObjectsDtos);
-
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, _generalFaultMessage + e.Message);
-            }
-        }
-
-
 
 
         // PUT: api/Agency/5
@@ -214,12 +161,12 @@ namespace FribergHomes.API.Controllers
         {
             try
             {
-                var agency = await _agencyRepository.GetAgencyByIdAsync(id);
-                if (agency == null)
+                var realtor = await _agencyRepository.GetAgencyByIdAsync(id);
+                if (realtor == null)
                 {
                     return NotFound($"Mäklarbyrån du försökte radera existerar inte.");
                 }
-                await _agencyRepository.DeleteAgencyAsync(agency.Id);
+                await _agencyRepository.DeleteAgencyAsync(id);
                 return NoContent();
             }
             catch (Exception)
