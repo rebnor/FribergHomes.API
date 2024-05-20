@@ -193,7 +193,6 @@
                         <tr>
                             <td> <ProfilePicture Realtor="@r" Size="ProfilePicture.PictureSize.Small" /> </td> @* Tobias *@
                             <td>@r.FullName</td>
-                            @* <td><img src="@r.Picture" width="100" /></td> *@
                             <td>@r.Email</td>
                             <td>@r.PhoneNumber</td>
                             <td>
@@ -261,8 +260,6 @@
                 {
                     foreach (var so in CategorySalesObjects)
                     {
-                        @* style="border: 1px solid #2A432B; background-color: #F2FADC" *@
-                        @* <div class="row text-center"> *@
                         <div class="shadow text-center card category-card">
                             <h3>@so.Adress - @so.CountyName</h3>
                             <h4>@so.CurrentPrice kr</h4>
@@ -306,7 +303,6 @@
     private List<SalesObjectDTO> CategorySalesObjects;
 
     public string CountyName;
-    // public int CategoryId;
     public RealtorDTO Realtor;
     public SalesObjectDTO SalesObjectDTO;
 

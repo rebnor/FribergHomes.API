@@ -11,5 +11,6 @@ namespace FribergHomes.Client.Authentications
         public Task<AuthenticationState> CheckAuthState();
         Task<string> GetUserId();
         Task<string> GetUserName();
+        Task<string> GetToken();
     }
 }

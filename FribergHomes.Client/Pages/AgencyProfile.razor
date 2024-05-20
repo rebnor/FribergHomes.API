@@ -1,6 +1,7 @@
 ﻿@using FribergHomes.Client.Authentications
 @using FribergHomes.Client.Services.Interfaces
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @* Author Rebecka 
     Update: 2024-05-18: Sista CRUD funktioner på Mäklare och Annonser, AddObject-komp funkade inte men fixade det / Reb 2024-05-18
 *@
@@ -23,9 +24,9 @@
 <hr />
 
 <h4>Anställda</h4>
-
-<Button Color="ButtonColor.Primary" @onclick="ShowAddRealtor">Lägg till Mäklare</Button>
-
+<div class="mb-3">
+<Button Color="ButtonColor.Success" @onclick="ShowAddRealtor">Lägg till Mäklare</Button>
+</div>
 @if (AddRealtor)
 {
     <Button Color="ButtonColor.Dark" @onclick="HideAddRealtor">Avbryt</Button>
@@ -67,17 +68,14 @@
 
 <hr />
 
-
-<Button Color="ButtonColor.Primary" @onclick="ShowAddSalesObject">Skapa annons</Button>
-
+<div class="mb-3">
+<Button Color="ButtonColor.Success" @onclick="ShowAddSalesObject">Skapa annons</Button>
+</div>
 @if (AddSalesObject)
 {
     <Button Color="ButtonColor.Dark" @onclick="HideAddSalesObject">Avbryt</Button>
-
     <AddObject ObjectType="salesObject" />
 }
-
-
 <h4>Annonser</h4>
 <table class="table shadow">
     <thead>

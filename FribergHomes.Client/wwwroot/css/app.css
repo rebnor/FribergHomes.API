@@ -1,6 +1,6 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #FAFDF2;
+    background-color: #FAFDF2; /*Reb*/
 }
 
 h1:focus {
@@ -120,19 +120,19 @@ code {
     beige: CFBA85
 */
 
-
+/*Reb*/
 .custom-link {
     text-decoration: none;
     color: white;
 }
-
+/*Reb*/
 .custom-hover:hover {
     background-color: #E9F6C6;
     border: 1px solid #9D9D79;
     padding: 0.5em;
 }
 
-
+/*Reb*/
 .loader {
     margin: auto;
     position: absolute;
@@ -140,22 +140,15 @@ code {
     left: 50%;
     transform: translate(-50%, -50%);
 }
-/*.loader img {
-    margin: auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}*/
 
-
+/*Reb*/
 .nav-item:hover {
     text-shadow: 0.5px 0.5px 2px #2A432B;
 }
 
+/*Reb*/
 nav {
     color: #9D9D79;
-    /*background-image: linear-gradient(0deg, #9D9D79 0%, white 30%);*/
     box-shadow: 0px 0px 10px #303831;
 }
 
@@ -184,14 +177,14 @@ footer {
     background-color: #FAFCF1; /*Tobias*/
     z-index: 100;              /*Tobias*/
 }
-
+/*Reb*/
 .content-custom {
     background-color: rgba(233,246,198, 0.7);
     width: 70%;
     margin: auto;
     min-width: 70%;
 }
-
+/*Reb*/
 main {
     margin-top: 90px;
     flex: 1;
@@ -199,12 +192,12 @@ main {
     background-position: center top;
     height: 100vh;
 }
-
+/*Reb*/
 .dropdown-list {
     max-height: 50vh;
     overflow: auto;
 }
-
+/*Reb*/
 .logout {
     position: absolute;
     right: 20px;
@@ -213,18 +206,18 @@ main {
     .logout:hover {
         text-shadow: 0px 0px 2px darkred;
     }
-
+/*Reb*/
 .profile {
     position: absolute;
     right: 90px;
     
 }
-
+/*Reb*/
 .agencyprofile {
     position: absolute;
     right: 180px;
 }
-
+/*Reb*/
 .card {
     width: 250px;
     margin: 1em;
@@ -242,13 +235,14 @@ main {
         margin: auto;
     }
 
-
+/*Reb*/
 .category-card {
     min-width: 600px;
     /*max-width: 1000px;*/
     width: auto;
 
 }
+/*Reb*/
 .logo {
     position: absolute;
     right: 0;
@@ -259,13 +253,13 @@ main {
     border-radius: 20%;
     background-color: white;
 }
-
+/*Reb*/
 .row button {
     width: auto;
     max-width: 400px;
     margin: auto;
 }
-
+/*Reb*/
 .form {
     border: 1px solid #2A432B;
     background-color: #F2FADC;
@@ -273,12 +267,12 @@ main {
     margin: auto;
     margin-bottom: 2em;
 }
-
+/*Reb*/
 button a {
     text-decoration: none;
     color: white;
 }
-
+/*Reb*/
 .custom-card {
     min-width: 250px;
     width: auto;
@@ -298,22 +292,22 @@ button a {
         .custom-card a:hover {
             text-shadow: 0px 0px 2px #2A432B;
         }
-
+/*Reb*/
 .realtor-pic {
     position: absolute;
     top: 0;
     left: 0;
     margin: 1em;
 }
-
+/*Reb*/
 .make-space {
     height: 40px;
 }
-
+/*Reb*/
 .table {
     border: 2px solid #2A432B;
 }
-
+/*Reb*/
 .better-background {
     /*background-color: rgba(250,253,242, 0.9);*/
     background-color: #F2FADC;
@@ -326,6 +320,7 @@ button a {
 }
 
 /*ProfilePicture component css start*/
+/*Tobias*/
 .pic-container {
     position: relative;
     overflow: hidden;
