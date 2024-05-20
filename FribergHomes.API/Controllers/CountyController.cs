@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using FribergHomes.API.Constants;
 using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.DTOs;
 using FribergHomes.API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -13,6 +15,7 @@ namespace FribergHomes.API.Controllers
      * Revised: Tobias 2024-04-18 Implemented generalFaultMessage for status code 500 responses.
      * @ Update: Switched from County to CountyDTO in methods 
      *         Added DTO&Model-Mapping where its needed / Reb 2024-04-25
+     * Revised: Implemented Authorize-attributes on selected endpoints /Tobias 2024-05-20
      */
 
     [Route("api/[controller]")]
@@ -106,16 +109,14 @@ namespace FribergHomes.API.Controllers
         // POST method that creates and stores a County object in the DB.
         // POST api/<RealtorController>
         [HttpPost]
+        [Authorize(Roles = ApiRoles.Admin)]
         public async Task<ActionResult> PostCounty(CountyDTO countyDTO)
         {
             try
             {
                 var county = _mapper.Map<County>(countyDTO);
 
-                //var addedCounty = await _countyRepository.AddCountyAsync(county);
                 await _countyRepository.AddCountyAsync(county);
-
-                //var dtoCounty = DTOMapper.MapCountyToDto(addedCounty);
 
                 return CreatedAtAction(nameof(GetCounty), new { id = county.Id }, county);
             }
@@ -126,34 +127,8 @@ namespace FribergHomes.API.Controllers
 
         }
 
-        // PUT method that finds and updates an existing County object in the DB based on Id and Realtor object.
-        // PUT api/<RealtorController>/5
-        //[HttpPut("{id}")]
-        //public async Task<ActionResult<County>> PutCounty(int id, County county)
-        //{
-        //    if (id != county.Id)
-        //    {
-        //        return BadRequest($"Angivet ID stämmer ej överens med kommun-ID!");
-        //    }
-        //    try
-        //    {
-        //        var existingCounty = await _countyRepository.GetCountyByIdAsync(id);
-        //        if (existingCounty == null)
-        //        {
-        //            return NotFound($"Kommun med ID: {id} ej funnen!");
-        //        }
-        //        await _countyRepository.UpdateCountyAsync(county);
-        //        return Ok(county);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return StatusCode(500, _generalFaultMessage);
-        //    }
-
-
-        //}
-
         [HttpPut("{id}")]
+        [Authorize(Roles = ApiRoles.Admin)]
         public async Task<ActionResult<CountyDTO>> PutCounty(int id, CountyDTO countyDto)
         {
             if (id != countyDto.Id)
@@ -188,6 +163,7 @@ namespace FribergHomes.API.Controllers
         // DELETE method that finds and deletes an existing County object based on Id.
         // DELETE api/<RealtorController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = ApiRoles.Admin)]
         public async Task<ActionResult> DeleteCounty(int id)
         {
             try

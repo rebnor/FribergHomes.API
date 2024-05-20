@@ -11,6 +11,7 @@ using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.Mappers;
 using FribergHomes.API.DTOs;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FribergHomes.API.Controllers
 {
@@ -28,7 +29,9 @@ namespace FribergHomes.API.Controllers
     @ Updates: Implemented AutoMapper (injection of IMapper). Revised POST-method.
                Added GetSalesObjectsByRealtor GET-end point / Tobias 2024-04-28.
     @ Update: Added GetSalesObjectsByCategory(int id) / Reb 2024-05-02
+    @ Update: Implemented Authorize-attributes on selected endpoints /Tobias 2024-05-20
     */
+
     [Route("api/[controller]")]
     [ApiController]
     public class SalesObjectController : ControllerBase
@@ -150,9 +153,6 @@ namespace FribergHomes.API.Controllers
         }
 
 
-
-
-        /********TEST**************/
         [HttpGet("county-name/{name}")]
         public async Task<ActionResult<List<SalesObjectDTO>>> GetSalesObjects(string name)
         {
@@ -211,30 +211,8 @@ namespace FribergHomes.API.Controllers
             }
         }
 
-
-
-
-        // PUT: api/SalesObjects/{id}
-        /* Updates one SalesObject in the Database */
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutSalesObject(int id, SalesObject salesObject)
-        //{
-        //    try
-        //    {
-        //        if (id != salesObject.Id)
-        //        {
-        //            return BadRequest();
-        //        }
-        //        await _salesRepo.UpdateSalesObjectAsync(salesObject);
-        //        return NoContent();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Något gick fel vid uppdatering av Försäljningsobjekt med id {id}! Felmeddelande: {ex.Message}");
-        //    }
-        //}
-
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Realtor")]
         public async Task<ActionResult<SalesObjectDTO>> PutSalesObject(int id, SalesObjectDTO salesObjectDto)
         {
             try
@@ -279,6 +257,7 @@ namespace FribergHomes.API.Controllers
         // POST: api/SalesObject
         /* Creates and stores a SalesObject in the Database */
         [HttpPost]
+        [Authorize(Roles = "Admin, Realtor")]
         public async Task<ActionResult<SalesObjectDTO>> PostSalesObject(SalesObjectDTO salesObjectDto)
         {
             try
@@ -308,6 +287,7 @@ namespace FribergHomes.API.Controllers
         // DELETE: api/SalesObjects/{id}
         /* Deletes one SalesObject, with int ID, from Database */
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin, Realtor")]
         public async Task<IActionResult> DeleteSalesObject(int id)
         {
             try

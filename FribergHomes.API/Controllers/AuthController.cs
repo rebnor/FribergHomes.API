@@ -15,6 +15,10 @@ using System.Text;
 
 namespace FribergHomes.API.Controllers
 {
+    /* API controller to handle HTTP requests and responses related to Realtor objects.
+     * Author: Tobias 2024-05-09
+     */ 
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
