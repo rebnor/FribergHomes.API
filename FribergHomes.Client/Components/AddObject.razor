@@ -9,6 +9,7 @@
 
 @* @page "/add" *@
 @using FribergHomes.Client.Authentications
+
 @using FribergHomes.Client.Services.Interfaces
 @using FribergHomes.Client.DTOs
 @inject ISalesObject salesService
@@ -31,7 +32,9 @@ else
     @if (newObject is CategoryDTO category)
     {
         <h3>Lägg till kategori</h3>
+
         <form @onsubmit="AddNewObject">
+
             Namn: <input type="text" @bind="category.Name" />
             Logga: <input type="text" @bind="category.IconUrl" />
             <button type="submit">Lägg till kategori</button>
@@ -40,7 +43,9 @@ else
     else if (newObject is AgencyDTO agency)
     {
         <h3>Lägg till mäklarbyrå</h3>
+
         <form @onsubmit="AddNewObject">
+
             Mäklarbyrå: <input type="text" @bind="agency.Name" />
             Presentation: <input type="text" @bind="agency.Presentation" />
             Logga: <input type="text" @bind="agency.Logo" />
@@ -50,6 +55,7 @@ else
     else if (newObject is RealtorDTO realtor)
     {
         <h3>Lägg till mäklare</h3>
+
         @if (error != null)
         {
             <p>@error</p>
@@ -71,10 +77,12 @@ else
                 </form>
             </div>
         </div>
+
     }
     else if (newObject is SalesObjectDTO salesObject)
     {
         <h3>Lägg till nytt försäljningsobjekt</h3>
+
         <div class="row justify-content-center pb-3 pt-4 shadow form">
             <div class="col-md-5">
                 <form @onsubmit="AddNewObject">
@@ -254,6 +262,7 @@ else
     private List<CountyDTO> countyList = new List<CountyDTO>();
     private bool isListingPriceSet = false;
     private string? imageLinksInput;
+
     private string categoryName;
 
 
@@ -273,6 +282,7 @@ else
 
 
     private List<string> errorMessages = new List<string>();
+
 
 
 
@@ -434,6 +444,7 @@ else
             }
             else if (newObject is SalesObjectDTO salesObject)
             {
+
                 try
                 {
                     //manuell validering... lägger till alla error messages i en lista "errormessages" som visas i html sen
@@ -570,6 +581,7 @@ else
         }
     }
 
+
     private async Task ChooseCategory()
     {
         var category = await categoryService.GetCategoryByIdAsync(selectedCategoryId);
@@ -595,6 +607,7 @@ else
     {
         if (newObject is SalesObjectDTO salesObject && !string.IsNullOrWhiteSpace(imageLinksInput))
         {
+
             salesObject.ImageLinks.Add(imageLinksInput);
         }
         imageLinksInput = "";
@@ -616,9 +629,6 @@ else
 }
 
 
-
-
-
 @*Sparat gamla koder:
                  Mäklarbyrå:
                         <select @bind="selectedAgencyId">
@@ -630,13 +640,9 @@ else
                         </select>
                         <button type="submit">Lägg till mäklare</button>
 
-
-
                         // agencyList = await agencyService.GetAllAgenciesAsync();
 
-
-
-                                        // var selectedAgency = await agencyService.GetAgencyByIdAsync(selectedAgencyId);
+                        // var selectedAgency = await agencyService.GetAgencyByIdAsync(selectedAgencyId);
                 // if (selectedAgency != null)
                 // {
                 //     realtor.AgencyId = selectedAgency.Id;

@@ -7,22 +7,47 @@ Update: Filter as you type / Reb 2024-05-01 *@
 @using FribergHomes.Client.Services.Interfaces
 @inject ISalesObject salesService
 @inject ICounty countyService
+@inject ICategory categoryService
 
-<div class="search">
+<div class="mt-4">
+
     <h4>Sök efter annonser i kommun</h4>
 
     <input type="text" value="@countyName" @oninput="@FilterDtos" placeholder="Sök efter kommun..." />
-    @if (FilteredDto != null)
+
+    <Button Color="ButtonColor.Primary" @onclick="ShowAllSaleObjects">
+        Se alla annonser i Hela Sverige
+    </Button>
+
+    @if (FilteredCounties != null)
     {
         <div class="dropdown">
             <ul class="dropdown-list">
-                @foreach (var county in FilteredDto)
+                @foreach (var county in FilteredCounties)
                 {
                     <li class="dropdown-item custom-hover" @onclick="(e) => GetCountiesSalesObjects(county.Name)" style="cursor: pointer">@county.Name</li>
                 }
             </ul>
         </div>
     }
+
+
+@*     <div>
+        <label>
+            <input type="checkbox" checked="@bApartment" @onclick="() => FilterSalesObjects(sApartment)" /> Lägenhet
+        </label>
+        <label>
+            <input type="checkbox" checked="@bHouse" @onclick="() => FilterSalesObjects(sHouse)" /> Hus/Villa
+        </label>
+        <label>
+            <input type="checkbox" checked="@bTownHouse" @onclick="() => FilterSalesObjects(sTownHouse)" /> Radhus
+        </label>
+        <label>
+            <input type="checkbox" checked="@bVacationHome" @onclick="() => FilterSalesObjects(sVacationHome)" /> Semesterhus
+        </label>
+    </div> *@
+
+
     @if (SaleObjectsDtos != null)
     {
         @if (SaleObjectsDtos.Count > 0)
@@ -39,19 +64,132 @@ Update: Filter as you type / Reb 2024-05-01 *@
             <p>Inga annonser i denna kommun</p>
         }
     }
+
 </div>
 
 @code {
+    private List<SalesObjectDTO> OriginalSaleObjectsDtos;
     private List<SalesObjectDTO> SaleObjectsDtos;
     private string countyName;
 
     private List<CountyDTO> CountiesDtos;
-    private List<CountyDTO> FilteredDto;
+    private List<CountyDTO> FilteredCounties;
+
+    private string sApartment = "Apartment";
+    public string sHouse = "House";
+    public string sTownHouse = "TownHouse";
+    public string sVacationHome = "VacationHome";
+
+    private bool bApartment;
+    public bool bHouse;
+    public bool bTownHouse;
+    public bool bVacationHome;
+
+
+
+    // private async Task FilterSalesObjects(string category)
+    // {
+
+
+    //     // OrgSalesListan är fylld med ALLA från start.
+    //     // SalesObject fylls om man trycker på knappen "Hämta alla" ELLER om man trycker på en Kommun - annars tom.
+
+
+
+
+    //         if (category == "Apartment")
+    //             await GetCategorySales(category);
+
+    //         if (category == "House")
+    //             await GetCategorySales(category);
+
+    //         if (category == "TownHouse")
+    //             await GetCategorySales(category);
+
+    //         if (category == "VacationHome")
+    //             await GetCategorySales(category);
+
+    //         StateHasChanged();
+
+
+    // }
+
+    // private async Task FilterSalesObjects(ChangeEventArgs e, string category)
+    // {
+
+
+    //     // OrgSalesListan är fylld med ALLA från start.
+    //     // SalesObject fylls om man trycker på knappen "Hämta alla" ELLER om man trycker på en Kommun - annars tom.
+
+
+
+
+    //     var isChecked = (bool)e.Value;
+
+    //     if (isChecked)
+    //     {
+    //         if(category == "Apartment")
+    //             await GetCategorySales(category);
+            
+    //             if (category == "House")
+    //             await GetCategorySales(category);
+           
+    //             if (category == "TownHouse")
+    //             await GetCategorySales(category);
+            
+    //             if (category == "VacationHome")
+    //             await GetCategorySales(category);
+
+    //         StateHasChanged();
+    //     }
+    //     else
+    //     {
+    //         if (category == "Apartment")
+    //             await RemoveCategorySales(category);
+    //         else if (category == "House")
+    //             await RemoveCategorySales(category);
+    //         else if (category == "TownHouse")
+    //             await RemoveCategorySales(category);
+    //         else if (category == "VacationHome")
+    //             await RemoveCategorySales(category);
+
+    //         StateHasChanged();
+    //     }
+
+    // }
+
+    // private async Task GetCategorySales(string category)
+    // {
+    //     var categories = await categoryService.GetAllCategoriesAsync();
+    //     var selectedCategory = categories.FirstOrDefault(c => c.Name == category);
+    //     if (selectedCategory != null)
+    //     {
+    //         SaleObjectsDtos = await salesService.GetSalesByCategory(selectedCategory.Id);
+    //         // SaleObjectsDtos.AddRange(await salesService.GetSalesByCategory(selectedCategory.Id));
+    //     }
+    //     StateHasChanged();
+    // }
+
+    // private async Task RemoveCategorySales(string category)
+    // {
+    //     // Här har man alltså redan fyllt SalesObject-Listan med Boolean/Checkbox.
+    //     // Men denna ska då ta bort de Object med Kategorinamn "category".
+
+    //     var categories = await categoryService.GetAllCategoriesAsync();
+    //     var selectedCategory = categories.FirstOrDefault(c => c.Name == category);
+    //     if (selectedCategory != null)
+    //     {
+    //         SaleObjectsDtos.RemoveAll(s => s.CategoryName == category);
+    //         StateHasChanged();
+    //     }
+    // }
+
+
 
     private void FilterDtos(ChangeEventArgs args)
     {
         countyName = args.Value.ToString();
-        FilteredDto = CountiesDtos.Where(c => c.Name.ToLower().Contains(countyName.ToLower())).ToList();
+        FilteredCounties = CountiesDtos.Where(c => c.Name.ToLower().Contains(countyName.ToLower())).ToList();
         StateHasChanged();
         if (countyName == "")
         {
@@ -63,13 +201,19 @@ Update: Filter as you type / Reb 2024-05-01 *@
     private async Task GetCountiesSalesObjects(string name)
     {
         SaleObjectsDtos = await salesService.GetSalesByCounty(name);
-        FilteredDto = null;
+        FilteredCounties = null;
         StateHasChanged();
     }
-
     protected override async Task OnInitializedAsync()
     {
+        // SaleObjectsDtos = null;
         CountiesDtos = await countyService.GetAllCountiesAsync();
+        OriginalSaleObjectsDtos = await salesService.GetAll();
+        StateHasChanged();
+    }
+    private async void ShowAllSaleObjects()
+    {
+        SaleObjectsDtos = OriginalSaleObjectsDtos;
         StateHasChanged();
     }
 }
