@@ -1,8 +1,13 @@
-﻿@* Author: Tobias 2024-05-02 *@
-
-@page "/edit/{objecttype}/{id:int}"
-
+﻿@using FribergHomes.Client.Authentications
+@using Microsoft.AspNetCore.Authorization
 @using FribergHomes.Client.Services.Interfaces
+
+@* Author: Tobias 2024-05-02 *@
+@* Update: Injected AuthService to retrieve Realtor name / Tobias 2024-05-18 *@
+@*Update: Nu kan man editera allt och man får upp Alert-box som säger att det funkade / Reb 2024-05-19 *@
+
+@page "/edit/{objecttype}/{id}"
+@attribute [Authorize(Roles = "Admin, Realtor")]
 
 @inject NavigationManager NavMan
 @inject ISalesObject SalesObjectService
@@ -10,65 +15,67 @@
 @inject IAgencyService AgencyService
 @inject ICounty CountyService
 @inject ICategory CategoryService
+@inject IAuthService AuthService
 
-@* Add authorization! *@
 
-<div class="content-frame">
-
-    <div class="content-box">
-
-        @if (ObjectType == "salesobject")
+@if (isEdited)
+{
+    <Alert Color="AlertColor.Success"> Ändringen Lyckades! </Alert>
+}
+else
+{
+    @if (ObjectType == "salesobject")
+    {
+        if (SalesObject == null)
         {
-            if (SalesObject == null)
+            <p>Laddar försäljningsobjekt...</p>
+        }
+        else
+        {
+
+            <h3>Ändra försäljningsobjekt</h3>
+
+            <span>Skapad: @SalesObject.CreationDate @SalesObject.CreatorName</span>
+            <br />
+            @if (SalesObject.ChangeDate != null)
             {
-                <p>Laddar försäljningsobjekt...</p>
+                <span class="info">Ändrad: @SalesObject.ChangeDate @SalesObject.ChangeName</span>
             }
-            else
-            {
-                <h3>Ändra försäljningsobjekt</h3>
 
-                <span>Skapad: @SalesObject.CreationDate @SalesObject.CreatorName</span>
-
-                @if (SalesObject.ChangeDate != null)
-                {
-                    <span class="info">Ändrad: @SalesObject.ChangeDate @SalesObject.ChangeName</span>
-                }
-
+            <div class="row">
 
                 <EditForm Model="SalesObject" OnValidSubmit="Submit" FormName="SalesObjectForm">
                     <DataAnnotationsValidator />
 
-                    <div class="row">
-                        <div class="fixed-large">
+                    <div class="col">
+                        <div class="">
                             <label>
                                 Adress
                                 <InputText @bind-Value="SalesObject!.Adress" />
                             </label>
                         </div>
-                        <div class="fixed-medium">
+                        <div class="">
                             <label>
                                 Kommun
                                 <InputText @bind-Value="SalesObject!.CountyName" readonly />
                             </label>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="fixed-medium">
+                        <div class="">
                             <label>
                                 Pris
                                 <InputNumber @bind-Value="SalesObject!.CurrentPrice" />
                             </label>
                         </div>
-                        <div class="fixed-medium">
-                            @if (_category == "House" || _category == "VacationHome")
+                        <div class="">
+                            @if (_category == "Hus" || _category == "Semesterhem")
                             {
                                 <label>
                                     Driftkostnad (år)
                                     <InputNumber @bind-Value="SalesObject!.YearlyCost" />
                                 </label>
                             }
-                            @if (_category == "Apartment" || _category == "TownHouse")
+                            @if (_category == "Lägenhet" || _category == "Radhus")
                             {
                                 <label>
                                     Månadsavgift
@@ -76,37 +83,35 @@
                                 </label>
                             }
                         </div>
-                        <div class="fixed-small">
+                        <div class="">
                             <label>
                                 Byggnationsår
                                 <InputNumber @bind-Value="SalesObject!.BuildYear" />
                             </label>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="fixed-digit">
+                        <div class="">
                             <label>
                                 Rum
                                 <InputNumber @bind-Value="SalesObject!.Rooms" />
                             </label>
                         </div>
-                        <div class="fixed-small">
+                        <div class="">
                             <label>
                                 Boarea
                                 <InputNumber @bind-Value="SalesObject!.LivingArea" />
                             </label>
                         </div>
 
-                        @if (_category == "House" || _category == "TownHouse" || _category == "VacationHome")
+                        @if (_category == "Hus" || _category == "Radhus" || _category == "Semesterhem")
                         {
-                            <div class="fixed-small">
+                            <div class="">
                                 <label>
                                     Biarea
                                     <InputNumber @bind-Value="SalesObject!.AncillaryArea" />
                                 </label>
                             </div>
-                            <div class="fixed-small">
+                            <div class="">
                                 <label>
                                     Tomtarea
                                     <InputNumber @bind-Value="SalesObject!.PlotArea" />
@@ -115,15 +120,15 @@
 
                         }
 
-                        @if (_category == "Apartment")
+                        @if (_category == "Lägenhet")
                         {
-                            <div class="fixed-small">
+                            <div class="">
                                 <label>
                                     Våning
                                     <InputNumber @bind-Value="SalesObject!.Level" />
                                 </label>
                             </div>
-                            <div class="fixed-small">
+                            <div class="">
                                 <label>
                                     Hiss
                                     <InputSelect @bind-Value="SalesObject!.Lift">
@@ -141,39 +146,51 @@
                             </div>
 
                         }
-
-                        <div class="row">
-                            <div class="input-text">
+                    </div>
+                    <div class="col">
+                        <div>
+                            <div class="">
                                 <label>
                                     Objektbeskrivning
+                                    <br />
                                     <InputTextArea @bind-Value="SalesObject!.ObjectDescription" />
                                 </label>
                             </div>
                         </div>
 
                     </div>
-                    <div class="fixed-small">
-                        <button type="submit" class="btn btn-primary">Spara</button>
+                    <div class="">
+                        <button type="submit" class="btn btn-success">Spara</button>
+
+                        <AuthorizeView Context="a" Roles="Realtor">
+                            <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/realtorprofile"))">Avbryt</Button>
+                        </AuthorizeView>
+
+                        <AuthorizeView Context="b" Roles="Admin">
+                            <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/agencyprofile"))">Avbryt</Button>
+                        </AuthorizeView>
                     </div>
-
                 </EditForm>
-            }
-        }
+            </div>
 
-        @if (ObjectType == "realtor")
+        }
+    }
+
+    @if (ObjectType == "realtor")
+    {
+        if (Realtor == null)
         {
-            if (Realtor == null)
-            {
-                <p>Laddar mäklare...</p>
-            }
-            else
-            {
+            <p>Laddar mäklare...</p>
+        }
+        else
+        {
+            <div class="text-center">
                 <h3>Ändra mäklare</h3>
 
                 <EditForm Model="Realtor" OnValidSubmit="Submit" FormName="RealtorForm">
                     <DataAnnotationsValidator />
 
-                    <div class="row">
+                    <div class="">
                         <div class="fixed-medium">
                             <label>
                                 Namn
@@ -188,7 +205,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="">
                         <div class="fixed-medium">
                             <label>
                                 Telefon
@@ -201,32 +218,46 @@
                                 <InputText @bind-Value="Realtor!.Picture" onchange="@(() => UpdatePreview())" />
                             </label>
                         </div>
+                        <div class="">
+                            <span>Förhandsvisning av bild</span>
+                            @* <img src="@Realtor.Picture" width="250px" height="auto" /> *@
+                            <ProfilePicture Realtor="@Realtor" Size="ProfilePicture.PictureSize.Medium" />
+                        </div>
                     </div>
 
-                    <div class="mt">
-                        <span>Profile picture preview</span>
-                        <img src="@Realtor.Picture" width="250px" height="auto" />
+
+                    <div class="">
+                        <button type="submit" class="btn btn-success">Spara</button>
+
+                        <AuthorizeView Context="a" Roles="Realtor">
+                            <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/realtorprofile"))">Avbryt</Button>
+                        </AuthorizeView>
+
+                        <AuthorizeView Context="b" Roles="Admin">
+                            <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/agencyprofile"))">Avbryt</Button>
+                        </AuthorizeView>
                     </div>
 
-                    <div class="fixed-small">
-                        <button type="submit" class="btn btn-primary">Spara</button>
-                    </div>
 
                 </EditForm>
+            </div>
 
 
-            }
+
         }
+    }
 
-        @if (ObjectType == "agency")
-        {
-            if (Agency == null)
+    @if (ObjectType == "agency")
+    {
+        <AuthorizeView Context="b" Roles="Admin">
+
+            @if (Agency == null)
             {
                 <p>Laddar mäklarbyrå...</p>
             }
             else
             {
-                <h3>Ändra mäklare</h3>
+                <h3>Ändra mäklarbyrå</h3>
 
                 <EditForm Model="Agency" OnValidSubmit="Submit" FormName="AgencyForm">
                     <DataAnnotationsValidator />
@@ -249,66 +280,66 @@
                         </label>
                     </div>
 
-                    <div class="mt">
+                    <div class="">
                         <span>Logo preview</span>
                         <img src="@Agency.Logo" width="250px" height="auto" />
                     </div>
 
-                    <div class="fixed-small">
-                        <button type="submit" class="btn btn-primary">Spara</button>
+                    <div class="">
+                        <button type="submit" class="btn btn-success">Spara</button>
+                        <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/agencyprofile"))">Avbryt</Button>
                     </div>
 
                 </EditForm>
-
             }
-        }
+        </AuthorizeView>
+    }
 
-        @if (ObjectType == "category")
+    @if (ObjectType == "category") // TODO: Ta bort??
+    {
+        if (Category == null)
         {
-            if (Category == null)
-            {
-                <p>Laddar kategori...</p>
-            }
-            else
-            {
-                <h3>Ändra kategori</h3>
-
-                <EditForm Model="Category" OnValidSubmit="Submit" FormName="CategoryForm">
-                    <DataAnnotationsValidator />
-                    <div class="mt">
-                        <label>
-                            Namn
-                            <InputText @bind-Value="Category!.Name" />
-                        </label>
-                    </div>
-
-                    <div class="mt">
-                        <label>
-                            Ikon
-                        @((MarkupString)Category.IconUrl)
-                        </label>
-                    </div>
-
-                    <span>Välj ikon:</span> 
-
-                    <div class="row icon-container">
-                        @foreach (var icon in _categoryIconNames!)
-                        {
-                            <div class="">
-                                @((MarkupString)icon)
-                            </div>
-                        }
-                    </div>
-
-                    <div class="fixed-small">
-                        <button type="submit" class="btn btn-primary">Spara</button>
-                    </div>
-
-                </EditForm>
-
-            }
+            <p>Laddar kategori...</p>
         }
+        else
+        {
+            <h3>Ändra kategori</h3>
 
-    </div>
-</div>
+            <EditForm Model="Category" OnValidSubmit="Submit" FormName="CategoryForm">
+                <DataAnnotationsValidator />
+                <div class="mt">
+                    <label>
+                        Namn
+                        <InputText @bind-Value="Category!.Name" />
+                    </label>
+                </div>
+
+                <div class="mt">
+                    <label>
+                        Ikon
+                        @((MarkupString)Category.IconUrl)
+                    </label>
+                </div>
+
+                <span>Välj ikon:</span>
+
+                <div class="row icon-container">
+                    @foreach (var icon in _categoryIconNames!)
+                    {
+                        <div class="">
+                            @((MarkupString)icon)
+                        </div>
+                    }
+                </div>
+
+                <div class="fixed-small">
+                    <button type="submit" class="btn btn-primary">Spara</button>
+                </div>
+
+            </EditForm>
+
+        }
+    }
+}
+
 

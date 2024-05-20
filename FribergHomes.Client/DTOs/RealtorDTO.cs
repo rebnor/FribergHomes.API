@@ -12,7 +12,7 @@ namespace FribergHomes.Client.DTOs
      */
     public class RealtorDTO
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required, Display(Name = "Namn")]
         public string FullName { get; set; } = string.Empty;

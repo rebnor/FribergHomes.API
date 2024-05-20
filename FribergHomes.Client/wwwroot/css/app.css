@@ -104,19 +104,19 @@ code {
 }
 
 
-/** Google iconer**/
+/** Google iconer / Reb **/
 .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
 }
 
 
-/* FÄRGER:
-    ljusast/vit grön: FAFDF2
-    ljuusgrön: F2FADC
-    ljusgrön: E9F6C6
-    grön: 9D9D79
-    mörkare grön: 303831
-    mörkast grön: 2A432B
+/* FÃ„RGER:
+    ljusast/vit grÃ¶n: FAFDF2
+    ljuusgrÃ¶n: F2FADC
+    ljusgrÃ¶n: E9F6C6
+    grÃ¶n: 9D9D79
+    mÃ¶rkare grÃ¶n: 303831
+    mÃ¶rkast grÃ¶n: 2A432B
     beige: CFBA85
 */
 
@@ -133,11 +133,20 @@ code {
 }
 
 
-
-.loader img {
-
-    border-radius: 50%;
+.loader {
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
+/*.loader img {
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}*/
 
 
 .nav-item:hover {
@@ -149,6 +158,17 @@ nav {
     /*background-image: linear-gradient(0deg, #9D9D79 0%, white 30%);*/
     box-shadow: 0px 0px 10px #303831;
 }
+
+ /*Tobias*/
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #FAFCF1;
+    z-index: 100;
+    overflow: hidden;
+}
+
 .navbar-brand {
     color: #2A432B;
     text-shadow: 0px 0px 2px #9D9D79;
@@ -161,18 +181,19 @@ nav {
 footer {
     border-top: 1px solid black;
     box-shadow: 0px 0px 10px #303831;
-    background-color: #FAFDF2;
+    background-color: #FAFCF1; /*Tobias*/
+    z-index: 100;              /*Tobias*/
 }
 
 .content-custom {
     background-color: rgba(233,246,198, 0.7);
-    width: 80%;
+    width: 70%;
     margin: auto;
-    /*height: 100vh;*/
-    overflow: auto;
+    min-width: 70%;
 }
 
 main {
+    margin-top: 90px;
     flex: 1;
     background: url("../hemlangtanfriberg.png") no-repeat #FAFDF2;
     background-position: center top;
@@ -183,15 +204,123 @@ main {
     max-height: 50vh;
     overflow: auto;
 }
-.pictures {
+
+.logout {
+    position: absolute;
+    right: 20px;
+    color: darkred;
+}
+    .logout:hover {
+        text-shadow: 0px 0px 2px darkred;
+    }
+
+.profile {
+    position: absolute;
+    right: 90px;
+    
+}
+
+.agencyprofile {
+    position: absolute;
+    right: 180px;
+}
+
+.card {
+    width: 250px;
+    margin: 1em;
+    padding: 0.5em;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5em;
+    padding-bottom: 4em;
+    border: 1px solid #2A432B;
+    background-color: #F2FADC;
+}
+    .card button {
+        position: absolute;
+        bottom: 1em;
+        margin: auto;
+    }
+
+
+.category-card {
+    min-width: 600px;
+    /*max-width: 1000px;*/
+    width: auto;
+
+}
+.logo {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 1em;
+    border: 1px dashed green;
+    padding: 1em;
+    border-radius: 20%;
+    background-color: white;
+}
+
+.row button {
+    width: auto;
+    max-width: 400px;
     margin: auto;
 }
 
-.list-custom {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    width: 100%;
-    text-align: center;
-    justify-content: center;
+.form {
+    border: 1px solid #2A432B;
+    background-color: #F2FADC;
+    width: 60%;
+    margin: auto;
+    margin-bottom: 2em;
+}
+
+button a {
+    text-decoration: none;
+    color: white;
+}
+
+.custom-card {
+    min-width: 250px;
+    width: auto;
+}
+.custom-card button {
+    position: absolute;
+    bottom: 1em;
+    margin: auto;
+}
+
+    .custom-card a {
+        text-decoration: none;
+        color: #2A432B;
+        text-shadow: 0px 0px 2px #9D9D79;
+        font-size: large;
+    }
+        .custom-card a:hover {
+            text-shadow: 0px 0px 2px #2A432B;
+        }
+
+.realtor-pic {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 1em;
+}
+
+.make-space {
+    height: 40px;
+}
+
+.table {
+    border: 2px solid #2A432B;
+}
+
+.better-background {
+    /*background-color: rgba(250,253,242, 0.9);*/
+    background-color: #F2FADC;
+    width: 50%;
+    margin: auto;
+    /*padding: 2em;*/
+    border: 1px solid #2A432B;
+    margin-top: 1em;
+    border-radius: 10px;
 }

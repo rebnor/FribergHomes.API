@@ -1,0 +1,247 @@
+﻿@using FribergHomes.Client.Services.Interfaces
+
+@* Author: Tobias *@
+
+@inject ICategory CategoryService
+@inject ICounty CountyService
+@inject ISalesObject SalesObjectService
+
+
+<h3>Skapa ny annons</h3>
+
+@if (Categories is null || Categories is null)
+{
+    <p>Laddar formulär...</p>
+}
+else
+{
+
+    <EditForm Model="SalesObject" OnValidSubmit="Create" FormName="CreateSalesObject">
+        <DataAnnotationsValidator />
+
+        <div class="">
+            <label>
+                Kategori
+                <InputSelect @bind-Value="SalesObject!.CategoryName">
+
+                    <option value="">Välj kategori</option>
+
+                    @foreach (var item in Categories)
+                    {
+                        <option value="@item.Name">@item.Name</option>
+                    }
+
+                </InputSelect>
+            </label>
+        </div>
+
+        @if (!string.IsNullOrEmpty(SalesObject!.CategoryName))
+        {
+
+            <div class="">
+                <div class="">
+                    <label>
+                        Adress
+                        <InputText @bind-Value="SalesObject!.Adress" />
+                    </label>
+                </div>
+
+                <div class="">
+                    <label>
+                        Kommun
+                        <InputSelect @bind-Value="SalesObject!.CountyId">
+
+                            @foreach (var item in Counties!)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+
+                        </InputSelect>
+                    </label>
+                </div>
+            </div>
+
+            <div class="">
+                <div class="">
+                    <label>
+                        Pris
+                        <InputNumber @bind-Value="SalesObject!.ListingPrice" />
+                    </label>
+                </div>
+
+                <div class="">
+                    @if (SalesObject!.CategoryName == "Hus" || SalesObject!.CategoryName == "Semesterhem")
+                    {
+                        <label>
+                            Driftkostnad (år)
+                            <InputNumber @bind-Value="SalesObject!.YearlyCost" />
+                        </label>
+                    }
+                    @if (SalesObject!.CategoryName == "Lägenhet" || SalesObject!.CategoryName == "Radhus")
+                    {
+                        <label>
+                            Månadsavgift
+                            <InputNumber @bind-Value="SalesObject!.MonthlyFee" />
+                        </label>
+                    }
+                </div>
+
+                <div class="">
+                    <label>
+                        Byggnationsår
+                        <InputNumber @bind-Value="SalesObject!.BuildYear" />
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="">
+
+                <div class="">
+                    <label>
+                        Rum
+                        <InputNumber @bind-Value="SalesObject!.Rooms" />
+                    </label>
+                </div>
+
+                <div class="">
+                    <label>
+                        Boarea
+                        <InputNumber @bind-Value="SalesObject!.LivingArea" />
+                    </label>
+                </div>
+
+                @if (SalesObject!.CategoryName == "Hus" || SalesObject!.CategoryName == "Radhus" || SalesObject!.CategoryName == "Sommarhem")
+                {
+                    <div class="">
+                        <label>
+                            Biarea
+                            <InputNumber @bind-Value="SalesObject!.AncillaryArea" />
+                        </label>
+                    </div>
+
+                    <div class="fixed-small">
+                        <label>
+                            Tomtarea
+                            <InputNumber @bind-Value="SalesObject!.PlotArea" />
+                        </label>
+                    </div>
+
+                }
+
+                @if (SalesObject!.CategoryName == "Lägenhet")
+                {
+                    <div class="">
+                        <label>
+                            Våning
+                            <InputNumber @bind-Value="SalesObject!.Level" />
+                        </label>
+                    </div>
+
+                    <div class="">
+                        <label>
+                            Hiss
+                            <InputSelect @bind-Value="SalesObject!.Lift">
+
+                                <option value="null">
+                                    Hiss?
+                                </option>
+                                <option checked="@(SalesObject!.Lift == true)" value="true">
+                                    Ja
+                                </option>
+                                <option checked="@(SalesObject!.Lift == false)" value="false">
+                                    Nej
+                                </option>
+
+                            </InputSelect>
+                        </label>
+                    </div>
+                }
+
+                <div class="">
+                    <div class="">
+                        <label>
+                            Objektbeskrivning
+                            <InputTextArea @bind-Value="SalesObject!.ObjectDescription" />
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <ValidationSummary />
+
+            <button type="submit" class="">Spara</button>
+
+            <Button Color="ButtonColor.Secondary" @onclick="(() => HideCreateForm())">Stäng</Button>
+            @* <Button Color="ButtonColor.Secondary" @onclick="((args) => HideCreateForm(args))">Stäng</Button> *@
+        }
+
+    </EditForm>
+}
+
+<hr />
+
+
+@code {
+
+    [CascadingParameter]
+    public RealtorDTO? Realtor { get; set; }
+
+    [Parameter]
+    public EventCallback HideForms { get; set; }
+
+    public SalesObjectDTO SalesObject { get; set; } = new();
+
+    public IEnumerable<CategoryDTO>? Categories { get; set; }
+
+    public IEnumerable<CountyDTO>? Counties { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categories = await CategoryService.GetAllCategoriesAsync();
+        Counties = await CountyService.GetAllCountiesAsync();
+    }
+
+    private async Task Create()
+    {
+        SalesObject.CreatorName = Realtor!.FullName;
+        SalesObject.RealtorId = Realtor!.Id;
+        SalesObject.RealtorName = Realtor!.FullName;
+        SalesObject.RealtorEmail = Realtor!.Email;
+        SalesObject.RealtorPhone = Realtor!.PhoneNumber;
+
+        SalesObject.AgencyId = Realtor!.AgencyId;
+        SalesObject.AgencyLogoUrl = Realtor.AgencyLogo;
+        SalesObject.AgencyName = Realtor.AgencyName;
+        SalesObject.CurrentPrice = SalesObject.ListingPrice;
+
+        var category = Categories.First(x => x.Name == SalesObject.CategoryName);
+        SalesObject.CategoryId = category.Id;
+        SalesObject.CategoryLogoUrl = category.IconUrl;
+
+        var county = Counties.First(x => x.Id == SalesObject.CountyId);
+        SalesObject.CountyId = county.Id;
+
+        var createdObject = await SalesObjectService.Create(SalesObject);
+
+        if (createdObject is not null)
+        {
+            await HideCreateForm();
+        }
+    }
+
+    private async Task HideCreateForm()
+    {
+        await HideForms.InvokeAsync();
+    }
+
+    // private async Task HideCreateForm(MouseEventArgs e)
+    // {
+    //     await HideForms.InvokeAsync();
+    // }
+
+
+}

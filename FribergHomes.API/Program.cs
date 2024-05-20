@@ -7,11 +7,16 @@ using FribergHomes.API.Mappers;
 using FribergHomes.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using FribergHomes.API.Services;
 
 namespace FribergHomes.API
 {
     public class Program
-    {      
+    {
 
         //public static void Main(string[] args)
         public static async Task Main(string[] args)
@@ -50,6 +55,24 @@ namespace FribergHomes.API
             builder.Services.AddDbContext<ApplicationDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("FribergHomesDB") ?? throw new InvalidOperationException("Connection string 'FribergHomesDB' not found.")));
 
+            // Identity / Tobias, Sanna, Rebecka
+            builder.Services.AddIdentityCore<Realtor>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDBContext>();
+
+            // Identity - Password and account requirements  / Tobias, Sanna, Rebecka
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+            });
+
 
             // Repositories
             builder.Services.AddTransient<ICounty, CountyRepository>(); // Reb
@@ -58,17 +81,43 @@ namespace FribergHomes.API
             builder.Services.AddTransient<IRealtor, RealtorRepository>(); // Tobias
             builder.Services.AddTransient<ICategory, CategoryRepository>(); // Reb
 
+            // AuthService
+            builder.Services.AddTransient<IAuthService, AuthService>(); // Tobias
+
+            // AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile)); // Tobias
-                
 
             builder.Services.AddControllers();
+
+            // Swagger
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-          
+            // Authentication / Tobias, Sanna, Rebecka
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+                    ValidAudience = builder.Configuration["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
+                };
+            });
+
             var app = builder.Build();
 
             // Seeders  / Reb 2024-04-17
+            // Added service for UserManager, it's needed in Realtor + SalesObject seeder 
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -83,9 +132,11 @@ namespace FribergHomes.API
                 var countySeeder = new CountySeeder(dbContext, config);
                 await countySeeder.SeedCounties();
 
-                //RealtorSeeder added by Sanna 2024-04-18
-                var seedRealtors = new RealtorSeeder();
-                await seedRealtors.SeedRealtors(dbContext);
+                //Realtor seeder / Sanna 
+                var userManager = services.GetRequiredService<UserManager<Realtor>>();
+                RealtorSeeder realtorSeeder = new RealtorSeeder();
+                await realtorSeeder.SeedRealtors(dbContext, userManager);
+
 
                 //CategorySeeder added by Sanna 2024-04-18
                 var seedCategories = new CategorySeeder();
@@ -94,10 +145,10 @@ namespace FribergHomes.API
                 // SalesObject seeder /Tobias 2024-04-19
                 //SeedSalesObject parameters: int objectAmount (amount of objects to generate and store to DB).
                 var salesObjectSeeder = new SalesObjectSeeder(dbContext);
-                await salesObjectSeeder.SeedSalesObjects(100);
+                await salesObjectSeeder.SeedSalesObjects(100, userManager);
             }
 
-          
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -110,14 +161,13 @@ namespace FribergHomes.API
             {
                 policy.WithOrigins("https://localhost:7196", "http://localhost:5083", "https://localhost:7161")
                 .AllowAnyHeader()
-                .AllowAnyMethod(); // test reb 2024-04-30
-                //.WithHeaders(HeaderNames.ContentType);
+                .AllowAnyMethod();
             });
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

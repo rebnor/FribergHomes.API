@@ -5,6 +5,7 @@ using FribergHomes.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using FribergHomes.API.DTOs;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace FribergHomes.API.Controllers
@@ -17,7 +18,7 @@ namespace FribergHomes.API.Controllers
      * @ Update: Switched from Realtor-object to RealtorDTO-object 
      *          Added DtoToRealtor in Post & Put methods 
      *          Added GetRealtorByAgency, it was already in Repository but wasnt used here // Reb 2024-04-24
-     * 
+     * @Update: När är Realtor raderas ska en ny mäklare få alla dess SalesObject // Reb 2024-05-17
      */
 
     [Route("api/[controller]")]
@@ -27,11 +28,13 @@ namespace FribergHomes.API.Controllers
         private readonly string _generalFaultMessage = "Ett oväntat fel uppstod vid hanteringen av förfrågan!";
         private readonly IRealtor _realtorRepository;
         private readonly IMapper _mapper;
+        private readonly UserManager<Realtor> _userManager;
 
-        public RealtorController(IRealtor realtorRepository, IMapper mapper)
+        public RealtorController(IRealtor realtorRepository, IMapper mapper, UserManager<Realtor> userManager)
         {
             _realtorRepository = realtorRepository;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         // GET method that returns a list of all Realtor objects stored in the DB.
@@ -66,7 +69,7 @@ namespace FribergHomes.API.Controllers
         // GET method that returns a Realtor object stored in the DB based on Id.
         // GET api/<RealtorController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RealtorDTO>> GetRealtor(int id)
+        public async Task<ActionResult<RealtorDTO>> GetRealtor(string id)
         {
             try
             {
@@ -164,24 +167,63 @@ namespace FribergHomes.API.Controllers
 
         // PUT method that updates an existing Realtor object in the DB based on Id and Realtor object.
         // PUT api/<RealtorController>/5
+        [HttpPut("{id}")]
+        public async Task<ActionResult<RealtorDTO>> PutRealtor(RealtorDTO realtorDto)
+        {
+            //if (id != realtorDto.Id)
+            //{
+            //    return BadRequest();
+            //}
+            try
+            {
+                var existingRealtor = await _realtorRepository.GetRealtorByIdAsync(realtorDto.Id);
+                if (existingRealtor == null)
+                {
+                    return NotFound();
+                }
 
-        //Old Code
+                // Fungerande lösning. Kolla AutoMapper profil.
+                existingRealtor.FirstName = realtorDto.FullName.Split(' ')[0];
+                existingRealtor.LastName = realtorDto.FullName.Split(' ')[1];
+                existingRealtor.Email = realtorDto.Email;
+                existingRealtor.NormalizedEmail = realtorDto.Email.ToUpper();
+                existingRealtor.PhoneNumber = realtorDto.PhoneNumber;
+
+                //var realtor = _mapper.Map<Realtor>(realtorDto);
+
+                var updatedRealtor = await _realtorRepository.UpdateRealtorAsync(existingRealtor);
+                return Ok(updatedRealtor);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, _generalFaultMessage);
+            }
+        }
+
+
+        // Rebeckas kod
+        // PUT method that updates an existing Realtor object in the DB based on Id and Realtor object.
+        // PUT api/<RealtorController>/5
         //[HttpPut("{id}")]
-        //public async Task<ActionResult<Realtor>> PutRealtor(int id, Realtor realtor)
+        //public async Task<ActionResult<RealtorDTO>> PutRealtor(RealtorDTO realtorDto)
         //{
-        //    if(id != realtor.Id)
-        //    {
-        //        return BadRequest();
-        //    }
         //    try
         //    {
-        //        var existingRealtor = await _realtorRepository.GetRealtorByIdAsync(id);
-        //        if (existingRealtor == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        await _realtorRepository.UpdateRealtorAsync(realtor);
-        //        return Ok(realtor);
+        //        var realtor = _mapper.Map<Realtor>(realtorDto);
+
+        //        //var agency = await _realtorRepository.GetAgencyByNameAsync(realtorDto.Agency);
+        //        //if (realtorDto.Agency == agency.Name)
+        //        //{
+        //        //    realtor.Agency = agency;
+        //        //}
+
+        //        //var salesObjects = await _realtorRepository.GetRealtorsSalesObjects(realtor);
+
+        //        var updatedRealtor = await _realtorRepository.UpdateRealtorAsync(realtor);
+
+        //        var updatedRealtorDto = _mapper.Map<RealtorDTO>(updatedRealtor);
+
+        //        return Ok(updatedRealtorDto);
         //    }
 
         //    catch (Exception)
@@ -190,51 +232,23 @@ namespace FribergHomes.API.Controllers
         //    }
         //}
 
-        // PUT method that updates an existing Realtor object in the DB based on Id and Realtor object.
-        // PUT api/<RealtorController>/5
-        [HttpPut("{id}")]
-        public async Task<ActionResult<RealtorDTO>> PutRealtor(RealtorDTO realtorDto)
-        {
-            try
-            {
-                var realtor = _mapper.Map<Realtor>(realtorDto);
-
-                //var agency = await _realtorRepository.GetAgencyByNameAsync(realtorDto.Agency);
-                //if (realtorDto.Agency == agency.Name)
-                //{
-                //    realtor.Agency = agency;
-                //}
-
-                //var salesObjects = await _realtorRepository.GetRealtorsSalesObjects(realtor);
-
-                var updatedRealtor = await _realtorRepository.UpdateRealtorAsync(realtor);
-
-                var updatedRealtorDto = _mapper.Map<RealtorDTO>(updatedRealtor);
-
-                return Ok(updatedRealtorDto);
-            }
-
-            catch (Exception)
-            {
-                return StatusCode(500, _generalFaultMessage);
-            }
-        }
-
 
 
         // DELETE method that finds and deletes an existing Realtor object based on Id.
         // DELETE api/<RealtorController>/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteRealtor(int id)
+        [HttpDelete("{realtorId}/{newRealtorId}")]
+        public async Task<ActionResult> DeleteRealtor(string realtorId, string newRealtorId)
         {
             try
             {
-                var realtor = await _realtorRepository.GetRealtorByIdAsync(id);
+                var realtor = await _realtorRepository.GetRealtorByIdAsync(realtorId);
                 if (realtor == null)
                 {
                     return NotFound();
                 }
-                await _realtorRepository.DeleteRealtorAsync(realtor);
+                var newRealtor = await _realtorRepository.GetRealtorByIdAsync(newRealtorId);
+                await _realtorRepository.DeleteRealtorAsync(realtor, newRealtor);
+
                 return NoContent();
             }
             catch (Exception e)

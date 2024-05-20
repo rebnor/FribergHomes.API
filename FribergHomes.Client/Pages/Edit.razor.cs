@@ -1,18 +1,20 @@
 ﻿using FribergHomes.Client.DTOs;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.Reflection.Metadata;
 
 namespace FribergHomes.Client.Pages
 {
     //Author: Tobias 2024-05-06
+    // Update: Nu kan man editera allt och man får upp Alert-box som säger att det funkade / Reb 2024-05-19
 
     public partial class Edit
     {
-
         [Parameter]
         public string? ObjectType { get; set; }
 
         [Parameter]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         private string? _category;
 
@@ -26,89 +28,102 @@ namespace FribergHomes.Client.Pages
 
         public CategoryDTO? Category { get; set; }
 
-        //public CountyDTO? County { get; set; }
+        private int intId;
+        private Guid guidId;
+        private bool isEdited = false;
 
 
         protected override async Task OnParametersSetAsync()
         {
+            bool isInt = int.TryParse(Id, out intId);
+            bool isGuid = Guid.TryParse(Id, out guidId);
+
             switch (ObjectType)
             {
                 case "salesobject":
-
-                    SalesObject = await SalesObjectService.Get(Id);
-                    _category = SalesObject.CategoryName;
+                    if (isInt)
+                    {
+                        SalesObject = await SalesObjectService.Get(intId);
+                        _category = SalesObject.CategoryName;
+                    }
                     break;
 
                 case "realtor":
-
-                    Realtor = await RealtorService.GetRealtorByIdAsync(Id);
+                    if (isGuid)
+                    {
+                        Realtor = await RealtorService.GetRealtorByIdAsync(Id);
+                        StateHasChanged();
+                    }
                     break;
 
                 case "agency":
-
-                    Agency = await AgencyService.GetAgencyByIdAsync(Id);
+                    if (isInt)
+                    {
+                        Agency = await AgencyService.GetAgencyByIdAsync(intId);
+                    }
                     break;
 
                 case "category":
-
-                    var categories = await CategoryService.GetAllCategoriesAsync();
-                    if (categories == null)
+                    if (isInt)
                     {
-                        break;
+                        var categories = await CategoryService.GetAllCategoriesAsync();
+                        if (categories != null)
+                        {
+                            foreach (var category in categories)
+                            {
+                                _categoryIconNames!.Add(category.IconUrl);
+                            }
+
+                            Category = await CategoryService.GetCategoryByIdAsync(intId);
+                        }
                     }
-
-                    foreach (var category in categories)
-                    {
-                        _categoryIconNames!.Add(category.IconUrl);
-                    }
-
-                    Category = await CategoryService.GetCategoryByIdAsync(Id);
-
                     break;
 
-                //case "county":
-
-                //    County = await CountyService.GetCountyByIdAsync(Id);
-                //    break;
+                    //case "county":
+                    //    County = await CountyService.GetCountyByIdAsync(Id); // TODO: Ta bort??
+                    //    break;
             }
+
         }
 
         private void UpdatePreview()
         {
             StateHasChanged();
-
         }
 
-        private async void Submit()
+        private async Task Submit()
         {
             switch (ObjectType)
             {
                 case "salesobject":
-
                     SalesObject!.ChangeDate = DateTime.Now;
-                    SalesObject!.ChangeName = "<<<NAME>>>";  //TODO: Hämta användare
-                    await SalesObjectService.Update(Id, SalesObject!);
+                    SalesObject!.ChangeName = await AuthService.GetUserName();
+                    await SalesObjectService.Update(intId, SalesObject!);
+                    isEdited = true;
                     break;
 
                 case "realtor":
-
                     Realtor = await RealtorService.UpdateRealtorAsync(Realtor!);
+                    isEdited = true;
                     break;
 
                 case "agency":
 
-                    Agency = await AgencyService.UpdateAgencyAsync(Id, Agency!);
+                    Agency = await AgencyService.UpdateAgencyAsync(intId, Agency!);
+                    isEdited = true;
                     break;
 
                 case "_category":
 
                     Category = await CategoryService.UpdateCategoryAsync(Category!);
+                    isEdited = true;
                     break;
 
-                //case "county":
 
-                //    County = await CountyService.UpdateCountyAsync(County!);
-                //    break;
+                    //case "county":
+
+                    //    County = await CountyService.UpdateCountyAsync(County!); // TODO: Ta bort??
+                    //    break;
             }
         }
 

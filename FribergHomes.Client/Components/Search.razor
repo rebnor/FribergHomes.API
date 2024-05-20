@@ -52,12 +52,12 @@ Update: Filter as you type / Reb 2024-05-01 *@
     {
         @if (SaleObjectsDtos.Count > 0)
         {
-            <div class="row">
-                @foreach (var salesObject in SaleObjectsDtos)
-                {
-                    <GetById ObjectId="@salesObject.Id" ObjectType="SalesObject" />
-                }
-            </div>
+
+            @foreach (var salesObject in SaleObjectsDtos)
+            {
+                <GetById ObjectId="@salesObject.Id" ObjectType="SalesObject" />
+            }
+
         }
         else
         {
@@ -193,7 +193,7 @@ Update: Filter as you type / Reb 2024-05-01 *@
         StateHasChanged();
         if (countyName == "")
         {
-            FilteredCounties = null;
+            FilteredDto = null;
             StateHasChanged();
         }
 

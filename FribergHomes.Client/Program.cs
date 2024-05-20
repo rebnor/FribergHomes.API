@@ -1,5 +1,9 @@
+using Blazored.LocalStorage;
+using FribergHomes.Client.Authentications;
 using FribergHomes.Client.Services;
 using FribergHomes.Client.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -7,9 +11,6 @@ namespace FribergHomes.Client
 {
     public class Program
     {
-        /* Configured HttpClient base adress // Tobias 2024-04-23 
-        */
-
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -24,10 +25,14 @@ namespace FribergHomes.Client
             builder.Services.AddTransient<ISalesObject, SalesObjectService>(); // Tobias 2024-04-25
             builder.Services.AddTransient<ICategory, CategoryService>(); // Rebecka 2024-04-26
 
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddCascadingAuthenticationState();
+            builder.Services.AddScoped<AuthProvider>();
+            builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
+            builder.Services.AddScoped<IAuthService, AuthService>(); // Rebecka 2024-05-13 // Update Reb 2025-05-14
+
             builder.Services.AddBlazorBootstrap();
-
-
-
+            builder.Services.AddBlazoredLocalStorage();
 
             await builder.Build().RunAsync();
         }

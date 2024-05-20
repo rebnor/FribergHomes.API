@@ -1,0 +1,246 @@
+﻿@using FribergHomes.Client.Authentications
+@using FribergHomes.Client.Components
+@using FribergHomes.Client.Services.Interfaces
+@using Microsoft.AspNetCore.Authorization
+@*Author Tobias
+    Update: Redirect till Delete SalesObject funkar nu /  Reb 2024-05-18
+    Update: AddObject-komp inlagd och fungerar / Reb 2025-05-19
+*@
+@page "/realtorprofile"
+
+@inject IAuthService AuthService
+@inject IRealtor RealtorService
+@inject ISalesObject SalesObjectService
+@inject NavigationManager NavMan
+@attribute [Authorize(Roles = "Admin, Realtor")]
+
+
+<div class="container">
+
+    <h3>Mäklarprofil</h3>
+
+    <hr />
+
+    @if (Realtor is null)
+    {
+        <span>Laddar mäklare...</span>
+    }
+    else
+    {
+        @if (!ShowCreateForm)
+        {
+
+            <div class="row">
+
+                <div class="col">
+                    @* Profilbild *@
+                    <ProfilePicture Realtor="@Realtor" Size="ProfilePicture.PictureSize.Large" />
+                </div>
+                <div class="col">
+
+                    @* Beskrivning *@
+
+                    <h3>@Realtor.FullName</h3>
+                    <span>Telefon: @Realtor.PhoneNumber</span><br />
+                    <span>Email: @Realtor.Email </span><br />
+                    <span>Mäklarbyrå: @Realtor.AgencyName </span><br />
+
+                </div>
+                <div class="col">
+                    <img src="@Realtor.AgencyLogo" width="120" />
+                </div>
+
+            </div>
+
+
+            <div class="">
+            </div>
+            <div>
+                <EditButton TargetObject="Realtor" />
+            </div>
+
+        }
+        @* Avslut (!ShowCreateForm) *@
+
+        <div>
+
+            @* <CascadingValue Value="Realtor">
+
+        @if (ShowCreateForm)
+        {
+        <CreateSalesObject HideForms="HideForms" />  *@@* HideForms = Parameter callback *@
+            @*     }
+        @if (ShowEditForm)
+        {
+        <p>Visa editform</p>
+        }
+
+        </CascadingValue> *@
+            @*        @if (ShowCreateForm)
+        {
+        <AddObject ObjectType="SalesObject" />
+        } *@
+
+
+
+            <hr />
+
+
+
+            @* Lista - egna försäljningsobjekt *@
+            <div>
+
+                <h4>Försäljningsobjekt</h4>
+
+                @* Funktionsknappar *@
+
+                @* <Button Color="ButtonColor.Warning" Disabled="@(!selectedObject.Any())" @onclick="RedirectToEdit">Editera</Button>
+
+            <Button Color="ButtonColor.Danger" Disabled="@(!selectedObject.Any())" @onclick="RedirectToDelete">Radera</Button> *@
+
+                @* <Button Color="ButtonColor.Success" @onclick="(() => ShowCreateForm = true)">Skapa annons</Button> *@
+
+
+                <Button Color="ButtonColor.Primary" @onclick="ShowAddSalesObject">Skapa annons</Button>
+
+                @if (AddSalesObject)
+                {
+                    <Button Color="ButtonColor.Dark" @onclick="HideAddSalesObject">Avbryt</Button>
+
+                    <AddObject ObjectType="salesObject" />
+                }
+
+                <Grid @ref="grid"
+                      TItem="SalesObjectDTO"
+                      AllowSorting="true"
+                      AllowSelection="false"
+                      Class="table table-hover"
+                      DataProvider="GetSalesObjects"
+                      SelectedItemsChanged="OnSelectedItemsChanged"
+                      Responsive="true">
+
+
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Kategori" SortKeySelector="item => item.CategoryLogoUrl">
+                        @context.CategoryName
+                    </GridColumn>
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Adress" SortKeySelector="item => item.Adress">
+                        @context.Adress
+                    </GridColumn>
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Kommun" SortKeySelector="item => item.CountyName">
+                        @context.CountyName
+                    </GridColumn>
+
+                    <GridColumn TItem="SalesObjectDTO" HeaderText="Pris" SortKeySelector="item => item.CurrentPrice">
+                        @context.CurrentPrice
+                    </GridColumn>
+
+                    <GridColumn TItem="SalesObjectDTO">
+
+                        <Button Color="ButtonColor.Warning" Size="Size.Small" @onclick="@(() => RedirectToEdit(context.Id))">Editera</Button>
+
+                        <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="@(() => RedirectToDelete(context.Id))">Radera</Button>
+
+                        <Button Color="ButtonColor.Info" Size="Size.Small" @onclick="@(() => RedirectToInfo(context.Id))">Kolla annons</Button>
+
+                    </GridColumn>
+
+                </Grid>
+            </div>
+        </div>
+    } @* Avslut (Realtor is not null) *@</div>
+
+
+
+@code {
+
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthState { get; set; }
+
+    [Parameter]
+    public RealtorDTO? Realtor { get; set; }
+
+    private IEnumerable<SalesObjectDTO> salesObjects = default!;
+
+    private HashSet<SalesObjectDTO> selectedObject = new();
+
+    private Grid<SalesObjectDTO> grid = default!;
+
+    private bool ShowCreateForm;
+
+    private bool ShowEditForm;
+
+    private bool AddSalesObject = false;
+    private string stringId;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = await AuthService.GetUserId();
+
+        Realtor = await RealtorService.GetRealtorByIdAsync(userId);
+    }
+
+    private async Task HideForms()
+    {
+        await grid.RefreshDataAsync();
+        ShowCreateForm = false;
+        ShowEditForm = false;
+
+    }
+
+    private void RedirectToEdit(int id)
+    {
+        stringId = Convert.ToString(id);
+        NavMan.NavigateTo($"/edit/salesobject/{stringId}");
+    }
+
+    private void RedirectToDelete(int id)
+    {
+        NavMan.NavigateTo($"/delete/SalesObject/{id.ToString()}");
+    }
+
+    // Function to select single item in grid (not used on group decision).
+    private async Task<GridDataProviderResult<SalesObjectDTO>> GetSalesObjects(GridDataProviderRequest<SalesObjectDTO> request)
+    {
+        if (Realtor is not null)
+        {
+            salesObjects = await SalesObjectService.GetAllByRealtor(Realtor.Id);
+        }
+
+        return await Task.FromResult(request.ApplyTo(salesObjects));
+    }
+
+    private Task OnSelectedItemsChanged(HashSet<SalesObjectDTO> salesObjects)
+    {
+        selectedObject = salesObjects;
+        return Task.CompletedTask;
+    }
+
+
+
+    private void ShowAddSalesObject()
+    {
+        AddSalesObject = true;
+        StateHasChanged();
+
+    }
+    private void HideAddSalesObject()
+    {
+        AddSalesObject = false;
+        StateHasChanged();
+    }
+
+    private void RedirectToEditRealtor(string id)
+    {
+        NavMan.NavigateTo($"/edit/realtor/{id}", forceLoad: true);
+    }
+    private void RedirectToInfo(int id)
+    {
+
+        NavMan.NavigateTo($"/info/SalesObject/{id}", forceLoad: true);
+    }
+
+}
