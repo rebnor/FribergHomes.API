@@ -2,6 +2,7 @@
 @using FribergHomes.Client.Components
 @using FribergHomes.Client.Services.Interfaces
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @*Author Tobias
     Update: Redirect till Delete SalesObject funkar nu /  Reb 2024-05-18
     Update: AddObject-komp inlagd och fungerar / Reb 2025-05-19
@@ -100,9 +101,9 @@
 
                 @* <Button Color="ButtonColor.Success" @onclick="(() => ShowCreateForm = true)">Skapa annons</Button> *@
 
-
-                <Button Color="ButtonColor.Primary" @onclick="ShowAddSalesObject">Skapa annons</Button>
-
+                <div class="mb-3">
+                <Button Color="ButtonColor.Success" @onclick="ShowAddSalesObject">Skapa annons</Button>
+                </div>
                 @if (AddSalesObject)
                 {
                     <Button Color="ButtonColor.Dark" @onclick="HideAddSalesObject">Avbryt</Button>
