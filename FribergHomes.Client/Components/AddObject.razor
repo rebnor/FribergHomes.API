@@ -3,6 +3,7 @@
    Update: När man lägger till realtor så kopplas den byrå man är inloggad på direkt /Rebecka 2024-05-18
    Updater: Nu kan man lägga till Realtor (+ att den blir en User med lösenord osv) -> Funkade inte innan / Reb 2024-05-18
    Update: Nu kan man lägga till SalesObject med alla tillbehör / Reb 2024-05-18
+   Update: FrontEnd / Reb 2024-05-20
 
 
 *@
@@ -12,6 +13,7 @@
 @using FribergHomes.Client.Services.Interfaces
 @using FribergHomes.Client.DTOs
 @using System.Text.RegularExpressions
+@using Microsoft.AspNetCore.Components.Authorization
 @inject ISalesObject salesService
 @inject ICategory categoryService
 @inject IAgencyService agencyService
@@ -58,13 +60,50 @@ else
             <div class="col-md-5">
                 <form @onsubmit="AddNewObject">
 
-                    <div class="form-floating mb-3">Förnamn: <input type="text" @bind="firstName" /></div>
-                    <div class="form-floating mb-3">Efternamn: <input type="text" @bind="lastName" /></div>
-                    <div class="form-floating mb-3">Email: <input type="email" @bind="realtor.Email" /></div>
-                    <div class="form-floating mb-3">Telefon: <input type="text" @bind="realtor.PhoneNumber" /></div>
-                    <div class="form-floating mb-3">Lösenord: <input type="text" @bind="password" /></div>
-                    <div class="form-floating mb-3">Bekräfta Lösenord: <input type="text" @bind="confirmPassword" /></div>
-                    <div class="form-floating mb-3">Bild: <input type="text" @bind="realtor.Picture" /></div>
+                    <div class="form-floating mb-3">
+                        <input type="text" @bind="firstName" class="form-control" />
+                        <label class="form-label">
+                            Förnamn
+                        </label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" @bind="lastName" class="form-control" />
+                        <label class="form-label">
+                            Efternamn
+                        </label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" @bind="realtor.Email" class="form-control" />
+                        <label class="form-label">
+                            Email
+                        </label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" @bind="realtor.PhoneNumber" class="form-control" />
+                        <label class="form-label">
+                            Telefon
+                        </label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input @bind="password" class="form-control" />
+                        <label class="form-label">
+                            Lösenord
+                        </label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" @bind="confirmPassword" class="form-control" />
+                        <label class="form-label">
+                            Bekräfta
+                        </label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" @bind="realtor.Picture" class="form-control" />
+                        <label class="form-label">
+                            Bildlänk
+                        </label>
+                    </div>
+
 
                     <div><button type="submit" class="w-100 btn btn-lg btn-primary">Lägg till mäklare</button></div>
 
@@ -79,11 +118,10 @@ else
             <div class="col-md-5">
                 <form @onsubmit="AddNewObject">
 
-
-                    <div class="form-floating mb-3">
-                        Välj kategori:
+                    <div class="form-group mb-3">
+                        <label>Välj Kategori</label>
                         <select @bind="selectedCategoryId">
-                            <option value=""></option>
+                            <option>Välj Kategori</option>
                             @foreach (var c in categoryList)
                             {
                                 <option value="@c.Id">@c.Name</option>
@@ -94,10 +132,10 @@ else
 
                     @if (categoryName != null)
                     {
-                        <div class="form-floating mb-3">
-                            Kommun:
+                        <div class="form-group mb-3">
+                            <label>Kommun</label>
                             <select @bind="selectedCountyId">
-                                <option value="">Välj kommun</option>
+                                <option>Välj Kommun</option>
                                 @foreach (var c in countyList)
                                 {
                                     <option value="@c.Id">@c.Name</option>
@@ -108,10 +146,10 @@ else
                         // Endast Admin som får välja Mäklare
                         <AuthorizeView Roles="Admin">
                             <Authorized>
-                                <div class="form-floating mb-3">
-                                    Mäklare:
+                                <div class="form-group mb-3">
+                                    <label>Mäklare</label>
                                     <select @bind="selectedRealtorId">
-                                        <option value="">Välj mäklare</option>
+                                        <option>Välj Mäklare</option>
                                         @foreach (var r in realtorList)
                                         {
                                             <option value="@r.Id">@r.FullName</option>
@@ -122,71 +160,100 @@ else
                         </AuthorizeView>
 
                         <div class="form-floating mb-3">
-                            Adress:
-                            <input type="text" @bind="((SalesObjectDTO)salesObject).Adress" />
+                            <input type="text" @bind="((SalesObjectDTO)salesObject).Adress" class="form-control" />
+                            <label class="form-label">
+                                Adress
+                            </label>
                         </div>
 
                         <div class="form-floating mb-3">
-                            Boarea:
-                            <input type="number" @bind="((SalesObjectDTO)salesObject).LivingArea" />
+                            <input type="number" @bind="((SalesObjectDTO)salesObject).LivingArea" class="form-control" />
+                            <label class="form-label">
+                                Boarea
+                            </label>
                         </div>
 
                         <div class="form-floating mb-3">
-                            Antal rum:
-                            <input type="number" @bind="((SalesObjectDTO)salesObject).Rooms" />
+                            <input type="number" @bind="((SalesObjectDTO)salesObject).Rooms" class="form-control" />
+                            <label class="form-label">
+                                Antal Rum
+                            </label>
                         </div>
 
 
                         @if (categoryName == "Lägenhet")
                         {
                             <div class="form-floating mb-3">
-                                Våning:
-                                <input type="number" @bind="((SalesObjectDTO)salesObject).Level" />
+
+                                <input type="number" @bind="((SalesObjectDTO)salesObject).Level" class="form-control" />
+                                <label class="form-label">
+                                    Våning
+                                </label>
+                            </div>
+
+                            <div class="mb-3 checkbox">
+                                <label>
+                                    <input type="checkbox" @bind="((SalesObjectDTO)salesObject).Lift" />
+                                    Hiss
+                                </label>
                             </div>
 
                             <div class="form-floating mb-3">
-                                Hiss:
-                                <input type="checkbox" @bind="((SalesObjectDTO)salesObject).Lift" />
-                            </div>
 
-                            <div class="form-floating mb-3">
-                                Månadsavgift:
-                                <input type="number" @bind="((SalesObjectDTO)salesObject).MonthlyFee" />
+                                <input type="number" @bind="((SalesObjectDTO)salesObject).MonthlyFee" class="form-control" />
+                                <label class="form-label">
+                                    Månadsavgift
+                                </label>
                             </div>
                         }
                         @if (categoryName == "Hus" || categoryName == "Semesterhem" || categoryName == "Radhus")
                         {
                             <div class="form-floating mb-3">
-                                Biarea:
-                                <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" />
+
+                                <input type="text" @bind="((SalesObjectDTO)salesObject).AncillaryArea" class="form-control" />
+                                <label class="form-label">
+                                    Biarea
+                                </label>
                             </div>
 
                             <div class="form-floating mb-3">
-                                Driftkostnad:
-                                <input type="number" @bind="((SalesObjectDTO)salesObject).YearlyCost" />
+
+                                <input type="number" @bind="((SalesObjectDTO)salesObject).YearlyCost" class="form-control" />
+                                <label class="form-label">
+                                    Driftkostnad
+                                </label>
                             </div>
                         }
 
                         <div class="form-floating mb-3">
-                            Byggnadsår:
-                            <input type="number" @bind="((SalesObjectDTO)salesObject).BuildYear" />
+
+                            <input type="number" @bind="((SalesObjectDTO)salesObject).BuildYear" class="form-control" />
+                            <label class="form-label">
+                                Byggnadsår
+                            </label>
                         </div>
 
                         <div class="form-floating mb-3">
-                            Beskrivning:
-                            <input type="text" @bind="((SalesObjectDTO)salesObject).ObjectDescription" />
+
+                            <textarea @bind="((SalesObjectDTO)salesObject).ObjectDescription" class="form-control" rows="15"></textarea>
+                            <label class="form-label">
+                                Beskrivning
+                            </label>
                         </div>
 
                         <div class="form-floating mb-3">
-                            Pris:
-                            <input type="number" @bind="((SalesObjectDTO)salesObject).CurrentPrice" />
+
+                            <input type="number" @bind="((SalesObjectDTO)salesObject).CurrentPrice" class="form-control" />
                             <input type="hidden" @bind="((SalesObjectDTO)salesObject).ListingPrice" />
+                            <label class="form-label">
+                                Pris
+                            </label>
                         </div>
 
                         <div class="form-floating mb-3">
                             Bildlänkar:
-                            <input type="text" @bind="imageLinksInput" placeholder="Skriv in din bildlänk här" />
-                            <Button Color="ButtonColor.Primary" @onclick="AddImageLinks">Lägg till</Button>
+                            <input type="text" @bind="imageLinksInput" placeholder="Skriv in din bildlänk här" class="form-control" />
+                            <Button Color="ButtonColor.Primary" @onclick="AddImageLinks">Lägg till bild</Button>
                             @if (salesObject.ImageLinks.Any())
                             {
                                 <div class="form-floating mb-3">
@@ -200,21 +267,20 @@ else
 
                         <div class="form-floating mb-3">
                             Visningsdatum:
-                            <input type="date" @bind="viewDate" />
-                            <Button Color="ButtonColor.Primary" @onclick="AddDates">Lägg till</Button>
+                            <input type="date" @bind="viewDate" class="form-control" />
+                            <Button Color="ButtonColor.Primary" @onclick="AddDates">Lägg till datum</Button>
                             @if (salesObject.ViewingDates.Any())
                             {
                                 @foreach (var date in salesObject.ViewingDates)
                                 {
-                                    <div class="form-floating mb-3">
-                                        Visnings datum: @viewDate.ToString("yyy-MM-dd");
+                                    <div class="form-floating mb-3 mt-2">
+                                        <strong>Visnings datum: </strong>@viewDate.ToString("yyy-MM-dd")
                                     </div>
                                 }
                             }
                         </div>
 
-
-                        <button type="submit">Lägg till</button>
+                        <Button Color="ButtonColor.Success" Type="ButtonType.Submit">Spara Annons</Button>
 
                     }
                 </form>
@@ -275,7 +341,6 @@ else
     private List<string> errorMessages = new List<string>();
 
 
-
     protected override async Task OnInitializedAsync()
     {
         if (ObjectType == "category")
@@ -291,7 +356,6 @@ else
             authState = await authService.CheckAuthState(); // Hämtar inloggade-realtor
             email = authState.User.Identity.Name; // hämtar inloggade email
             Agency = await agencyService.GetAgencyByRealtorEmailAsync(email); // Kan uppdatera till GetById men måste då lägga in denna funktion i antingen Realtor eller Agency
-                                                                              // newObject = new RealtorDTO();
             newObject = new RealtorDTO();
             StateHasChanged();
         }
@@ -505,8 +569,8 @@ else
                     if (salesObject.ListingPrice > 100000000)
                     {
                         errorMessages.Add("Pris får ej överstiga 100,0000,000SEK");
-                    }            
-                 
+                    }
+
                     // BuildYear
                     if (salesObject.BuildYear < 1800 || salesObject.BuildYear > 2100)
                     {
@@ -516,7 +580,7 @@ else
                     if (string.IsNullOrEmpty(salesObject.ObjectDescription) || salesObject.ObjectDescription.Length < 10)
                     {
                         errorMessages.Add("Objektbeskrivning får ej understiga 10 tecken.");
-                    }                 
+                    }
                     //ImageLinks
                     if (salesObject.ImageLinks == null || !salesObject.ImageLinks.Any())
                     {
@@ -533,6 +597,7 @@ else
                     errorMessages.Add(e.Message);
                 }
 
+                /*Reb*/
                 salesObject.CategoryId = selectedCategoryId;
                 salesObject.CountyId = selectedCountyId;
                 salesObject.AgencyId = Agency.Id;
@@ -557,7 +622,6 @@ else
             isAdded = true;
             StateHasChanged();
             NavigationManager.Refresh(true);
-            // NavigationManager.NavigateTo("/agencyprofile", forceLoad: true);
         }
         catch (Exception e)
         {

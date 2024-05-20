@@ -5,12 +5,14 @@ Update: När en mäklare raderas måste salesobjekt gå till ny mäklare / Reb 2
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
 @using FribergHomes.Client.Components
+@using Microsoft.AspNetCore.Authorization
 @inject IRealtor realtorService
 @inject ICategory categoryService
 @* @inject ICounty countyService *@
 @inject IAgencyService agencyService
 @inject ISalesObject salesService
 @inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = "Admin, Realtor")]
 
 
 @if (isDeleted)
