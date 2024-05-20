@@ -6,6 +6,7 @@ Update: När en mäklare raderas måste salesobjekt gå till ny mäklare / Reb 2
 @using FribergHomes.Client.Services.Interfaces
 @using FribergHomes.Client.Components
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IRealtor realtorService
 @inject ICategory categoryService
 @* @inject ICounty countyService *@
@@ -23,86 +24,131 @@ else
 {
     if (ObjectToShow != null)
     {
-        <h2 class="text-danger">Är du säker på att du vill radera detta objekt?</h2>
+        <AuthorizeView Roles="Admin">
+            <NotAuthorized>
+                <div class="shadow card custom-card">
 
-        <div class="card shadow custom-card">
-            @if (ObjectToShow is RealtorDTO realtor)
-            {
-                <h3>@realtor.FullName</h3>
-                <img src="@realtor.Picture" width="200" />
-                <p>@realtor.Email</p>
-
-                @if (changeRealtor)
-                {
-                    @if (!deleteAndChange)
+                    @if (!(ObjectToShow is SalesObjectDTO so))
                     {
-                        @if (error != null)
+                        <Alert Color="AlertColor.Danger"> Du får inte gå in på denna sida! Är det något fel kontakta närmsta Chef! </Alert>
+
+                    }
+
+                    @if (ObjectToShow is SalesObjectDTO salesObject)
+                    {
+                        <h2 class="text-danger">Är du säker på att du vill radera detta objekt?</h2>
+
+                        <h3>@salesObject.CategoryName - @salesObject.Id</h3>
+                        <h3>@salesObject.Adress</h3>
+                        foreach (var picture in salesObject.ImageLinks)
                         {
-                            <p>@error</p>
+                            <img src="@picture" width="100" />
                         }
 
-                        <form @onsubmit="ChooseRealtor">
+                        <div class="buttons mt-2">
+                        <Button Color="ButtonColor.Danger" @onclick="YesDelete">Ja, Ta bort!</Button>
 
-                            <p>Vilken mäklare vill du ska ta över alla @realtor.FullName annonser?</p>
-                            <select @bind="NewRealtorId">
-                                <option value="">Välj en mäklare</option>
-                                @foreach (var r in Realtors)
-                                {
-                                    if (r.Id != realtor.Id)
-                                    {
-                                        <option value="@r.Id">@r.FullName</option>
-                                    }
-                                }
-                            </select>
-
-                            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Välj</Button>
-
-                        </form>
+                        <Button Color="ButtonColor.Primary" @onclick="NoCancel">Nej, Avbryt!</Button>
+                      </div>
                     }
-                    else
+
+                </div>
+            </NotAuthorized>
+            <Authorized>
+
+                <h2 class="text-danger">Är du säker på att du vill radera detta objekt?</h2>
+
+                <div class="card shadow custom-card">
+
+
+                    @if (ObjectToShow is RealtorDTO realtor)
                     {
-                        <p>Mäklare som tar över alla annonser: @newRealtor.FullName</p>
+                        <h3>@realtor.FullName</h3>
+                        <img src="@realtor.Picture" width="200" />
+                        <p>@realtor.Email</p>
 
-                        <Button Color="ButtonColor.Danger" @onclick="DeleteAndChangeRealtor">Byt och Ta Bort</Button>
+                        @if (changeRealtor)
+                        {
+                            @if (!deleteAndChange)
+                            {
+                                @if (error != null)
+                                {
+                                    <p>@error</p>
+                                }
+
+                                <form @onsubmit="ChooseRealtor">
+
+                                    <p>Vilken mäklare vill du ska ta över alla @realtor.FullName annonser?</p>
+                                    <select @bind="NewRealtorId">
+                                        <option value="">Välj en mäklare</option>
+                                        @foreach (var r in Realtors)
+                                        {
+                                            if (r.Id != realtor.Id)
+                                            {
+                                                <option value="@r.Id">@r.FullName</option>
+                                            }
+                                        }
+                                    </select>
+
+                                    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Välj</Button>
+
+                                </form>
+                            }
+                            else
+                            {
+                                <p>Mäklare som tar över alla annonser: @newRealtor.FullName</p>
+
+                                <Button Color="ButtonColor.Danger" @onclick="DeleteAndChangeRealtor">Byt och Ta Bort</Button>
+                            }
+                        }
                     }
-                }
-            }
-            else if (ObjectToShow is SalesObjectDTO salesObject)
-            {
-                <h3>@salesObject.CategoryName - @salesObject.Id</h3>
-                <h3>@salesObject.Adress</h3>
-                foreach (var picture in salesObject.ImageLinks)
+
+
+                    else if (ObjectToShow is SalesObjectDTO salesObject)
+                    {
+                        <h3>@salesObject.CategoryName - @salesObject.Id</h3>
+                        <h3>@salesObject.Adress</h3>
+                        foreach (var picture in salesObject.ImageLinks)
+                        {
+                            <img src="@picture" width="100" />
+                        }
+
+                    }
+
+
+                    else if (ObjectToShow is AgencyDTO agency)
+                    {
+                        <h2>@agency.Name - #@agency.Id</h2>
+                        <img src="@agency.Logo" width="300" />
+                    }
+                    else if (ObjectToShow is CategoryDTO category)
+                    {
+                        <h2>@category.Name - @category.Id</h2>
+                        <div>@((MarkupString)category.IconUrl)</div>
+
+                    }
+                </div>
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Admin">
+
+
+            <div class="m-3">
+                @if (!(ObjectToShow is RealtorDTO))
                 {
-                    <img src="@picture" width="100" />
+                    <Button Color="ButtonColor.Danger" @onclick="YesDelete">Ja, Ta bort!</Button>
+                    <Button Color="ButtonColor.Primary" @onclick="NoCancel">Nej, Avbryt!</Button>
                 }
 
-            }
-            else if (ObjectToShow is AgencyDTO agency)
-            {
-                <h2>@agency.Name - #@agency.Id</h2>
-                <img src="@agency.Logo" width="300" />
-            }
-            else if (ObjectToShow is CategoryDTO category)
-            {
-                <h2>@category.Name - @category.Id</h2>
-                <div>@((MarkupString)category.IconUrl)</div>
+                @if (ObjectToShow is RealtorDTO rDto && !changeRealtor)
+                {
+                    <Button Color="ButtonColor.Danger" @onclick="YesDelete">Ja, Ta bort!</Button>
+                    <Button Color="ButtonColor.Primary" @onclick="NoCancel">Nej, Avbryt!</Button>
+                }
+            </div>
 
-            }
-        </div>
+        </AuthorizeView>
 
-        <div class="m-3">
-            @if (!(ObjectToShow is RealtorDTO))
-            {
-                <Button Color="ButtonColor.Danger" @onclick="YesDelete">Ja, Ta bort!</Button>
-                <Button Color="ButtonColor.Primary" @onclick="NoCancel">Nej, Avbryt!</Button>
-            }
-
-            @if (ObjectToShow is RealtorDTO rDto && !changeRealtor)
-            {
-                <Button Color="ButtonColor.Danger" @onclick="YesDelete">Ja, Ta bort!</Button>
-                <Button Color="ButtonColor.Primary" @onclick="NoCancel">Nej, Avbryt!</Button>
-            }
-        </div>
     }
 }
 
