@@ -7,8 +7,8 @@
 
 
 
-<button @onclick="@(() => EditObject())" class="btn btn-primary">
-    Ändra
+<button @onclick="@(() => EditObject())" class="btn btn-primary"> 
+    Ändra 
 </button>
 
 
@@ -21,8 +21,6 @@
 
     private string? typeName;
 
-    private string stringId;
-
     private void EditObject()
     {
         if (TargetObject == null)
@@ -30,32 +28,12 @@
             return;
         }
 
-        // var dtoType = TargetObject!.GetType().Name.ToLower();
-        // var typeName = dtoType[..^3];
-
-        // var idProperty = TargetObject.GetType().GetProperty("Id");
-        // Id = (int)idProperty!.GetValue(TargetObject)!;
-
-        // NavMan.NavigateTo($"/edit/{typeName}/{Id}");
-
-
-        var dtoType = TargetObject.GetType().Name.ToLower();
-        // var typeName = dtoType.Substring(0, dtoType.Length - 3);
+        var dtoType = TargetObject!.GetType().Name.ToLower();
         var typeName = dtoType[..^3];
 
-        if (typeName != "realtor")
-        {
-            var idProperty = TargetObject.GetType().GetProperty("Id");
-            Id = (int)idProperty!.GetValue(TargetObject)!;
+        var idProperty = TargetObject.GetType().GetProperty("Id");
+        Id = (int)idProperty!.GetValue(TargetObject)!;
 
-            NavMan.NavigateTo($"/edit/{typeName}/{Id}");
-        }
-        else
-        {
-            var idProperty = TargetObject.GetType().GetProperty("Id");
-            stringId = (string)idProperty!.GetValue(TargetObject)!;
-
-            NavMan.NavigateTo($"/edit/{typeName}/{stringId}");
-        }
+        NavMan.NavigateTo($"/edit/{typeName}/{Id}");
     }
 }

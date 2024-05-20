@@ -13,7 +13,7 @@ namespace FribergHomes.API.Data.Interfaces
     {
         Task<SalesObject> GetSalesObjectByIdAsync(int? id);
         Task<List<SalesObject>> GetSalesObjectsByCountyAsync(int id);
-        Task<List<SalesObject>> GetSalesObjectsByRealtorAsync(string id);
+        Task<List<SalesObject>> GetSalesObjectsByRealtorAsync(int id);
         Task<List<SalesObject>> GetAllSalesObjectsAsync();
         Task<SalesObject> AddSalesObjectAsync(SalesObject salesObject);
         Task DeleteSalesObjectAsync(SalesObject salesObject);
@@ -25,7 +25,7 @@ namespace FribergHomes.API.Data.Interfaces
 
         // Needed / Reb
         Task<List<SalesObject>> GetSalesObjectsByCountyNameAsync(string name);
-        Task<List<SalesObject>> GetRealtorsSalesObjectsAsync(string realtorId);
+        Task<List<SalesObject>> GetRealtorsSalesObjectsAsync(int realtorId);
         Task<List<SalesObject>> GetSalesObjectsByCategoryAsync(int categoryId);
 
 

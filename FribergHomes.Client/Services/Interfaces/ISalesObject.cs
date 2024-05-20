@@ -24,7 +24,7 @@ namespace FribergHomes.Client.Services.Interfaces
       
         Task<List<SalesObjectDTO>> GetSalesByCategory(int id); // Reb
 
-        Task<List<SalesObjectDTO>> GetAllByRealtor(string id);
+        Task<List<SalesObjectDTO>> GetAllByRealtor(int id);
 
         Task<SalesObjectDTO> Create(SalesObjectDTO salesObject);
 

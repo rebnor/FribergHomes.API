@@ -1,6 +1,5 @@
-﻿@* DeletePage for choosen object
-Author: Reb 2024-05-01
-Update: När en mäklare raderas måste salesobjekt gå till ny mäklare / Reb 2024-05-17*@
+﻿ @* DeletePage for choosen object
+Author: Reb 2024-05-01 *@
 @page "/delete/{ObjectType}/{ObjectStringId}"
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
@@ -23,47 +22,10 @@ else
     {
         <h2 class="text-danger">Är du säker på att du vill radera detta objekt?</h2>
 
-        <div class="card shadow custom-card">
+        <div class="card shadow">
             @if (ObjectToShow is RealtorDTO realtor)
             {
-                <h3>@realtor.FullName</h3>
-                <img src="@realtor.Picture" width="200" />
-                <p>@realtor.Email</p>
-
-                @if (changeRealtor)
-                {
-                    @if (!deleteAndChange)
-                    {
-                        @if (error != null)
-                        {
-                            <p>@error</p>
-                        }
-
-                        <form @onsubmit="ChooseRealtor">
-
-                            <p>Vilken mäklare vill du ska ta över alla @realtor.FullName annonser?</p>
-                            <select @bind="NewRealtorId">
-                                <option value="">Välj en mäklare</option>
-                                @foreach (var r in Realtors)
-                                {
-                                    if (r.Id != realtor.Id)
-                                    {
-                                        <option value="@r.Id">@r.FullName</option>
-                                    }
-                                }
-                            </select>
-
-                            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Välj</Button>
-
-                        </form>
-                    }
-                    else
-                    {
-                        <p>Mäklare som tar över alla annonser: @newRealtor.FullName</p>
-
-                        <Button Color="ButtonColor.Danger" @onclick="DeleteAndChangeRealtor">Byt och Ta Bort</Button>
-                    }
-                }
+                <h3>@realtor.FullName - #@realtor.Id</h3>
             }
             else if (ObjectToShow is SalesObjectDTO salesObject)
             {
@@ -73,13 +35,16 @@ else
                 {
                     <img src="@picture" width="100" />
                 }
-
             }
             else if (ObjectToShow is AgencyDTO agency)
             {
                 <h2>@agency.Name - #@agency.Id</h2>
                 <img src="@agency.Logo" width="300" />
             }
+    @*         else if (ObjectToShow is CountyDTO county)
+            {
+                <h2>@county.Name - #@county.Id</h2>
+            } *@
             else if (ObjectToShow is CategoryDTO category)
             {
                 <h2>@category.Name - @category.Id</h2>
@@ -88,19 +53,13 @@ else
             }
         </div>
 
-        <div class="m-3">
-            @if (!(ObjectToShow is RealtorDTO))
-            {
-                <Button Color="ButtonColor.Danger" @onclick="YesDelete">Ja, Ta bort!</Button>
-                <Button Color="ButtonColor.Primary" @onclick="NoCancel">Nej, Avbryt!</Button>
-            }
+        <form @onsubmit="YesDelete">
+            <button class="btn-primary" type="submit">Ja, ta bort!</button>
+        </form>
 
-            @if (!changeRealtor)
-            {
-                <Button Color="ButtonColor.Danger" @onclick="YesDelete">Ja, Ta bort!</Button>
-                <Button Color="ButtonColor.Primary" @onclick="NoCancel">Nej, Avbryt!</Button>
-            }
-        </div>
+        <form @onsubmit="NoCancel">
+            <button class="btn-danger" type="submit">Nej, avbryt!</button>
+        </form>
     }
 }
 
@@ -114,73 +73,43 @@ else
 
     public int ObjectId { get; set; }
     public object? ObjectToShow { get; set; }
-
     public bool isDeleted = false;
-    public string? NewRealtorId { get; set; }
-    public List<RealtorDTO> Realtors;
-    public RealtorDTO RealtorDto;
-    public bool changeRealtor = false;
-    public bool deleteAndChange = false;
-    public string error;
-    public RealtorDTO newRealtor;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await GetObject();
-    }
 
     private async Task GetObject()
     {
         if (ObjectType == "Realtor")
-        {
-            ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectStringId);
-            StateHasChanged();
-            RealtorDto = (RealtorDTO)ObjectToShow;
-            StateHasChanged();
-            Realtors = await agencyService.GetRealtorsAtAgency(RealtorDto.AgencyId);
-            StateHasChanged();
-        }
+            ObjectToShow = await realtorService.GetRealtorByIdAsync(ObjectId);
         else if (ObjectType == "SalesObject")
-        {
-            ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await salesService.Get(ObjectId);
-        }
         else if (ObjectType == "Category")
-        {
-            ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await categoryService.GetCategoryByIdAsync(ObjectId);
-        }
         // else if (ObjectType == "County")
         //     ObjectToShow = await countyService.GetCountyByIdAsync(ObjectId);
         else if (ObjectType == "Agency")
-        {
-            ObjectId = Convert.ToInt16(ObjectStringId);
             ObjectToShow = await agencyService.GetAgencyByIdAsync(ObjectId);
-        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ObjectId = Convert.ToInt16(ObjectStringId);
+        await GetObject();
     }
 
     private async void YesDelete()
     {
         if (ObjectType == "Realtor")
-        {
-            changeRealtor = true;
-        }
-        else if (ObjectType == "SalesObject")
-        {
+            await realtorService.DeleteRealtorAsync(ObjectId);
+        else if (ObjectType == "SalesObject") 
             await salesService.Delete(ObjectId);
-            isDeleted = true;
-        }
         else if (ObjectType == "Category")
-        {
-            isDeleted = true;
             await categoryService.DeleteCategoryAsync(ObjectId);
-        }
+        // else if (ObjectType == "County")
+        //     await countyService.DeleteCountyAsync(ObjectId);
         else if (ObjectType == "Agency")
-        {
-            isDeleted = true;
             await agencyService.DeleteAgencyAsync(ObjectId);
-        }
 
+
+        isDeleted = true;
         StateHasChanged();
 
     }
@@ -188,27 +117,5 @@ else
     private async void NoCancel()
     {
         NavigationManager.NavigateTo("/");
-    }
-
-    private async void ChooseRealtor()
-    {
-        if (NewRealtorId != null)
-        {
-            newRealtor = await realtorService.GetRealtorByIdAsync(NewRealtorId);
-            deleteAndChange = true;
-            StateHasChanged();
-        }
-        else
-        {
-            error = "Du måste välja en ny mäklare";
-        }
-    }
-
-    private async void DeleteAndChangeRealtor()
-    {
-
-        await realtorService.DeleteRealtorAsync(ObjectStringId, NewRealtorId);
-        isDeleted = true;
-        StateHasChanged();
     }
 }

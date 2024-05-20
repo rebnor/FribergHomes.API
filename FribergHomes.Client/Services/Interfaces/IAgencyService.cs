@@ -16,8 +16,5 @@ namespace FribergHomes.Client.Services.Interfaces
 
         Task<List<RealtorDTO>> GetRealtorsAtAgency(int id);
 
-
-        Task<AgencyDTO> GetAgencyByRealtorEmailAsync(string email);
-        Task<List<SalesObjectDTO>> GetSaleObjectsAtAgencyAsync(int id);
     }
 }

@@ -109,17 +109,5 @@ namespace FribergHomes.Client.Services
                 throw new Exception("Ett oväntat fel uppstod.");
             }
         }
-
-
-
-        public async Task<AgencyDTO> GetAgencyByRealtorEmailAsync(string email) 
-        {
-            return await _client.GetFromJsonAsync<AgencyDTO>($"api/agency/by-email/{email}");
-        }
-
-        public async Task<List<SalesObjectDTO>> GetSaleObjectsAtAgencyAsync(int id)
-        {
-            return await _client.GetFromJsonAsync<List<SalesObjectDTO>>($"api/agency/saleobjects/{id}");
-        }
     }
 }

@@ -130,10 +130,10 @@ namespace FribergHomes.Client.Services
         /// GET method that retrieves all SalesObjects with specific realtor id from the database.
         /// Throws exception if HTTP status code is not in the 200-range.
         /// </summary>
-        /// <param name="string id"></param>
+        /// <param name="int id"></param>
         /// <returns>A List&lt;SalesObjectDTO&gt;</returns>
         /// <exception cref="HttpRequestException"></exception>
-        public async Task<List<SalesObjectDTO>> GetAllByRealtor(string id)
+        public async Task<List<SalesObjectDTO>> GetAllByRealtor(int id)
         {
             var response = await _client.GetAsync($"api/salesobject/realtor/{id}");
 

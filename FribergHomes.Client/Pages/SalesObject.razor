@@ -1,29 +1,25 @@
-﻿@* Author: Reb 2024-04-30
-Update: Reb 2024-05-15
-*@
+﻿@* Author: Reb 2024-04-30 *@
 @page "/salesObject"
-@using FribergHomes.Client.Authentications
 @using FribergHomes.Client.DTOs
 @using FribergHomes.Client.Services.Interfaces
 @using FribergHomes.Client.Components
 @inject ISalesObject salesService
 
-
 <h1>Annonser</h1>
 
-<div class="row">
+<hr />
 
-    <Button Color="ButtonColor.Primary" @onclick="ShowAllSaleObjects">
-        Visa alla annonser i Hela Sverige
-    </Button>
+<h3>Alla annonser:</h3>
+<div class="row">
+    <form @onsubmit="ShowAllSaleObjects">
+        <button type="submit">Hämta alla annonser</button>
+    </form>
 
     @if (ListSalesDtos != null)
     {
-        <Button Color="ButtonColor.Secondary" @onclick="HideAllSaleObjects">
-            Göm lista
-        </Button>
-
-        <h3 class="mt-3">Alla annonser:</h3>
+        <form @onsubmit="HideAllSaleObjects">
+            <button type="submit">Göm Lista</button>
+        </form>
 
         <GetList ObjectType="SalesObject" TItem="SalesObjectDTO"></GetList>
     }
@@ -31,7 +27,20 @@ Update: Reb 2024-05-15
 
 <hr />
 
+<h3>Sök bostad via Id:</h3>
+<form @onsubmit="SubmitId">
+    <input type="number" @bind="salesId" />
+    <button type="submit">Hämta annons</button>
+</form>
+@if (SalesObjectDto != null)
+{
+    <GetById ObjectId="salesId" ObjectType="SalesObject" />
+}
+
+<hr />
+
 <Search></Search>
+
 
 
 @code {
@@ -41,6 +50,12 @@ Update: Reb 2024-05-15
 
     private int salesId;
     private string salesCounty;
+
+    private async void SubmitId()
+    {
+        SalesObjectDto = await salesService.Get(salesId);
+        StateHasChanged();
+    }
 
     private async void ShowAllSaleObjects()
     {

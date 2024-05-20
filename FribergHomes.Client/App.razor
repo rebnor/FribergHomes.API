@@ -1,22 +1,6 @@
-﻿@inject NavigationManager navMan
-
-<Router AppAssembly="@typeof(App).Assembly">
+﻿<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-            <NotAuthorized>
-
-                @if(context.User.Identity?.IsAuthenticated == false)
-                {
-                    navMan.NavigateTo("/login");
-                }
-
-            </NotAuthorized>
-            <Authorizing>
-
-                <p>Loading...</p>
-
-            </Authorizing>
-        </AuthorizeRouteView>
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
     <NotFound>
@@ -26,4 +10,3 @@
         </LayoutView>
     </NotFound>
 </Router>
-

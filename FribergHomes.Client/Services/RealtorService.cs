@@ -8,7 +8,6 @@ namespace FribergHomes.Client.Services
 {
     /* RealtorService that inherit from IRealtor. 
      * @ Author: Rebecka 2024-04-24
-     * @ Update: När en mäklare raderas måste salesobjekt gå till ny mäklare / Reb 2024-05-17
      */
     public class RealtorService : IRealtor
     {
@@ -22,7 +21,7 @@ namespace FribergHomes.Client.Services
         {
             return await _client.GetFromJsonAsync<List<RealtorDTO>>("api/Realtor");
         }
-        public async Task<RealtorDTO> GetRealtorByIdAsync(string id)
+        public async Task<RealtorDTO> GetRealtorByIdAsync(int id)
         {
             return await _client.GetFromJsonAsync<RealtorDTO>($"api/realtor/{id}");
         }
@@ -34,23 +33,16 @@ namespace FribergHomes.Client.Services
             return await response.Content.ReadFromJsonAsync<RealtorDTO>();
         }
 
-        public async Task DeleteRealtorAsync(string realtorId, string newRealtorId)
+        public async Task DeleteRealtorAsync(int id)
         {
-            await _client.DeleteAsync($"api/realtor/{realtorId}/{newRealtorId}");
+            await _client.DeleteAsync($"api/realtor/{id}");
         }
 
-        public async Task<RealtorDTO> UpdateRealtorAsync(RealtorDTO realtorDto)
+        public async Task<RealtorDTO> UpdateRealtorAsync(RealtorDTO realtor)
         {
-
-            var response = await _client.PutAsJsonAsync($"api/realtor/{realtorDto.Id}", realtorDto);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Ett fel uppstod vid PUT-anropet, felmeddelande: {response.StatusCode}");
-            }
-            var updatedrealtorDTO = await response.Content.ReadFromJsonAsync<RealtorDTO>();
-            return updatedrealtorDTO;
-           
-
+            var response = await _client.PutAsJsonAsync($"api/realtor/{realtor.Id}", realtor);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<RealtorDTO>();
         }
 
         //public async Task<List<RealtorDTO>> GetRealtorsByAgencyAsync(AgencyDTO agency)
