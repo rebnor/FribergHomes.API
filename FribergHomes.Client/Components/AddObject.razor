@@ -223,6 +223,14 @@ else
                                     Driftkostnad
                                 </label>
                             </div>
+
+                            <div class="form-floating mb-3">
+
+                                <input type="number" @bind="((SalesObjectDTO)salesObject).PlotArea" class="form-control" />
+                                <label class="form-label">
+                                    Tomtarea
+                                </label>
+                            </div>
                         }
 
                         <div class="form-floating mb-3">
@@ -521,10 +529,10 @@ else
                         errorMessages.Add("Du måste välja en kommun");
                     }
                     //Realtor
-                    if (selectedRealtorId == null)
-                    {
-                        errorMessages.Add("Du måste välja en mäklare");
-                    }
+                    // if (selectedRealtorId == null)
+                    // {
+                    //     errorMessages.Add("Du måste välja en mäklare");
+                    // }
                     //Adress
                     if (string.IsNullOrEmpty(salesObject.Adress) || salesObject.Adress.Length < 6)
                     {
@@ -540,31 +548,43 @@ else
                     {
                         errorMessages.Add("Bostadsarea måste vara minst 10 och högst 1000m2");
                     }
-                    //AncillaryArea
-                    if (!salesObject.YearlyCost.HasValue || salesObject.AncillaryArea < 0 || salesObject.AncillaryArea > 1000)
+                    //AncillaryArea, PlotArea, and YearlyCost validation
+                    if ((categoryName == "Hus" || categoryName == "Radhus" || categoryName == "Semesterhem") && (!salesObject.YearlyCost.HasValue || salesObject.AncillaryArea < 0 || salesObject.AncillaryArea > 1000))
                     {
-                        errorMessages.Add("Biarea måste läggas till, och den får ej överstiga 1000m2");
+                        if (!salesObject.YearlyCost.HasValue)
+                        {
+                            errorMessages.Add("Du måste lägga till driftkostnad.");
+                        }
+                        if (salesObject.AncillaryArea < 0 || salesObject.AncillaryArea > 1000)
+                        {
+                            errorMessages.Add("Biarea måste läggas till, och den får ej överstiga 1000m2");
+                        }
                     }
-                    //PlotArea
-                    if (salesObject.PlotArea < 1 || salesObject.PlotArea > 1000000)
+
+                    //PlotArea validation
+                    if ((categoryName == "Hus" || categoryName == "Radhus" || categoryName == "Semesterhem") && (!salesObject.PlotArea.HasValue || salesObject.PlotArea < 1 || salesObject.PlotArea > 1000000))
                     {
                         errorMessages.Add("Tomtarea får ej understiga 1m2 eller överstiga 1000000m2");
                     }
-                    //YearlyCost
-                    if (!salesObject.YearlyCost.HasValue || salesObject.YearlyCost <= 0 || salesObject.YearlyCost > 1000000)
+
+                    //YearlyCost validation
+                    if ((categoryName == "Hus" || categoryName == "Radhus" || categoryName == "Semesterhem") && (!salesObject.YearlyCost.HasValue || salesObject.YearlyCost <= 0 || salesObject.YearlyCost > 1000000))
                     {
-                        errorMessages.Add("Driftskostnad får ej undstiga 1SEK eller överstiga 1,000,000SEK");
+                        errorMessages.Add("Driftskostnad får ej vara mindre än 1SEK eller överstiga 1,000,000SEK");
                     }
-                    //MonthlyFee
-                    if (salesObject.MonthlyFee < 1 || salesObject.MonthlyFee > 100000)
+
+                    // Validation Level
+                    if (categoryName == "Lägenhet" && (!salesObject.Level.HasValue || salesObject.Level < 0 || salesObject.Level > 100))
+                    {
+                        errorMessages.Add("Våning måste läggas till, och får ej överstiga 100");
+                    }
+
+                    // Validation Monthly fee
+                    if (categoryName == "Lägenhet" && (!salesObject.MonthlyFee.HasValue || salesObject.MonthlyFee < 1 || salesObject.MonthlyFee > 100000))
                     {
                         errorMessages.Add("Månadsavgift får ej understiga 1SEK eller överstiga 100,000SEK");
                     }
-                    //Level
-                    if (salesObject.Level < 0 || salesObject.Level > 100)
-                    {
-                        errorMessages.Add("Våning får ej överstiga 100");
-                    }
+
                     //ListingPrice
                     if (salesObject.ListingPrice > 100000000)
                     {
