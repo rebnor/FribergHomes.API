@@ -48,6 +48,7 @@
                 <img src="@picture" width="100" />
                 </div>
             }
+
             <strong>@salesObject.CategoryName</strong>
             <div>@((MarkupString)salesObject.CategoryLogoUrl)</div>// TODO: Syns inte
 
@@ -116,6 +117,9 @@
             <Button Color="ButtonColor.Info">
                 <a href="/info/Category/@category.Id" class="custom-link">Annonser i denna Kategori</a>
             </Button>
+
+            <EditButton TargetObject="category" />
+
         }
     </div>
 }
