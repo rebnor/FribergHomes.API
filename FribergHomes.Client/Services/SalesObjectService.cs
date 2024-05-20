@@ -3,6 +3,8 @@ using System.Net;
 using System.Runtime.Serialization;
 using FribergHomes.Client.DTOs;
 using FribergHomes.Client.Services.Interfaces;
+using FribergHomes.Client.Authentications;
+using System.Net.Http.Headers;
 
 namespace FribergHomes.Client.Services
 {
@@ -12,16 +14,19 @@ namespace FribergHomes.Client.Services
      * 
      * Update: Added GetAllByRealtor method. Changed name of GetAll(countId) to GetAllByCounty / Tobias 2024-04-29
      * Update: Added GetSalesObjectsByCategory(int id) and GetSalesByCounty(string name) / Reb 2024-05-02
+     * Update: Inject IAuthService to set http client default header with Jwt /Tobias 2024-05-20
      */
 
     public class SalesObjectService : ISalesObject
     {
 
         private readonly HttpClient _client;
+        private readonly IAuthService _authService;
 
-        public SalesObjectService(HttpClient client)
+        public SalesObjectService(HttpClient client, IAuthService AuthService)
         {
             _client = client;
+            _authService = AuthService;
         }
 
         /// <summary>
@@ -33,6 +38,8 @@ namespace FribergHomes.Client.Services
         /// <exception cref="HttpRequestException"></exception>
         public async Task<SalesObjectDTO> Get(int id)
         {
+            await SetRequestHeaders();
+
             var response = await _client.GetAsync($"api/salesobject/{id}");
 
             if (!response.IsSuccessStatusCode)
@@ -59,6 +66,8 @@ namespace FribergHomes.Client.Services
         /***Test Rebecka**/
         public async Task<List<SalesObjectDTO>> GetSalesByCounty(string name)
         {
+            await SetRequestHeaders();
+
             var response = await _client.GetAsync($"api/salesobject/county-name/{name}");
             var salesObjects = await response.Content.ReadFromJsonAsync<List<SalesObjectDTO>>();
             if (salesObjects == null)
@@ -73,6 +82,8 @@ namespace FribergHomes.Client.Services
         /***Test Rebecka**/
         public async Task<List<SalesObjectDTO>> GetSalesByCategory(int id)
         {
+            await SetRequestHeaders();
+
             var response = await _client.GetAsync($"api/salesobject/category/{id}");
             var salesObjects = await response.Content.ReadFromJsonAsync<List<SalesObjectDTO>>();
             if (salesObjects == null)
@@ -92,6 +103,8 @@ namespace FribergHomes.Client.Services
         /// <exception cref="HttpRequestException"></exception>
         public async Task<List<SalesObjectDTO>> GetAll()
         {
+            await SetRequestHeaders();
+
             var response = await _client.GetAsync("api/salesobject");
 
             if (!response.IsSuccessStatusCode)
@@ -114,6 +127,8 @@ namespace FribergHomes.Client.Services
         /// <exception cref="HttpRequestException"></exception>
         public async Task<List<SalesObjectDTO>> GetAllByCounty(int id)
         {
+            await SetRequestHeaders();
+
             var response = await _client.GetAsync($"api/salesobject/county/{id}");
 
             if (!response.IsSuccessStatusCode)
@@ -135,6 +150,8 @@ namespace FribergHomes.Client.Services
         /// <exception cref="HttpRequestException"></exception>
         public async Task<List<SalesObjectDTO>> GetAllByRealtor(string id)
         {
+            await SetRequestHeaders();
+
             var response = await _client.GetAsync($"api/salesobject/realtor/{id}");
 
             if (!response.IsSuccessStatusCode)
@@ -156,11 +173,15 @@ namespace FribergHomes.Client.Services
         /// <exception cref="HttpRequestException"></exception>
         public async Task<SalesObjectDTO> Update(int id, SalesObjectDTO salesObject)
         {
+            await SetRequestHeaders();
+
             var response = await _client.PutAsJsonAsync($"/api/salesobject/{id}", salesObject);
 
             response.EnsureSuccessStatusCode();
 
             var updatedSalesObject = await response.Content.ReadFromJsonAsync<SalesObjectDTO>();
+
+            
 
             return updatedSalesObject!;
         }
@@ -175,6 +196,8 @@ namespace FribergHomes.Client.Services
         /// <exception cref="SerializationException"></exception>
         public async Task<SalesObjectDTO> Create(SalesObjectDTO salesObject)
         {
+            await SetRequestHeaders();
+
             var response = await _client.PostAsJsonAsync<SalesObjectDTO>("/api/salesobject", salesObject);
 
             if (!response.IsSuccessStatusCode)
@@ -200,10 +223,18 @@ namespace FribergHomes.Client.Services
         /// <exception cref="HttpRequestException"></exception>
         public async Task Delete(int id)
         {
+            await SetRequestHeaders();
+
             var response = await _client.DeleteAsync($"/api/salesobject/{id}");
 
             response.EnsureSuccessStatusCode();
         }
 
+        private async Task SetRequestHeaders()
+        {
+            var token = await _authService.GetToken();  
+
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
     }
 }
