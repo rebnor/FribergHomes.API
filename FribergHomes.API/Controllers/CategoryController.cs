@@ -11,12 +11,15 @@ using FribergHomes.API.DTOs;
 using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.Mappers;
 using AutoMapper;
+using FribergHomes.API.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FribergHomes.API.Controllers
 {
     /* Controller for Category
      * @ Author: Rebecka 2024-04-16
-     * @ Update: Added Model-DTO and DTO-Model conversions. Changed API-endpoint return types to DTO.  // Tobias 2024-04-25
+     * @ Update: Added Model-DTO and DTO-Model conversions. Changed API-endpoint return types to DTO.  / Tobias 2024-04-25
+     * @ Update: Implemented Authorize-attributes on selected endpoints /Tobias 2024-05-20
      */
     [Route("api/[controller]")]
     [ApiController]
@@ -85,6 +88,7 @@ namespace FribergHomes.API.Controllers
         // PUT: api/Categories/{id}
         /* Updates a Category in the Database */
         [HttpPut("{id}")]
+        [Authorize(Roles = ApiRoles.Admin)]
         public async Task<IActionResult> PutCategory(int id, CategoryDTO categoryDto)
         {
             try
@@ -108,6 +112,7 @@ namespace FribergHomes.API.Controllers
         // POST: api/Categories
         /* Adds a Category to the Database */
         [HttpPost]
+        [Authorize(Roles = ApiRoles.Admin)]
         public async Task<ActionResult<CategoryDTO>> PostCategory(CategoryDTO categoryDto)
         {
             try
@@ -127,6 +132,7 @@ namespace FribergHomes.API.Controllers
         // DELETE: api/Categories/{id}
         /* Deletes one Category, with int ID, from Database */
         [HttpDelete("{id}")]
+        [Authorize(Roles = ApiRoles.Admin)]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             try

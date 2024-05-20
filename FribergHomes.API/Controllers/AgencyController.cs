@@ -11,6 +11,8 @@ using FribergHomes.API.Data.Interfaces;
 using FribergHomes.API.Mappers;
 using AutoMapper;
 using FribergHomes.API.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using FribergHomes.API.Constants;
 
 namespace FribergHomes.API.Controllers
 {
@@ -19,6 +21,7 @@ namespace FribergHomes.API.Controllers
     //@ Updates: Added error handling / Sanna 2024-04-19 
     //@ Updates: GET methods now returns DTOs instead of models / Sanna 2024-04-24
     //@ Update: Added GetRealtorsAtAgency(int id) / Reb 2024-05-02
+    //@ Update: Implemented Authorize-attributes on selected endpoints /Tobias 2024-05-20
 
     [Route("api/[controller]")]
     [ApiController]
@@ -169,6 +172,7 @@ namespace FribergHomes.API.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754       
 
         [HttpPut("{id}")]
+        [Authorize(Roles = ApiRoles.Admin)]
         public async Task<IActionResult> PutAgency(int id, AgencyDTO agencyDTO)
         {
             try
@@ -194,6 +198,7 @@ namespace FribergHomes.API.Controllers
         // POST: api/Agency
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = ApiRoles.Admin)]
         public async Task<ActionResult<AgencyDTO>> PostAgency(AgencyDTO agencyDTO)
         {
             try
@@ -210,6 +215,7 @@ namespace FribergHomes.API.Controllers
 
         // DELETE: api/Agency/5             
         [HttpDelete("{id}")]
+        [Authorize(Roles = ApiRoles.Admin)]
         public async Task<IActionResult> DeleteAgency(int id)
         {
             try

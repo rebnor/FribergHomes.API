@@ -5,6 +5,7 @@
 @* Author: Tobias 2024-05-02 *@
 @* Update: Injected AuthService to retrieve Realtor name / Tobias 2024-05-18 *@
 @*Update: Nu kan man editera allt och man får upp Alert-box som säger att det funkade / Reb 2024-05-19 *@
+@* Update: La till validering för realtor och salesobject /Sanna *@
 @*Update: Frontend / reb *@
 
 @page "/edit/{objecttype}/{id}"
@@ -56,6 +57,7 @@ else
                                 <label class="form-label">
                                     Adress
                                 </label>
+                                <ValidationMessage For="@(() => SalesObject.Adress)" />
                             </div>
                             <div class="form-floating mb-3">
 
@@ -63,6 +65,7 @@ else
                                 <label class="form-label">
                                     Kommun
                                 </label>
+                                <ValidationMessage For="@(() => SalesObject.CountyName)" /
                             </div>
 
                             <div class="form-floating mb-3">
@@ -71,6 +74,7 @@ else
                                 <label class="form-label">
                                     Pris
                                 </label>
+                                <ValidationMessage For="@(() => SalesObject.CurrentPrice)" />
                             </div>
                             <div class="form-floating mb-3">
                                 @if (_category == "Hus" || _category == "Semesterhem")
@@ -80,6 +84,7 @@ else
                                     <label class="form-label">
                                         Driftkostnad (år)
                                     </label>
+                                <ValidationMessage For="@(() => SalesObject.YearlyCost)" />
                                 }
                                 @if (_category == "Lägenhet" || _category == "Radhus")
                                 {
@@ -88,6 +93,7 @@ else
                                     <label class="form-label">
                                         Månadsavgift
                                     </label>
+                                <ValidationMessage For="@(() => SalesObject.MonthlyFee)" />
                                 }
                             </div>
                             <div class="form-floating mb-3">
@@ -96,6 +102,7 @@ else
                                 <label class="form-label">
                                     Byggnationsår
                                 </label>
+                                <ValidationMessage For="@(() => SalesObject.BuildYear)" />
                             </div>
 
                             <div class="form-floating mb-3">
@@ -104,6 +111,7 @@ else
                                 <label class="form-label">
                                     Rum
                                 </label>
+                                <ValidationMessage For="@(() => SalesObject.Rooms)" />
                             </div>
                             <div class="form-floating mb-3">
 
@@ -111,6 +119,7 @@ else
                                 <label class="form-label">
                                     Boarea
                                 </label>
+                                <ValidationMessage For="@(() => SalesObject.LivingArea)" />
                             </div>
 
                             @if (_category == "Hus" || _category == "Radhus" || _category == "Semesterhem")
@@ -121,6 +130,7 @@ else
                                     <label class="form-label">
                                         Biarea
                                     </label>
+                                    <ValidationMessage For="@(() => SalesObject.AncillaryArea)" />
                                 </div>
                                 <div class="form-floating mb-3">
 
@@ -128,6 +138,7 @@ else
                                     <label class="form-label">
                                         Tomtarea
                                     </label>
+                                    <ValidationMessage For="@(() => SalesObject.PlotArea)" />
                                 </div>
 
                             }
@@ -140,6 +151,7 @@ else
                                     <label class="form-label">
                                         Våning
                                     </label>
+                                    <ValidationMessage For="@(() => SalesObject.Level)" />
                                 </div>
                                 <div class="form-floating mb-3">
 
@@ -154,6 +166,7 @@ else
                                             Nej
                                         </option>
                                     </InputSelect>
+                                    <ValidationMessage For="@(() => SalesObject.Lift)" />
                                     <label class="form-label">
                                         Hiss
                                     </label>
@@ -168,6 +181,7 @@ else
                                 <label class="form-label">
                                     Objektbeskrivning
                                 </label>
+                                <ValidationMessage For="@(() => SalesObject.ObjectDescription)" />
                             </div>
 
                             @*Author Rebecka*@
@@ -277,6 +291,7 @@ else
 
                 <EditForm Model="Realtor" OnValidSubmit="Submit" FormName="RealtorForm">
                     <DataAnnotationsValidator />
+                 @*    <ValidationSummary /> *@
 
                     <div class="row justify-content-center pb-3 pt-4">
                         <div class="col-md-4">
@@ -287,6 +302,7 @@ else
                                     <label class="form-label">
                                         Namn
                                     </label>
+                                    <ValidationMessage For="@(() => Realtor.FullName)" />
                                 </div>
 
                                 <div class="form-floating mb-3">
@@ -294,6 +310,7 @@ else
                                     <label class="form-label">
                                         Email
                                     </label>
+                                    <ValidationMessage For="@(() => Realtor.Email)" />
                                 </div>
 
 
@@ -303,6 +320,7 @@ else
                                     <label class="form-label">
                                         Telefon
                                     </label>
+                                    <ValidationMessage For="@(() => Realtor.PhoneNumber)" />
                                 </div>
 
                                 <div class="form-floating mb-3">
