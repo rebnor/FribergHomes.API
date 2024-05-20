@@ -165,6 +165,81 @@ else
                         </div>
 
                     </div>
+
+                    @*Author Rebecka*@
+                    <div>
+                        <label>
+                            Bilder
+                            @foreach (var picture in SalesObject.ImageLinks)
+                            {
+                                <div>
+
+                                    <img src="@picture" width="200" alt="Ogiltig bildlänk" />
+
+                                    @if (!addPicture)
+                                    {
+
+                                        <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="() => DeletePicture(SalesObject, picture)">Ta Bort</Button>
+
+                                        <br />
+
+                                    }
+
+                                </div>
+                            }
+                            @if (addPicture)
+                            {
+                                <label>
+                                    Bildlänk:
+                                    <input type="text" @bind="newPic" placeholder="Skriv in din bildlänk här" />
+
+                                </label>
+
+                                <Button Color="ButtonColor.Success" Size="Size.Small" @onclick="() => SaveAddedPic(SalesObject, newPic)">Lägg till</Button>
+                            }
+                            <br />
+                            <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="AddPicture">Lägg till ny bild</Button>
+
+                        </label>
+                    </div>
+                    @*Author Rebecka*@
+                    <div class="mb-3">
+                        <label>
+                            Visnings Datum:
+                            @foreach (var date in SalesObject.ViewingDates)
+                            {
+                                <div style="border: 1px solid black" class="p-2 text-center">
+
+                                    <p>@date.ToString("yyyy-MM-dd")</p>
+
+                                    @if (!addDate)
+                                    {
+
+                                        <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="() => DeleteDate(SalesObject, date)">Ta Bort</Button>
+
+                                        <br />
+
+                                    }
+
+                                </div>
+                            }
+                            @if (addDate)
+                            {
+                                <label>
+                                    Datum:
+                                    <input type="date" @bind="newDate" />
+
+                                </label>
+                                <Button Color="ButtonColor.Success" Size="Size.Small" @onclick="() => SaveAddedDate(SalesObject, newDate)">Lägg till</Button>
+
+                            }
+                            <br />
+                            <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="AddDate">Lägg till datum</Button>
+
+                        </label>
+                    </div>
+
+
                     <div class="">
                         <button type="submit" class="btn btn-success">Spara</button>
 
