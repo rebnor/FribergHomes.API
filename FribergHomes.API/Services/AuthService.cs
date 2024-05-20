@@ -98,7 +98,8 @@ namespace FribergHomes.API.Services
                 issuer: _config["JwtSettings:Issuer"],
                 audience: _config["JwtSettings:audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToInt32(_config["JwtSettings:DurationInMinutes"]))
+                expires: DateTime.UtcNow.AddMinutes(Convert.ToInt32(_config["JwtSettings:DurationInMinutes"])),
+                signingCredentials: credentials
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
