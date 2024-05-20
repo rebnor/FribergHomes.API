@@ -100,9 +100,9 @@
 
                 @* <Button Color="ButtonColor.Success" @onclick="(() => ShowCreateForm = true)">Skapa annons</Button> *@
 
-
-                <Button Color="ButtonColor.Primary" @onclick="ShowAddSalesObject">Skapa annons</Button>
-
+                <div class="mb-3">
+                <Button Color="ButtonColor.Success" @onclick="ShowAddSalesObject">Skapa annons</Button>
+                </div>
                 @if (AddSalesObject)
                 {
                     <Button Color="ButtonColor.Dark" @onclick="HideAddSalesObject">Avbryt</Button>

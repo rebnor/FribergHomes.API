@@ -5,6 +5,7 @@
 @* Author: Tobias 2024-05-02 *@
 @* Update: Injected AuthService to retrieve Realtor name / Tobias 2024-05-18 *@
 @*Update: Nu kan man editera allt och man får upp Alert-box som säger att det funkade / Reb 2024-05-19 *@
+@*Update: Frontend / reb *@
 
 @page "/edit/{objecttype}/{id}"
 @attribute [Authorize(Roles = "Admin, Realtor")]
@@ -41,97 +42,108 @@ else
             {
                 <span class="info">Ändrad: @SalesObject.ChangeDate @SalesObject.ChangeName</span>
             }
+            <EditForm Model="SalesObject" OnValidSubmit="Submit" FormName="SalesObjectForm">
+                <DataAnnotationsValidator />
 
-            <div class="row">
 
-                <EditForm Model="SalesObject" OnValidSubmit="Submit" FormName="SalesObjectForm">
-                    <DataAnnotationsValidator />
+                <div class="row justify-content-center pb-3 pt-4">
+                    <div class="col-md-4">
+                        <section>
 
-                    <div class="col">
-                        <div class="">
-                            <label>
-                                Adress
-                                <InputText @bind-Value="SalesObject!.Adress" />
-                            </label>
-                        </div>
-                        <div class="">
-                            <label>
-                                Kommun
-                                <InputText @bind-Value="SalesObject!.CountyName" readonly />
-                            </label>
-                        </div>
+                            <div class="form-floating mb-3">
 
-                        <div class="">
-                            <label>
-                                Pris
-                                <InputNumber @bind-Value="SalesObject!.CurrentPrice" />
-                            </label>
-                        </div>
-                        <div class="">
-                            @if (_category == "Hus" || _category == "Semesterhem")
+                                <InputText @bind-Value="SalesObject!.Adress" class="form-control" />
+                                <label class="form-label">
+                                    Adress
+                                </label>
+                            </div>
+                            <div class="form-floating mb-3">
+
+                                <InputText @bind-Value="SalesObject!.CountyName" readonly class="form-control" />
+                                <label class="form-label">
+                                    Kommun
+                                </label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+
+                                <InputNumber @bind-Value="SalesObject!.CurrentPrice" class="form-control" />
+                                <label class="form-label">
+                                    Pris
+                                </label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                @if (_category == "Hus" || _category == "Semesterhem")
+                                {
+
+                                    <InputNumber @bind-Value="SalesObject!.YearlyCost" class="form-control" />
+                                    <label class="form-label">
+                                        Driftkostnad (år)
+                                    </label>
+                                }
+                                @if (_category == "Lägenhet" || _category == "Radhus")
+                                {
+
+                                    <InputNumber @bind-Value="SalesObject!.MonthlyFee" class="form-control" />
+                                    <label class="form-label">
+                                        Månadsavgift
+                                    </label>
+                                }
+                            </div>
+                            <div class="form-floating mb-3">
+
+                                <InputNumber @bind-Value="SalesObject!.BuildYear" class="form-control" />
+                                <label class="form-label">
+                                    Byggnationsår
+                                </label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+
+                                <InputNumber @bind-Value="SalesObject!.Rooms" class="form-control" />
+                                <label class="form-label">
+                                    Rum
+                                </label>
+                            </div>
+                            <div class="form-floating mb-3">
+
+                                <InputNumber @bind-Value="SalesObject!.LivingArea" class="form-control" />
+                                <label class="form-label">
+                                    Boarea
+                                </label>
+                            </div>
+
+                            @if (_category == "Hus" || _category == "Radhus" || _category == "Semesterhem")
                             {
-                                <label>
-                                    Driftkostnad (år)
-                                    <InputNumber @bind-Value="SalesObject!.YearlyCost" />
-                                </label>
+                                <div class="form-floating mb-3">
+
+                                    <InputNumber @bind-Value="SalesObject!.AncillaryArea" class="form-control" />
+                                    <label class="form-label">
+                                        Biarea
+                                    </label>
+                                </div>
+                                <div class="form-floating mb-3">
+
+                                    <InputNumber @bind-Value="SalesObject!.PlotArea" class="form-control" />
+                                    <label class="form-label">
+                                        Tomtarea
+                                    </label>
+                                </div>
+
                             }
-                            @if (_category == "Lägenhet" || _category == "Radhus")
+
+                            @if (_category == "Lägenhet")
                             {
-                                <label>
-                                    Månadsavgift
-                                    <InputNumber @bind-Value="SalesObject!.MonthlyFee" />
-                                </label>
-                            }
-                        </div>
-                        <div class="">
-                            <label>
-                                Byggnationsår
-                                <InputNumber @bind-Value="SalesObject!.BuildYear" />
-                            </label>
-                        </div>
+                                <div class="form-floating mb-3">
 
-                        <div class="">
-                            <label>
-                                Rum
-                                <InputNumber @bind-Value="SalesObject!.Rooms" />
-                            </label>
-                        </div>
-                        <div class="">
-                            <label>
-                                Boarea
-                                <InputNumber @bind-Value="SalesObject!.LivingArea" />
-                            </label>
-                        </div>
+                                    <InputNumber @bind-Value="SalesObject!.Level" class="form-control" />
+                                    <label class="form-label">
+                                        Våning
+                                    </label>
+                                </div>
+                                <div class="form-floating mb-3">
 
-                        @if (_category == "Hus" || _category == "Radhus" || _category == "Semesterhem")
-                        {
-                            <div class="">
-                                <label>
-                                    Biarea
-                                    <InputNumber @bind-Value="SalesObject!.AncillaryArea" />
-                                </label>
-                            </div>
-                            <div class="">
-                                <label>
-                                    Tomtarea
-                                    <InputNumber @bind-Value="SalesObject!.PlotArea" />
-                                </label>
-                            </div>
-
-                        }
-
-                        @if (_category == "Lägenhet")
-                        {
-                            <div class="">
-                                <label>
-                                    Våning
-                                    <InputNumber @bind-Value="SalesObject!.Level" />
-                                </label>
-                            </div>
-                            <div class="">
-                                <label>
-                                    Hiss
-                                    <InputSelect @bind-Value="SalesObject!.Lift">
+                                    <InputSelect @bind-Value="SalesObject!.Lift" class="form-control">
                                         <option value="null">
                                             Hiss?
                                         </option>
@@ -142,111 +154,112 @@ else
                                             Nej
                                         </option>
                                     </InputSelect>
+                                    <label class="form-label">
+                                        Hiss
+                                    </label>
+                                </div>
+
+                            }
+
+                            <div class="form-floating mb-3">
+
+                                <br />
+                                <InputTextArea @bind-Value="SalesObject!.ObjectDescription" class="form-control" />
+                                <label class="form-label">
+                                    Objektbeskrivning
                                 </label>
                             </div>
 
-                        }
-                    </div>
-                    <div class="col">
-                        <div>
+                            @*Author Rebecka*@
+                            <div>
+                                <label>
+                                    Bilder
+                                    @foreach (var picture in SalesObject.ImageLinks)
+                                    {
+                                        <div style="border: 1px solid black; border-radius: 10px;" class="p-2 text-center mt-2 shadow">
+
+                                            <img src="@picture" width="200" alt="Ogiltig bildlänk" class="mb-1 mx-2" />
+
+                                            @if (!addPicture)
+                                            {
+
+                                                <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="() => DeletePicture(SalesObject, picture)">Ta Bort</Button>
+
+                                                <br />
+
+                                            }
+
+                                        </div>
+                                    }
+                                    @if (addPicture)
+                                    {
+                                        <label>
+                                            Bildlänk:
+                                            <input type="text" @bind="newPic" placeholder="Skriv in din bildlänk här" />
+
+                                        </label>
+
+                                        <Button Color="ButtonColor.Success" Size="Size.Small" @onclick="() => SaveAddedPic(SalesObject, newPic)">Lägg till</Button>
+                                    }
+                                    <br />
+                                    <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="AddPicture">Lägg till ny bild</Button>
+
+                                </label>
+                            </div>
+                            @*Author Rebecka*@
                             <div class="">
                                 <label>
-                                    Objektbeskrivning
+                                    Visnings Datum:
+                                    @foreach (var date in SalesObject.ViewingDates)
+                                    {
+                                        <div style="border: 1px solid black; border-radius: 10px;" class="p-2 text-center mt-2 shadow">
+
+                                            <p>@date.ToString("yyyy-MM-dd")</p>
+
+                                            @if (!addDate)
+                                            {
+
+                                                <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="() => DeleteDate(SalesObject, date)">Ta Bort</Button>
+
+                                                <br />
+
+                                            }
+
+                                        </div>
+                                    }
+                                    @if (addDate)
+                                    {
+                                        <label>
+                                            Datum:
+                                            <input type="date" @bind="newDate" />
+
+                                        </label>
+                                        <Button Color="ButtonColor.Success" Size="Size.Small" @onclick="() => SaveAddedDate(SalesObject, newDate)">Lägg till</Button>
+
+                                    }
                                     <br />
-                                    <InputTextArea @bind-Value="SalesObject!.ObjectDescription" />
+                                    <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="AddDate">Lägg till datum</Button>
+
                                 </label>
                             </div>
-                        </div>
 
+
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-success">Spara</button>
+
+                                <AuthorizeView Context="a" Roles="Realtor">
+                                    <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/realtorprofile"))">Avbryt</Button>
+                                </AuthorizeView>
+
+                                <AuthorizeView Context="b" Roles="Admin">
+                                    <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/agencyprofile"))">Avbryt</Button>
+                                </AuthorizeView>
+                            </div>
+                        </section>
                     </div>
+                </div>
 
-                    @*Author Rebecka*@
-                    <div>
-                        <label>
-                            Bilder
-                            @foreach (var picture in SalesObject.ImageLinks)
-                            {
-                                <div>
-
-                                    <img src="@picture" width="200" alt="Ogiltig bildlänk" />
-
-                                    @if (!addPicture)
-                                    {
-
-                                        <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="() => DeletePicture(SalesObject, picture)">Ta Bort</Button>
-
-                                        <br />
-
-                                    }
-
-                                </div>
-                            }
-                            @if (addPicture)
-                            {
-                                <label>
-                                    Bildlänk:
-                                    <input type="text" @bind="newPic" placeholder="Skriv in din bildlänk här" />
-
-                                </label>
-
-                                <Button Color="ButtonColor.Success" Size="Size.Small" @onclick="() => SaveAddedPic(SalesObject, newPic)">Lägg till</Button>
-                            }
-                            <br />
-                            <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="AddPicture">Lägg till ny bild</Button>
-
-                        </label>
-                    </div>
-                    @*Author Rebecka*@
-                    <div class="mb-3">
-                        <label>
-                            Visnings Datum:
-                            @foreach (var date in SalesObject.ViewingDates)
-                            {
-                                <div style="border: 1px solid black" class="p-2 text-center">
-
-                                    <p>@date.ToString("yyyy-MM-dd")</p>
-
-                                    @if (!addDate)
-                                    {
-
-                                        <Button Color="ButtonColor.Danger" Size="Size.Small" @onclick="() => DeleteDate(SalesObject, date)">Ta Bort</Button>
-
-                                        <br />
-
-                                    }
-
-                                </div>
-                            }
-                            @if (addDate)
-                            {
-                                <label>
-                                    Datum:
-                                    <input type="date" @bind="newDate" />
-
-                                </label>
-                                <Button Color="ButtonColor.Success" Size="Size.Small" @onclick="() => SaveAddedDate(SalesObject, newDate)">Lägg till</Button>
-
-                            }
-                            <br />
-                            <Button Color="ButtonColor.Primary" Size="Size.Small" @onclick="AddDate">Lägg till datum</Button>
-
-                        </label>
-                    </div>
-
-
-                    <div class="">
-                        <button type="submit" class="btn btn-success">Spara</button>
-
-                        <AuthorizeView Context="a" Roles="Realtor">
-                            <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/realtorprofile"))">Avbryt</Button>
-                        </AuthorizeView>
-
-                        <AuthorizeView Context="b" Roles="Admin">
-                            <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/agencyprofile"))">Avbryt</Button>
-                        </AuthorizeView>
-                    </div>
-                </EditForm>
-            </div>
+            </EditForm>
 
         }
     }
@@ -259,66 +272,70 @@ else
         }
         else
         {
-            <div class="text-center">
+            <div class="">
                 <h3>Ändra mäklare</h3>
 
                 <EditForm Model="Realtor" OnValidSubmit="Submit" FormName="RealtorForm">
                     <DataAnnotationsValidator />
 
-                    <div class="">
-                        <div class="fixed-medium">
-                            <label>
-                                Namn
-                                <InputText @bind-Value="Realtor!.FullName" />
-                            </label>
-                        </div>
-                        <div class="fixed-large">
-                            <label>
-                                Email
-                                <InputText @bind-Value="Realtor!.Email" />
-                            </label>
+                    <div class="row justify-content-center pb-3 pt-4">
+                        <div class="col-md-4">
+                            <section>
+
+                                <div class="form-floating mb-3">
+                                    <InputText @bind-Value="Realtor!.FullName" class="form-control" />
+                                    <label class="form-label">
+                                        Namn
+                                    </label>
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    <InputText @bind-Value="Realtor!.Email" class="form-control" />
+                                    <label class="form-label">
+                                        Email
+                                    </label>
+                                </div>
+
+
+
+                                <div class="form-floating mb-3">
+                                    <InputText @bind-Value="Realtor!.PhoneNumber" class="form-control" />
+                                    <label class="form-label">
+                                        Telefon
+                                    </label>
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    <InputText @bind-Value="Realtor!.Picture" onchange="@(() => UpdatePreview())" class="form-control" />
+                                    <label class="form-label">
+                                        Profilbild
+                                    </label>
+                                </div>
+
+                                <div class="">
+                                    <h5>Förhandsvisning av bild</h5>
+                                    <div>
+                                        <ProfilePicture Realtor="@Realtor" Size="ProfilePicture.PictureSize.Medium" />
+                                    </div>
+                                </div>
+
+                                <div class="mt-2">
+                                    <button type="submit" class="btn btn-success mx-2">Spara</button>
+
+                                    <AuthorizeView Context="a" Roles="Realtor">
+                                        <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/realtorprofile"))">Avbryt</Button>
+                                    </AuthorizeView>
+
+                                    <AuthorizeView Context="b" Roles="Admin">
+                                        <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/agencyprofile"))">Avbryt</Button>
+                                    </AuthorizeView>
+                                </div>
+
+                            </section>
                         </div>
                     </div>
-
-                    <div class="">
-                        <div class="fixed-medium">
-                            <label>
-                                Telefon
-                                <InputText @bind-Value="Realtor!.PhoneNumber" />
-                            </label>
-                        </div>
-                        <div class="fixed-large">
-                            <label>
-                                Profilbild
-                                <InputText @bind-Value="Realtor!.Picture" onchange="@(() => UpdatePreview())" />
-                            </label>
-                        </div>
-                        <div class="">
-                            <span>Förhandsvisning av bild</span>
-                            @* <img src="@Realtor.Picture" width="250px" height="auto" /> *@
-                            <ProfilePicture Realtor="@Realtor" Size="ProfilePicture.PictureSize.Medium" />
-                        </div>
-                    </div>
-
-
-                    <div class="">
-                        <button type="submit" class="btn btn-success">Spara</button>
-
-                        <AuthorizeView Context="a" Roles="Realtor">
-                            <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/realtorprofile"))">Avbryt</Button>
-                        </AuthorizeView>
-
-                        <AuthorizeView Context="b" Roles="Admin">
-                            <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/agencyprofile"))">Avbryt</Button>
-                        </AuthorizeView>
-                    </div>
-
-
                 </EditForm>
             </div>
-
-
-
         }
     }
 
@@ -336,35 +353,49 @@ else
 
                 <EditForm Model="Agency" OnValidSubmit="Submit" FormName="AgencyForm">
                     <DataAnnotationsValidator />
-                    <div class="mt">
-                        <label>
-                            Namn
-                            <InputText @bind-Value="Agency!.Name" />
-                        </label>
-                    </div>
-                    <div class="mt">
-                        <label>
-                            Presentation
-                            <InputTextArea @bind-Value="Agency!.Presentation" />
-                        </label>
-                    </div>
-                    <div class="mt">
-                        <label>
-                            Logo
-                            <InputText @bind-Value="Agency!.Logo" onchange="@(() => UpdatePreview())" />
-                        </label>
-                    </div>
 
-                    <div class="">
-                        <span>Logo preview</span>
-                        <img src="@Agency.Logo" width="250px" height="auto" />
-                    </div>
+                    <div class="row justify-content-center pb-3 pt-4">
+                        <div class="col-md-4">
+                            <section>
 
-                    <div class="">
-                        <button type="submit" class="btn btn-success">Spara</button>
-                        <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/agencyprofile"))">Avbryt</Button>
-                    </div>
+                                <div class="form-floating mb-3">
+                                    <InputText @bind-Value="Agency!.Name" class="form-control" />
+                                    <label class="form-label">
+                                        Namn
+                                    </label>
+                                </div>
 
+                                <div class="form-floating mb-3">
+                                    <br />
+
+                                    <InputTextArea @bind-Value="Agency!.Presentation" class="form-control" />
+                                    <label class="form-label">
+                                        Presentation
+                                    </label>
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    <InputText @bind-Value="Agency!.Logo" onchange="@(() => UpdatePreview())" class="form-control" />
+                                    <label class="form-label">
+                                        Logo
+                                    </label>
+                                </div>
+
+                                <div class="">
+                                    <h5>Logo preview</h5>
+                                    <div>
+                                        <img src="@Agency.Logo" width="250px" height="auto" />
+                                    </div>
+                                </div>
+
+                                <div class="mt-2">
+                                    <button type="submit" class="btn btn-success">Spara</button>
+                                    <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/agencyprofile"))">Avbryt</Button>
+                                </div>
+
+                            </section>
+                        </div>
+                    </div>
                 </EditForm>
             }
         </AuthorizeView>
