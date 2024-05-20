@@ -478,27 +478,27 @@ else
                         errorMessages.Add("Bostadsarea måste vara minst 10 och högst 1000m2");
                     }
                     //AncillaryArea
-                    if (salesObject.AncillaryArea.HasValue && (salesObject.AncillaryArea < 0 || salesObject.AncillaryArea > 1000))
+                    if (!salesObject.YearlyCost.HasValue || salesObject.AncillaryArea < 0 || salesObject.AncillaryArea > 1000)
                     {
-                        errorMessages.Add("Biarea får ej överstiga 1000m2");
+                        errorMessages.Add("Biarea måste läggas till, och den får ej överstiga 1000m2");
                     }
                     //PlotArea
-                    if (salesObject.PlotArea.HasValue && (salesObject.PlotArea < 1 || salesObject.PlotArea > 1000000))
+                    if (salesObject.PlotArea < 1 || salesObject.PlotArea > 1000000)
                     {
                         errorMessages.Add("Tomtarea får ej understiga 1m2 eller överstiga 1000000m2");
                     }
                     //YearlyCost
-                    if (salesObject.YearlyCost.HasValue && (salesObject.YearlyCost < 1 || salesObject.YearlyCost > 1000000))
+                    if (!salesObject.YearlyCost.HasValue || salesObject.YearlyCost <= 0 || salesObject.YearlyCost > 1000000)
                     {
                         errorMessages.Add("Driftskostnad får ej undstiga 1SEK eller överstiga 1,000,000SEK");
                     }
                     //MonthlyFee
-                    if (salesObject.MonthlyFee.HasValue && (salesObject.MonthlyFee < 1 || salesObject.MonthlyFee > 100000))
+                    if (salesObject.MonthlyFee < 1 || salesObject.MonthlyFee > 100000)
                     {
                         errorMessages.Add("Månadsavgift får ej understiga 1SEK eller överstiga 100,000SEK");
                     }
                     //Level
-                    if (salesObject.Level.HasValue && (salesObject.Level < 0 || salesObject.Level > 100))
+                    if (salesObject.Level < 0 || salesObject.Level > 100)
                     {
                         errorMessages.Add("Våning får ej överstiga 100");
                     }
@@ -506,12 +506,8 @@ else
                     if (salesObject.ListingPrice > 100000000)
                     {
                         errorMessages.Add("Pris får ej överstiga 100,0000,000SEK");
-                    }               
-                    //ObjectDescription
-                    if (string.IsNullOrEmpty(salesObject.ObjectDescription) || salesObject.ObjectDescription.Length < 10)
-                    {
-                        errorMessages.Add("Objektbeskrivning får ej understiga 10 tecken.");
-                    }
+                    }            
+                 
                     // BuildYear
                     if (salesObject.BuildYear < 1800 || salesObject.BuildYear > 2100)
                     {
