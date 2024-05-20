@@ -5,6 +5,7 @@
 @* Author: Tobias 2024-05-02 *@
 @* Update: Injected AuthService to retrieve Realtor name / Tobias 2024-05-18 *@
 @*Update: Nu kan man editera allt och man får upp Alert-box som säger att det funkade / Reb 2024-05-19 *@
+@* Update: La till validering för realtor och salesobject /Sanna *@
 
 @page "/edit/{objecttype}/{id}"
 @attribute [Authorize(Roles = "Admin, Realtor")]
@@ -46,8 +47,9 @@ else
 
                 <EditForm Model="SalesObject" OnValidSubmit="Submit" FormName="SalesObjectForm">
                     <DataAnnotationsValidator />
+            @*         <ValidationSummary/> *@
 
-                    <div class="col">
+                   @*  <div class="col">
                         <div class="">
                             <label>
                                 Adress
@@ -171,6 +173,138 @@ else
                         </AuthorizeView>
                     </div>
                 </EditForm>
+            </div> *@
+
+                    <div class="col">
+                        <div class="">
+                            <label>
+                                Adress
+                                <InputText @bind-Value="SalesObject!.Adress" />
+                                <ValidationMessage For="@(() => SalesObject.Adress)" />
+                            </label>
+                        </div>
+                        <div class="">
+                            <label>
+                                Kommun
+                                <InputText @bind-Value="SalesObject!.CountyName" readonly />
+                                <ValidationMessage For="@(() => SalesObject.CountyName)" />
+                            </label>
+                        </div>
+
+                        <div class="">
+                            <label>
+                                Pris
+                                <InputNumber @bind-Value="SalesObject!.CurrentPrice" />
+                                <ValidationMessage For="@(() => SalesObject.CurrentPrice)" />
+                            </label>
+                        </div>
+                        <div class="">
+                            @if (_category == "Hus" || _category == "Semesterhem")
+                            {
+                                <label>
+                                    Driftkostnad (år)
+                                    <InputNumber @bind-Value="SalesObject!.YearlyCost" />
+                                    <ValidationMessage For="@(() => SalesObject.YearlyCost)" />
+                                </label>
+                            }
+                            @if (_category == "Lägenhet" || _category == "Radhus")
+                            {
+                                <label>
+                                    Månadsavgift
+                                    <InputNumber @bind-Value="SalesObject!.MonthlyFee" />
+                                    <ValidationMessage For="@(() => SalesObject.MonthlyFee)" />
+                                </label>
+                            }
+                        </div>
+                        <div class="">
+                            <label>
+                                Byggnationsår
+                                <InputNumber @bind-Value="SalesObject!.BuildYear" />
+                                <ValidationMessage For="@(() => SalesObject.BuildYear)" />
+                            </label>
+                        </div>
+
+                        <div class="">
+                            <label>
+                                Rum
+                                <InputNumber @bind-Value="SalesObject!.Rooms" />
+                                <ValidationMessage For="@(() => SalesObject.Rooms)" />
+                            </label>
+                        </div>
+                        <div class="">
+                            <label>
+                                Boarea
+                                <InputNumber @bind-Value="SalesObject!.LivingArea" />
+                                <ValidationMessage For="@(() => SalesObject.LivingArea)" />
+                            </label>
+                        </div>
+
+                        @if (_category == "Hus" || _category == "Radhus" || _category == "Semesterhem")
+                        {
+                            <div class="">
+                                <label>
+                                    Biarea
+                                    <InputNumber @bind-Value="SalesObject!.AncillaryArea" />
+                                    <ValidationMessage For="@(() => SalesObject.AncillaryArea)" />
+                                </label>
+                            </div>
+                            <div class="">
+                                <label>
+                                    Tomtarea
+                                    <InputNumber @bind-Value="SalesObject!.PlotArea" />
+                                    <ValidationMessage For="@(() => SalesObject.PlotArea)" />
+                                </label>
+                            </div>
+
+                        }
+
+                        @if (_category == "Lägenhet")
+                        {
+                            <div class="">
+                                <label>
+                                    Våning
+                                    <InputNumber @bind-Value="SalesObject!.Level" />
+                                    <ValidationMessage For="@(() => SalesObject.Level)" />
+                                </label>
+                            </div>
+                            <div class="">
+                                <label>
+                                    Hiss
+                                    <InputSelect @bind-Value="SalesObject!.Lift">
+                                        <option value="null">Hiss?</option>
+                                        <option checked="@(SalesObject!.Lift == true)" value="true">Ja</option>
+                                        <option checked="@(SalesObject!.Lift == false)" value="false">Nej</option>
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => SalesObject.Lift)" />
+                                </label>
+                            </div>
+                        }
+                    </div>
+                    <div class="col">
+                        <div>
+                            <div class="">
+                                <label>
+                                    Objektbeskrivning
+                                    <br />
+                                    <InputTextArea @bind-Value="SalesObject!.ObjectDescription" />
+                                    <ValidationMessage For="@(() => SalesObject.ObjectDescription)" />
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="">
+                        <button type="submit" class="btn btn-success">Spara</button>
+
+                        <AuthorizeView Context="a" Roles="Realtor">
+                            <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/realtorprofile"))">Avbryt</Button>
+                        </AuthorizeView>
+
+                        <AuthorizeView Context="b" Roles="Admin">
+                            <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/agencyprofile"))">Avbryt</Button>
+                        </AuthorizeView>
+                    </div>
+                </EditForm>
             </div>
 
         }
@@ -189,18 +323,21 @@ else
 
                 <EditForm Model="Realtor" OnValidSubmit="Submit" FormName="RealtorForm">
                     <DataAnnotationsValidator />
+                 @*    <ValidationSummary /> *@
 
                     <div class="">
                         <div class="fixed-medium">
                             <label>
                                 Namn
                                 <InputText @bind-Value="Realtor!.FullName" />
+                                <ValidationMessage For="@(() => Realtor.FullName)" />
                             </label>
                         </div>
                         <div class="fixed-large">
                             <label>
                                 Email
                                 <InputText @bind-Value="Realtor!.Email" />
+                                <ValidationMessage For="@(() => Realtor.Email)" />
                             </label>
                         </div>
                     </div>
@@ -210,12 +347,13 @@ else
                             <label>
                                 Telefon
                                 <InputText @bind-Value="Realtor!.PhoneNumber" />
+                                <ValidationMessage For="@(() => Realtor.PhoneNumber)" />
                             </label>
                         </div>
                         <div class="fixed-large">
                             <label>
                                 Profilbild
-                                <InputText @bind-Value="Realtor!.Picture" onchange="@(() => UpdatePreview())" />
+                                <InputText @bind-Value="Realtor!.Picture" onchange="@(() => UpdatePreview())" />                              
                             </label>
                         </div>
                         <div class="">
@@ -224,7 +362,6 @@ else
                             <ProfilePicture Realtor="@Realtor" Size="ProfilePicture.PictureSize.Medium" />
                         </div>
                     </div>
-
 
                     <div class="">
                         <button type="submit" class="btn btn-success">Spara</button>
@@ -237,9 +374,8 @@ else
                             <Button Color="ButtonColor.Secondary" @onclick="@(() => NavMan.NavigateTo("/agencyprofile"))">Avbryt</Button>
                         </AuthorizeView>
                     </div>
-
-
                 </EditForm>
+
             </div>
 
 
