@@ -98,7 +98,6 @@ else
 
         <div class="m-3">
 
-            <AuthorizeView Roles="Admin">
 
                 @if (!(ObjectToShow is RealtorDTO))
                 {
@@ -112,7 +111,6 @@ else
                     <Button Color="ButtonColor.Primary" @onclick="NoCancel">Nej, Avbryt!</Button>
                 }
 
-            </AuthorizeView>
         </div>
     }
 }
