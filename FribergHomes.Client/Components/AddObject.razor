@@ -11,6 +11,7 @@
 @using FribergHomes.Client.Authentications
 @using FribergHomes.Client.Services.Interfaces
 @using FribergHomes.Client.DTOs
+@using System.Text.RegularExpressions
 @inject ISalesObject salesService
 @inject ICategory categoryService
 @inject IAgencyService agencyService
@@ -318,6 +319,7 @@ else
 
     private async void AddNewObject()
     {
+        errorMessages.Clear();
         try
         {
             if (ObjectType == "category")
@@ -348,7 +350,7 @@ else
                 //manuell validering
                 try
                 {
-                    //FullName
+                    //FirstName
                     if (string.IsNullOrWhiteSpace(firstName))
                     {
                         errorMessages.Add("Du måste ange förnamn.");
@@ -359,7 +361,7 @@ else
                         errorMessages.Add("Du måste ange efternamn.");
                     }
                     //Email
-                    if (string.IsNullOrWhiteSpace(realtor.Email))
+                    if (string.IsNullOrWhiteSpace(email))
                     {
                         errorMessages.Add("Du har angett en ogiltig e-postadress.");
                     }
@@ -369,10 +371,18 @@ else
                         errorMessages.Add("Du måste ange ditt telefonnummer.");
                     }
                     //Password
-                    if (string.IsNullOrWhiteSpace(realtor.PhoneNumber))
+                    if (string.IsNullOrWhiteSpace(password))
                     {
                         errorMessages.Add("Du måste välja lösenord.");
-                    }                    
+                    }
+                    else
+                    {
+                        // Kontrollera att lösenordet innehåller minst en stor bokstav, en siffra och ett icke-alfanumeriskt tecken
+                        if (!Regex.IsMatch(password, @"^(?=.*[A-Z])(?=.*\d)(?=.*\W).+$"))
+                        {
+                            errorMessages.Add("Lösenordet måste innehålla minst en stor bokstav, en siffra och ett tecken som inte är en bokstav eller siffra.");
+                        }
+                    }
                     if (password != confirmPassword)
                     {
                         errorMessages.Add("Lösenorden stämmer inte överrens. Försök igen.");
@@ -384,23 +394,23 @@ else
                 }
 
                 realtor.FullName = $"{firstName} {lastName}";
-                        realtor.AgencyId = Agency.Id;
-                        realtor.AgencyName = Agency.Name;
-                        realtor.AgencyLogo = Agency.Logo;
-                        // await realtorService.AddRealtorAsync(realtor);
-                        RegisterRealtorDTO newRealtor = new RegisterRealtorDTO()
-                            {
-                                FirstName = firstName,
-                                LastName = lastName,
-                                Email = realtor.Email,
-                                PhoneNumber = realtor.PhoneNumber,
-                                Password = password,
-                                AgencyId = Agency.Id
-                            };
-                        okString = await authService.Register(newRealtor);
-                        StateHasChanged();
+                realtor.AgencyId = Agency.Id;
+                realtor.AgencyName = Agency.Name;
+                realtor.AgencyLogo = Agency.Logo;
+                // await realtorService.AddRealtorAsync(realtor);
+                RegisterRealtorDTO newRealtor = new RegisterRealtorDTO()
+                    {
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Email = realtor.Email,
+                        PhoneNumber = realtor.PhoneNumber,
+                        Password = password,
+                        AgencyId = Agency.Id
+                    };
+                okString = await authService.Register(newRealtor);
+                StateHasChanged();
 
-                // Gamla koden: 
+                // Gamla koden:
                 // try
                 // {
                 //     if (password == confirmPassword)
@@ -468,45 +478,36 @@ else
                         errorMessages.Add("Bostadsarea måste vara minst 10 och högst 1000m2");
                     }
                     //AncillaryArea
-                    if (salesObject.AncillaryArea.HasValue && (salesObject.AncillaryArea < 0 || salesObject.AncillaryArea > 1000))
+                    if (!salesObject.YearlyCost.HasValue || salesObject.AncillaryArea < 0 || salesObject.AncillaryArea > 1000)
                     {
-                        errorMessages.Add("Biarea får ej överstiga 1000m2");
+                        errorMessages.Add("Biarea måste läggas till, och den får ej överstiga 1000m2");
                     }
                     //PlotArea
-                    if (salesObject.PlotArea.HasValue && (salesObject.PlotArea < 1 || salesObject.PlotArea > 1000000))
+                    if (salesObject.PlotArea < 1 || salesObject.PlotArea > 1000000)
                     {
                         errorMessages.Add("Tomtarea får ej understiga 1m2 eller överstiga 1000000m2");
                     }
                     //YearlyCost
-                    if (salesObject.YearlyCost.HasValue && (salesObject.YearlyCost < 1 || salesObject.YearlyCost > 1000000))
+                    if (!salesObject.YearlyCost.HasValue || salesObject.YearlyCost <= 0 || salesObject.YearlyCost > 1000000)
                     {
                         errorMessages.Add("Driftskostnad får ej undstiga 1SEK eller överstiga 1,000,000SEK");
                     }
                     //MonthlyFee
-                    if (salesObject.MonthlyFee.HasValue && (salesObject.MonthlyFee < 1 || salesObject.MonthlyFee > 100000))
+                    if (salesObject.MonthlyFee < 1 || salesObject.MonthlyFee > 100000)
                     {
                         errorMessages.Add("Månadsavgift får ej understiga 1SEK eller överstiga 100,000SEK");
                     }
                     //Level
-                    if (salesObject.Level.HasValue && (salesObject.Level < 0 || salesObject.Level > 100))
+                    if (salesObject.Level < 0 || salesObject.Level > 100)
                     {
                         errorMessages.Add("Våning får ej överstiga 100");
                     }
                     //ListingPrice
-                    if (salesObject.ListingPrice < 1 || salesObject.ListingPrice > 100000000)
+                    if (salesObject.ListingPrice > 100000000)
                     {
                         errorMessages.Add("Pris får ej överstiga 100,0000,000SEK");
-                    }
-                    //CurrentPrice
-                    if (salesObject.CurrentPrice < 1 || salesObject.CurrentPrice > 100000000)
-                    {
-                        errorMessages.Add("Pris får ej överstiga 100,0000,000SEK");
-                    }
-                    //ObjectDescription
-                    if (string.IsNullOrEmpty(salesObject.ObjectDescription) || salesObject.ObjectDescription.Length < 10)
-                    {
-                        errorMessages.Add("Objektbeskrivning får ej understiga 10 tecken.");
-                    }
+                    }            
+                 
                     // BuildYear
                     if (salesObject.BuildYear < 1800 || salesObject.BuildYear > 2100)
                     {
@@ -516,12 +517,7 @@ else
                     if (string.IsNullOrEmpty(salesObject.ObjectDescription) || salesObject.ObjectDescription.Length < 10)
                     {
                         errorMessages.Add("Objektbeskrivning får ej understiga 10 tecken.");
-                    }
-                    //CurrentPrice
-                    if (salesObject.CurrentPrice < 1 || salesObject.CurrentPrice > 100000000)
-                    {
-                        errorMessages.Add("Pris får ej överstiga 100,0000,000SEK");
-                    }
+                    }                 
                     //ImageLinks
                     if (salesObject.ImageLinks == null || !salesObject.ImageLinks.Any())
                     {
