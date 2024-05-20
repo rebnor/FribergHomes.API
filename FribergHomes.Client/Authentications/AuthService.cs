@@ -134,5 +134,11 @@ namespace FribergHomes.Client.Authentications
             return string.Empty;
         }
 
+        public async Task<string> GetToken()
+        {
+            var token = await _localStorage.GetItemAsync<string>("jwt");
+
+            return token;
+        }
     }
 }
